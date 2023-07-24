@@ -37,7 +37,7 @@ For example, in go:
 
 ```go
 import (
-    "github.com/lf-edge/eve/api/go/config"
+    "github.com/lf-edge/eve-api/go/config"
 )
 ```
 

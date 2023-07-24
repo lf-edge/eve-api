@@ -5,7 +5,7 @@ syntax = "proto3";
 
 package org.lfedge.eve.uuid;
 
-option go_package  = "github.com/lf-edge/eve/api/go/uuid";
+option go_package  = "github.com/lf-edge/eve-api/go/uuid";
 option java_package = "org.lfedge.eve.uuid";
 option java_multiple_files = true;
 option java_outer_classname = "EveUuid";

@@ -10,7 +10,7 @@
 package attest
 
 import (
-	certs "github.com/lf-edge/eve/api/go/certs"
+	certs "github.com/lf-edge/eve-api/go/certs"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"

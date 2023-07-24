@@ -13,14 +13,14 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x15\x65veuuid/eveuuid.proto\x12\x13org.lfedge.eve.uuid\"\r\n\x0bUuidRequest\"H\n\x0cUuidResponse\x12\x0c\n\x04uuid\x18\x01 \x01(\t\x12\x14\n\x0cmanufacturer\x18\x02 \x01(\t\x12\x14\n\x0cproduct_name\x18\x03 \x01(\tBD\n\x13org.lfedge.eve.uuidB\x07\x45veUuidP\x01Z\"github.com/lf-edge/eve/api/go/uuidb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x15\x65veuuid/eveuuid.proto\x12\x13org.lfedge.eve.uuid\"\r\n\x0bUuidRequest\"H\n\x0cUuidResponse\x12\x0c\n\x04uuid\x18\x01 \x01(\t\x12\x14\n\x0cmanufacturer\x18\x02 \x01(\t\x12\x14\n\x0cproduct_name\x18\x03 \x01(\tBD\n\x13org.lfedge.eve.uuidB\x07\x45veUuidP\x01Z\"github.com/lf-edge/eve-api/go/uuidb\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'eveuuid.eveuuid_pb2', globals())
 if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
-  DESCRIPTOR._serialized_options = b'\n\023org.lfedge.eve.uuidB\007EveUuidP\001Z\"github.com/lf-edge/eve/api/go/uuid'
+  DESCRIPTOR._serialized_options = b'\n\023org.lfedge.eve.uuidB\007EveUuidP\001Z\"github.com/lf-edge/eve-api/go/uuid'
   _UUIDREQUEST._serialized_start=46
   _UUIDREQUEST._serialized_end=59
   _UUIDRESPONSE._serialized_start=61

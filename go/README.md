@@ -6,12 +6,12 @@ To use:
 
 ```go
 import (
-        "github.com/lf-edge/eve/api/go/register"
-        "github.com/lf-edge/eve/api/go/config"
-        "github.com/lf-edge/eve/api/go/info"
-        "github.com/lf-edge/eve/api/go/logs"
-        "github.com/lf-edge/eve/api/go/metrics"
-        "github.com/lf-edge/eve/api/go/flowlog"
+        "github.com/lf-edge/eve-api/go/register"
+        "github.com/lf-edge/eve-api/go/config"
+        "github.com/lf-edge/eve-api/go/info"
+        "github.com/lf-edge/eve-api/go/logs"
+        "github.com/lf-edge/eve-api/go/metrics"
+        "github.com/lf-edge/eve-api/go/flowlog"
 )
 ```
 
@@ -27,7 +27,7 @@ To vendor the result into a downstream dependency, e.g. pillar, do the following
 1. Open a Pull Request and merge it in.
 1. Go to the root directory of the downstream dependency and:
 ```bash
-go get -u github.com/lf-edge/eve/api/go@master
+go get -u github.com/lf-edge/eve-api/go@master
 go mod vendor
 ```
 
@@ -35,7 +35,7 @@ For temporary testing _only_ you can reference the local copy of the generated c
 to the end of your `go.mod`:
 
 ```go
-replace github.com/lf-edge/eve/api/go => ../../api/go
+replace github.com/lf-edge/eve-api/go => ../../api/go
 ```
 
 Do **not** commit the `replace` line to your changes, as they will **not** be accepted into a PR.

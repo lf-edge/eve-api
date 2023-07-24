@@ -9,7 +9,7 @@ import "google/protobuf/timestamp.proto";
 
 package org.lfedge.eve.profile;
 
-option go_package  = "github.com/lf-edge/eve/api/go/profile";
+option go_package  = "github.com/lf-edge/eve-api/go/profile";
 option java_package = "org.lfedge.eve.profile";
 
 // LocalProfile message is sent in response to a GET to

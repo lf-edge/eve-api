@@ -6,7 +6,7 @@ syntax = "proto3";
 import "evecommon/evecommon.proto";
 
 package org.lfedge.eve.certs;
-option go_package  = "github.com/lf-edge/eve/api/go/certs";
+option go_package  = "github.com/lf-edge/eve-api/go/certs";
 option java_package = "org.lfedge.eve.certs";
 
 // This is the response payload for GET /api/v1/edgeDevice/certs

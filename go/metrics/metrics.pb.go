@@ -10,7 +10,7 @@
 package metrics
 
 import (
-	evecommon "github.com/lf-edge/eve/api/go/evecommon"
+	evecommon "github.com/lf-edge/eve-api/go/evecommon"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"

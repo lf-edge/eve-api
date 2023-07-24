@@ -6,7 +6,7 @@ syntax = "proto3";
 import "certs/certs.proto";
 
 package org.lfedge.eve.attest;
-option go_package  = "github.com/lf-edge/eve/api/go/attest";
+option go_package  = "github.com/lf-edge/eve-api/go/attest";
 option java_package = "org.lfedge.eve.attest";
 
 // This is the request payload for POST /api/v2/edgeDevice/id/<uuid>/attest

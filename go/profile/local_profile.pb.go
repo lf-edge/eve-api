@@ -10,8 +10,8 @@
 package profile
 
 import (
-	info "github.com/lf-edge/eve/api/go/info"
-	metrics "github.com/lf-edge/eve/api/go/metrics"
+	info "github.com/lf-edge/eve-api/go/info"
+	metrics "github.com/lf-edge/eve-api/go/metrics"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"

@@ -5,7 +5,7 @@
 syntax = "proto3";
 
 package org.lfedge.eve.config;
-option go_package = "github.com/lf-edge/eve/api/go/config";
+option go_package = "github.com/lf-edge/eve-api/go/config";
 option java_package = "org.lfedge.eve.config";
 
 // For now we need to tell the device which virtualization mode

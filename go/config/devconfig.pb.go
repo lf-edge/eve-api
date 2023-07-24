@@ -10,8 +10,8 @@
 package config
 
 import (
-	auth "github.com/lf-edge/eve/api/go/auth"
-	certs "github.com/lf-edge/eve/api/go/certs"
+	auth "github.com/lf-edge/eve-api/go/auth"
+	certs "github.com/lf-edge/eve-api/go/certs"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
