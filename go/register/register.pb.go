@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-//  This is the request payload for POST /api/v1/edgeDevice/register
+// This is the request payload for POST /api/v1/edgeDevice/register
 // ZRegisterMsg carries the pem-encoded device certificate plus additional
 // identifying information such as device serial number(s).
 // The message is assumed to be protected by a TLS session bound to the
