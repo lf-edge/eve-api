@@ -11,7 +11,6 @@ package info
 
 import (
 	evecommon "github.com/lf-edge/eve-api/go/evecommon"
-	info "github.com/lf-edge/eve/api/go/info"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
@@ -7137,14 +7136,14 @@ func (x *ZInfoMsg) GetLocinfo() *ZInfoLocation {
 	return nil
 }
 
-func (x *ZInfoMsg) GetPatchInfo() *info.ZInfoPatchEnvelope {
+func (x *ZInfoMsg) GetPatchInfo() *ZInfoPatchEnvelope {
 	if x, ok := x.GetInfoContent().(*ZInfoMsg_PatchInfo); ok {
 		return x.PatchInfo
 	}
 	return nil
 }
 
-func (x *ZInfoMsg) GetOpaqueAppInstStatus() *info.ZInfoOpaqueAppInstanceStatus {
+func (x *ZInfoMsg) GetOpaqueAppInstStatus() *ZInfoOpaqueAppInstanceStatus {
 	if x, ok := x.GetInfoContent().(*ZInfoMsg_OpaqueAppInstStatus); ok {
 		return x.OpaqueAppInstStatus
 	}
@@ -7206,11 +7205,11 @@ type ZInfoMsg_Locinfo struct {
 }
 
 type ZInfoMsg_PatchInfo struct {
-	PatchInfo *info.ZInfoPatchEnvelope `protobuf:"bytes,20,opt,name=patchInfo,proto3,oneof"`
+	PatchInfo *ZInfoPatchEnvelope `protobuf:"bytes,20,opt,name=patchInfo,proto3,oneof"`
 }
 
 type ZInfoMsg_OpaqueAppInstStatus struct {
-	OpaqueAppInstStatus *info.ZInfoOpaqueAppInstanceStatus `protobuf:"bytes,21,opt,name=opaqueAppInstStatus,proto3,oneof"`
+	OpaqueAppInstStatus *ZInfoOpaqueAppInstanceStatus `protobuf:"bytes,21,opt,name=opaqueAppInstStatus,proto3,oneof"`
 }
 
 func (*ZInfoMsg_Dinfo) isZInfoMsg_InfoContent() {}
@@ -9101,102 +9100,102 @@ func file_info_info_proto_rawDescGZIP() []byte {
 var file_info_info_proto_enumTypes = make([]protoimpl.EnumInfo, 26)
 var file_info_info_proto_msgTypes = make([]protoimpl.MessageInfo, 63)
 var file_info_info_proto_goTypes = []interface{}{
-	(DepMetricItemType)(0),                    // 0: org.lfedge.eve.info.DepMetricItemType
-	(ZInfoTypes)(0),                           // 1: org.lfedge.eve.info.ZInfoTypes
-	(ZSwState)(0),                             // 2: org.lfedge.eve.info.ZSwState
-	(Entity)(0),                               // 3: org.lfedge.eve.info.Entity
-	(Severity)(0),                             // 4: org.lfedge.eve.info.Severity
-	(HwSecurityModuleStatus)(0),               // 5: org.lfedge.eve.info.HwSecurityModuleStatus
-	(DataSecAtRestStatus)(0),                  // 6: org.lfedge.eve.info.DataSecAtRestStatus
-	(PCRStatus)(0),                            // 7: org.lfedge.eve.info.PCRStatus
-	(ZCellularOperatingState)(0),              // 8: org.lfedge.eve.info.ZCellularOperatingState
-	(ZCellularControlProtocol)(0),             // 9: org.lfedge.eve.info.ZCellularControlProtocol
-	(ZDeviceState)(0),                         // 10: org.lfedge.eve.info.ZDeviceState
-	(StorageStatus)(0),                        // 11: org.lfedge.eve.info.StorageStatus
-	(StorageRaidType)(0),                      // 12: org.lfedge.eve.info.StorageRaidType
-	(StorageTypeInfo)(0),                      // 13: org.lfedge.eve.info.StorageTypeInfo
-	(APICapability)(0),                        // 14: org.lfedge.eve.info.APICapability
-	(BootReason)(0),                           // 15: org.lfedge.eve.info.BootReason
-	(MaintenanceModeReason)(0),                // 16: org.lfedge.eve.info.MaintenanceModeReason
-	(AttestationState)(0),                     // 17: org.lfedge.eve.info.AttestationState
-	(AppInstMetaDataType)(0),                  // 18: org.lfedge.eve.info.AppInstMetaDataType
-	(WirelessType)(0),                         // 19: org.lfedge.eve.info.WirelessType
-	(BaseOsStatus)(0),                         // 20: org.lfedge.eve.info.BaseOsStatus
-	(BaseOsSubStatus)(0),                      // 21: org.lfedge.eve.info.BaseOsSubStatus
-	(SnapshotType)(0),                         // 22: org.lfedge.eve.info.SnapshotType
-	(ZInfoVpnState)(0),                        // 23: org.lfedge.eve.info.ZInfoVpnState
-	(ZNetworkInstanceState)(0),                // 24: org.lfedge.eve.info.ZNetworkInstanceState
-	(LocReliability)(0),                       // 25: org.lfedge.eve.info.LocReliability
-	(*DeprecatedMetricItem)(nil),              // 26: org.lfedge.eve.info.deprecatedMetricItem
-	(*ZmetIPAssignmentEntry)(nil),             // 27: org.lfedge.eve.info.ZmetIPAssignmentEntry
-	(*ZmetVifInfo)(nil),                       // 28: org.lfedge.eve.info.ZmetVifInfo
-	(*ZioBundle)(nil),                         // 29: org.lfedge.eve.info.ZioBundle
-	(*IoAddresses)(nil),                       // 30: org.lfedge.eve.info.IoAddresses
-	(*VfPublishedInfo)(nil),                   // 31: org.lfedge.eve.info.VfPublishedInfo
-	(*ZInfoManufacturer)(nil),                 // 32: org.lfedge.eve.info.ZInfoManufacturer
-	(*ZInfoNetwork)(nil),                      // 33: org.lfedge.eve.info.ZInfoNetwork
-	(*GeoLoc)(nil),                            // 34: org.lfedge.eve.info.GeoLoc
-	(*ZInfoDNS)(nil),                          // 35: org.lfedge.eve.info.ZInfoDNS
-	(*ZInfoSW)(nil),                           // 36: org.lfedge.eve.info.ZInfoSW
-	(*ErrorInfo)(nil),                         // 37: org.lfedge.eve.info.ErrorInfo
-	(*DeviceEntity)(nil),                      // 38: org.lfedge.eve.info.DeviceEntity
-	(*VaultInfo)(nil),                         // 39: org.lfedge.eve.info.VaultInfo
-	(*DataSecAtRest)(nil),                     // 40: org.lfedge.eve.info.DataSecAtRest
-	(*SecurityInfo)(nil),                      // 41: org.lfedge.eve.info.SecurityInfo
-	(*ZInfoConfigItem)(nil),                   // 42: org.lfedge.eve.info.ZInfoConfigItem
-	(*ZInfoConfigItemStatus)(nil),             // 43: org.lfedge.eve.info.ZInfoConfigItemStatus
-	(*ZInfoAppInstance)(nil),                  // 44: org.lfedge.eve.info.ZInfoAppInstance
-	(*ZInfoDeviceTasks)(nil),                  // 45: org.lfedge.eve.info.ZInfoDeviceTasks
-	(*ZSimcardInfo)(nil),                      // 46: org.lfedge.eve.info.ZSimcardInfo
-	(*ZCellularModuleInfo)(nil),               // 47: org.lfedge.eve.info.ZCellularModuleInfo
-	(*ZCellularProvider)(nil),                 // 48: org.lfedge.eve.info.ZCellularProvider
-	(*StorageDiskState)(nil),                  // 49: org.lfedge.eve.info.StorageDiskState
-	(*SmartAttr)(nil),                         // 50: org.lfedge.eve.info.SmartAttr
-	(*SmartMetric)(nil),                       // 51: org.lfedge.eve.info.SmartMetric
-	(*StorageDiskInfo)(nil),                   // 52: org.lfedge.eve.info.StorageDiskInfo
-	(*StorageChildren)(nil),                   // 53: org.lfedge.eve.info.StorageChildren
-	(*StorageInfo)(nil),                       // 54: org.lfedge.eve.info.StorageInfo
-	(*ZInfoHardware)(nil),                     // 55: org.lfedge.eve.info.ZInfoHardware
-	(*ZInfoDevice)(nil),                       // 56: org.lfedge.eve.info.ZInfoDevice
-	(*AttestationInfo)(nil),                   // 57: org.lfedge.eve.info.AttestationInfo
-	(*SystemAdapterInfo)(nil),                 // 58: org.lfedge.eve.info.SystemAdapterInfo
-	(*DevicePortStatus)(nil),                  // 59: org.lfedge.eve.info.DevicePortStatus
-	(*DevicePort)(nil),                        // 60: org.lfedge.eve.info.DevicePort
-	(*ProxyStatus)(nil),                       // 61: org.lfedge.eve.info.ProxyStatus
-	(*ProxyEntry)(nil),                        // 62: org.lfedge.eve.info.ProxyEntry
-	(*WirelessStatus)(nil),                    // 63: org.lfedge.eve.info.WirelessStatus
-	(*ZCellularStatus)(nil),                   // 64: org.lfedge.eve.info.ZCellularStatus
-	(*ZInfoDevSW)(nil),                        // 65: org.lfedge.eve.info.ZInfoDevSW
-	(*ZInfoStorage)(nil),                      // 66: org.lfedge.eve.info.ZInfoStorage
-	(*ZInfoSnapshot)(nil),                     // 67: org.lfedge.eve.info.ZInfoSnapshot
-	(*ZInfoApp)(nil),                          // 68: org.lfedge.eve.info.ZInfoApp
-	(*ZInfoVpnLinkInfo)(nil),                  // 69: org.lfedge.eve.info.ZInfoVpnLinkInfo
-	(*ZInfoVpnLink)(nil),                      // 70: org.lfedge.eve.info.ZInfoVpnLink
-	(*ZInfoVpnEndPoint)(nil),                  // 71: org.lfedge.eve.info.ZInfoVpnEndPoint
-	(*ZInfoVpnConn)(nil),                      // 72: org.lfedge.eve.info.ZInfoVpnConn
-	(*ZInfoVpn)(nil),                          // 73: org.lfedge.eve.info.ZInfoVpn
-	(*ZInfoNetworkInstance)(nil),              // 74: org.lfedge.eve.info.ZInfoNetworkInstance
-	(*UsageInfo)(nil),                         // 75: org.lfedge.eve.info.UsageInfo
-	(*VolumeResources)(nil),                   // 76: org.lfedge.eve.info.VolumeResources
-	(*ZInfoVolume)(nil),                       // 77: org.lfedge.eve.info.ZInfoVolume
-	(*ContentResources)(nil),                  // 78: org.lfedge.eve.info.ContentResources
-	(*ZInfoContentTree)(nil),                  // 79: org.lfedge.eve.info.ZInfoContentTree
-	(*ZInfoBlob)(nil),                         // 80: org.lfedge.eve.info.ZInfoBlob
-	(*ZInfoBlobList)(nil),                     // 81: org.lfedge.eve.info.ZInfoBlobList
-	(*ZInfoMsg)(nil),                          // 82: org.lfedge.eve.info.ZInfoMsg
-	(*Capabilities)(nil),                      // 83: org.lfedge.eve.info.Capabilities
-	(*ZInfoAppInstMetaData)(nil),              // 84: org.lfedge.eve.info.ZInfoAppInstMetaData
-	(*ZInfoEdgeview)(nil),                     // 85: org.lfedge.eve.info.ZInfoEdgeview
-	(*ZInfoLocation)(nil),                     // 86: org.lfedge.eve.info.ZInfoLocation
-	nil,                                       // 87: org.lfedge.eve.info.ZInfoConfigItemStatus.ConfigItemsEntry
-	nil,                                       // 88: org.lfedge.eve.info.ZInfoConfigItemStatus.UnknownConfigItemsEntry
-	(evecommon.PhyIoType)(0),                  // 89: org.lfedge.eve.common.PhyIoType
-	(evecommon.PhyIoMemberUsage)(0),           // 90: org.lfedge.eve.common.PhyIoMemberUsage
-	(*timestamppb.Timestamp)(nil),             // 91: google.protobuf.Timestamp
-	(*evecommon.DiskDescription)(nil),         // 92: org.lfedge.eve.common.DiskDescription
-	(evecommon.RadioAccessTechnology)(0),      // 93: org.lfedge.eve.common.RadioAccessTechnology
-	(*info.ZInfoPatchEnvelope)(nil),           // 94: org.lfedge.eve.info.ZInfoPatchEnvelope
-	(*info.ZInfoOpaqueAppInstanceStatus)(nil), // 95: org.lfedge.eve.info.ZInfoOpaqueAppInstanceStatus
+	(DepMetricItemType)(0),               // 0: org.lfedge.eve.info.DepMetricItemType
+	(ZInfoTypes)(0),                      // 1: org.lfedge.eve.info.ZInfoTypes
+	(ZSwState)(0),                        // 2: org.lfedge.eve.info.ZSwState
+	(Entity)(0),                          // 3: org.lfedge.eve.info.Entity
+	(Severity)(0),                        // 4: org.lfedge.eve.info.Severity
+	(HwSecurityModuleStatus)(0),          // 5: org.lfedge.eve.info.HwSecurityModuleStatus
+	(DataSecAtRestStatus)(0),             // 6: org.lfedge.eve.info.DataSecAtRestStatus
+	(PCRStatus)(0),                       // 7: org.lfedge.eve.info.PCRStatus
+	(ZCellularOperatingState)(0),         // 8: org.lfedge.eve.info.ZCellularOperatingState
+	(ZCellularControlProtocol)(0),        // 9: org.lfedge.eve.info.ZCellularControlProtocol
+	(ZDeviceState)(0),                    // 10: org.lfedge.eve.info.ZDeviceState
+	(StorageStatus)(0),                   // 11: org.lfedge.eve.info.StorageStatus
+	(StorageRaidType)(0),                 // 12: org.lfedge.eve.info.StorageRaidType
+	(StorageTypeInfo)(0),                 // 13: org.lfedge.eve.info.StorageTypeInfo
+	(APICapability)(0),                   // 14: org.lfedge.eve.info.APICapability
+	(BootReason)(0),                      // 15: org.lfedge.eve.info.BootReason
+	(MaintenanceModeReason)(0),           // 16: org.lfedge.eve.info.MaintenanceModeReason
+	(AttestationState)(0),                // 17: org.lfedge.eve.info.AttestationState
+	(AppInstMetaDataType)(0),             // 18: org.lfedge.eve.info.AppInstMetaDataType
+	(WirelessType)(0),                    // 19: org.lfedge.eve.info.WirelessType
+	(BaseOsStatus)(0),                    // 20: org.lfedge.eve.info.BaseOsStatus
+	(BaseOsSubStatus)(0),                 // 21: org.lfedge.eve.info.BaseOsSubStatus
+	(SnapshotType)(0),                    // 22: org.lfedge.eve.info.SnapshotType
+	(ZInfoVpnState)(0),                   // 23: org.lfedge.eve.info.ZInfoVpnState
+	(ZNetworkInstanceState)(0),           // 24: org.lfedge.eve.info.ZNetworkInstanceState
+	(LocReliability)(0),                  // 25: org.lfedge.eve.info.LocReliability
+	(*DeprecatedMetricItem)(nil),         // 26: org.lfedge.eve.info.deprecatedMetricItem
+	(*ZmetIPAssignmentEntry)(nil),        // 27: org.lfedge.eve.info.ZmetIPAssignmentEntry
+	(*ZmetVifInfo)(nil),                  // 28: org.lfedge.eve.info.ZmetVifInfo
+	(*ZioBundle)(nil),                    // 29: org.lfedge.eve.info.ZioBundle
+	(*IoAddresses)(nil),                  // 30: org.lfedge.eve.info.IoAddresses
+	(*VfPublishedInfo)(nil),              // 31: org.lfedge.eve.info.VfPublishedInfo
+	(*ZInfoManufacturer)(nil),            // 32: org.lfedge.eve.info.ZInfoManufacturer
+	(*ZInfoNetwork)(nil),                 // 33: org.lfedge.eve.info.ZInfoNetwork
+	(*GeoLoc)(nil),                       // 34: org.lfedge.eve.info.GeoLoc
+	(*ZInfoDNS)(nil),                     // 35: org.lfedge.eve.info.ZInfoDNS
+	(*ZInfoSW)(nil),                      // 36: org.lfedge.eve.info.ZInfoSW
+	(*ErrorInfo)(nil),                    // 37: org.lfedge.eve.info.ErrorInfo
+	(*DeviceEntity)(nil),                 // 38: org.lfedge.eve.info.DeviceEntity
+	(*VaultInfo)(nil),                    // 39: org.lfedge.eve.info.VaultInfo
+	(*DataSecAtRest)(nil),                // 40: org.lfedge.eve.info.DataSecAtRest
+	(*SecurityInfo)(nil),                 // 41: org.lfedge.eve.info.SecurityInfo
+	(*ZInfoConfigItem)(nil),              // 42: org.lfedge.eve.info.ZInfoConfigItem
+	(*ZInfoConfigItemStatus)(nil),        // 43: org.lfedge.eve.info.ZInfoConfigItemStatus
+	(*ZInfoAppInstance)(nil),             // 44: org.lfedge.eve.info.ZInfoAppInstance
+	(*ZInfoDeviceTasks)(nil),             // 45: org.lfedge.eve.info.ZInfoDeviceTasks
+	(*ZSimcardInfo)(nil),                 // 46: org.lfedge.eve.info.ZSimcardInfo
+	(*ZCellularModuleInfo)(nil),          // 47: org.lfedge.eve.info.ZCellularModuleInfo
+	(*ZCellularProvider)(nil),            // 48: org.lfedge.eve.info.ZCellularProvider
+	(*StorageDiskState)(nil),             // 49: org.lfedge.eve.info.StorageDiskState
+	(*SmartAttr)(nil),                    // 50: org.lfedge.eve.info.SmartAttr
+	(*SmartMetric)(nil),                  // 51: org.lfedge.eve.info.SmartMetric
+	(*StorageDiskInfo)(nil),              // 52: org.lfedge.eve.info.StorageDiskInfo
+	(*StorageChildren)(nil),              // 53: org.lfedge.eve.info.StorageChildren
+	(*StorageInfo)(nil),                  // 54: org.lfedge.eve.info.StorageInfo
+	(*ZInfoHardware)(nil),                // 55: org.lfedge.eve.info.ZInfoHardware
+	(*ZInfoDevice)(nil),                  // 56: org.lfedge.eve.info.ZInfoDevice
+	(*AttestationInfo)(nil),              // 57: org.lfedge.eve.info.AttestationInfo
+	(*SystemAdapterInfo)(nil),            // 58: org.lfedge.eve.info.SystemAdapterInfo
+	(*DevicePortStatus)(nil),             // 59: org.lfedge.eve.info.DevicePortStatus
+	(*DevicePort)(nil),                   // 60: org.lfedge.eve.info.DevicePort
+	(*ProxyStatus)(nil),                  // 61: org.lfedge.eve.info.ProxyStatus
+	(*ProxyEntry)(nil),                   // 62: org.lfedge.eve.info.ProxyEntry
+	(*WirelessStatus)(nil),               // 63: org.lfedge.eve.info.WirelessStatus
+	(*ZCellularStatus)(nil),              // 64: org.lfedge.eve.info.ZCellularStatus
+	(*ZInfoDevSW)(nil),                   // 65: org.lfedge.eve.info.ZInfoDevSW
+	(*ZInfoStorage)(nil),                 // 66: org.lfedge.eve.info.ZInfoStorage
+	(*ZInfoSnapshot)(nil),                // 67: org.lfedge.eve.info.ZInfoSnapshot
+	(*ZInfoApp)(nil),                     // 68: org.lfedge.eve.info.ZInfoApp
+	(*ZInfoVpnLinkInfo)(nil),             // 69: org.lfedge.eve.info.ZInfoVpnLinkInfo
+	(*ZInfoVpnLink)(nil),                 // 70: org.lfedge.eve.info.ZInfoVpnLink
+	(*ZInfoVpnEndPoint)(nil),             // 71: org.lfedge.eve.info.ZInfoVpnEndPoint
+	(*ZInfoVpnConn)(nil),                 // 72: org.lfedge.eve.info.ZInfoVpnConn
+	(*ZInfoVpn)(nil),                     // 73: org.lfedge.eve.info.ZInfoVpn
+	(*ZInfoNetworkInstance)(nil),         // 74: org.lfedge.eve.info.ZInfoNetworkInstance
+	(*UsageInfo)(nil),                    // 75: org.lfedge.eve.info.UsageInfo
+	(*VolumeResources)(nil),              // 76: org.lfedge.eve.info.VolumeResources
+	(*ZInfoVolume)(nil),                  // 77: org.lfedge.eve.info.ZInfoVolume
+	(*ContentResources)(nil),             // 78: org.lfedge.eve.info.ContentResources
+	(*ZInfoContentTree)(nil),             // 79: org.lfedge.eve.info.ZInfoContentTree
+	(*ZInfoBlob)(nil),                    // 80: org.lfedge.eve.info.ZInfoBlob
+	(*ZInfoBlobList)(nil),                // 81: org.lfedge.eve.info.ZInfoBlobList
+	(*ZInfoMsg)(nil),                     // 82: org.lfedge.eve.info.ZInfoMsg
+	(*Capabilities)(nil),                 // 83: org.lfedge.eve.info.Capabilities
+	(*ZInfoAppInstMetaData)(nil),         // 84: org.lfedge.eve.info.ZInfoAppInstMetaData
+	(*ZInfoEdgeview)(nil),                // 85: org.lfedge.eve.info.ZInfoEdgeview
+	(*ZInfoLocation)(nil),                // 86: org.lfedge.eve.info.ZInfoLocation
+	nil,                                  // 87: org.lfedge.eve.info.ZInfoConfigItemStatus.ConfigItemsEntry
+	nil,                                  // 88: org.lfedge.eve.info.ZInfoConfigItemStatus.UnknownConfigItemsEntry
+	(evecommon.PhyIoType)(0),             // 89: org.lfedge.eve.common.PhyIoType
+	(evecommon.PhyIoMemberUsage)(0),      // 90: org.lfedge.eve.common.PhyIoMemberUsage
+	(*timestamppb.Timestamp)(nil),        // 91: google.protobuf.Timestamp
+	(*evecommon.DiskDescription)(nil),    // 92: org.lfedge.eve.common.DiskDescription
+	(evecommon.RadioAccessTechnology)(0), // 93: org.lfedge.eve.common.RadioAccessTechnology
+	(*ZInfoPatchEnvelope)(nil),           // 94: org.lfedge.eve.info.ZInfoPatchEnvelope
+	(*ZInfoOpaqueAppInstanceStatus)(nil), // 95: org.lfedge.eve.info.ZInfoOpaqueAppInstanceStatus
 }
 var file_info_info_proto_depIdxs = []int32{
 	0,   // 0: org.lfedge.eve.info.deprecatedMetricItem.type:type_name -> org.lfedge.eve.info.DepMetricItemType
@@ -9365,6 +9364,7 @@ func file_info_info_proto_init() {
 	if File_info_info_proto != nil {
 		return
 	}
+	file_info_patch_envelope_proto_init()
 	if !protoimpl.UnsafeEnabled {
 		file_info_info_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*DeprecatedMetricItem); i {

@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x19info/patch_envelope.proto\x12\x13org.lfedge.eve.info\"\x98\x01\n\x12ZInfoPatchEnvelope\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\n\n\x02id\x18\x02 \x01(\t\x12\x0f\n\x07version\x18\x03 \x01(\t\x12\x39\n\x05state\x18\x04 \x01(\x0e\x32*.org.lfedge.eve.info.EvePatchEnvelopeState\x12\x0c\n\x04size\x18\x05 \x01(\x04\x12\x0e\n\x06\x65rrors\x18\x06 \x03(\t\"\x9c\x01\n\x1cZInfoOpaqueAppInstanceStatus\x12\r\n\x05\x61ppId\x18\x01 \x01(\t\x12\x0f\n\x07\x61ppName\x18\x02 \x01(\t\x12\x46\n\x12opaqueStatusAction\x18\x03 \x01(\x0e\x32*.org.lfedge.eve.info.EveOpaqueStatusAction\x12\x14\n\x0copaqueStatus\x18\x04 \x01(\x0c*\xa3\x02\n\x15\x45vePatchEnvelopeState\x12#\n\x1f\x45VE_PATCH_ENVELOPE_STATE_UNKOWN\x10\x00\x12\"\n\x1e\x45VE_PATCH_ENVELOPE_STATE_ERROR\x10\x01\x12%\n!EVE_PATCH_ENVELOPE_STATE_RECIEVED\x10\x02\x12(\n$EVE_PATCH_ENVELOPE_STATE_DOWNLOADING\x10\x03\x12\'\n#EVE_PATCH_ENVELOPE_STATE_DOWNLOADED\x10\x04\x12\"\n\x1e\x45VE_PATCH_ENVELOPE_STATE_READY\x10\x05\x12#\n\x1f\x45VE_PATCH_ENVELOPE_STATE_ACTIVE\x10\x06*d\n\x15\x45veOpaqueStatusAction\x12#\n\x1f\x45VE_OPAQUE_STATUS_ACTION_IGNORE\x10\x00\x12&\n\"EVE_OPAQUE_STATUS_ACTION_OVERWRITE\x10\x01\x42\x39\n\x13org.lfedge.eve.infoZ\"github.com/lf-edge/eve/api/go/infob\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x19info/patch_envelope.proto\x12\x13org.lfedge.eve.info\"\x98\x01\n\x12ZInfoPatchEnvelope\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\n\n\x02id\x18\x02 \x01(\t\x12\x0f\n\x07version\x18\x03 \x01(\t\x12\x39\n\x05state\x18\x04 \x01(\x0e\x32*.org.lfedge.eve.info.EvePatchEnvelopeState\x12\x0c\n\x04size\x18\x05 \x01(\x04\x12\x0e\n\x06\x65rrors\x18\x06 \x03(\t\"\x9c\x01\n\x1cZInfoOpaqueAppInstanceStatus\x12\r\n\x05\x61ppId\x18\x01 \x01(\t\x12\x0f\n\x07\x61ppName\x18\x02 \x01(\t\x12\x46\n\x12opaqueStatusAction\x18\x03 \x01(\x0e\x32*.org.lfedge.eve.info.EveOpaqueStatusAction\x12\x14\n\x0copaqueStatus\x18\x04 \x01(\x0c*\xa3\x02\n\x15\x45vePatchEnvelopeState\x12#\n\x1f\x45VE_PATCH_ENVELOPE_STATE_UNKOWN\x10\x00\x12\"\n\x1e\x45VE_PATCH_ENVELOPE_STATE_ERROR\x10\x01\x12%\n!EVE_PATCH_ENVELOPE_STATE_RECIEVED\x10\x02\x12(\n$EVE_PATCH_ENVELOPE_STATE_DOWNLOADING\x10\x03\x12\'\n#EVE_PATCH_ENVELOPE_STATE_DOWNLOADED\x10\x04\x12\"\n\x1e\x45VE_PATCH_ENVELOPE_STATE_READY\x10\x05\x12#\n\x1f\x45VE_PATCH_ENVELOPE_STATE_ACTIVE\x10\x06*d\n\x15\x45veOpaqueStatusAction\x12#\n\x1f\x45VE_OPAQUE_STATUS_ACTION_IGNORE\x10\x00\x12&\n\"EVE_OPAQUE_STATUS_ACTION_OVERWRITE\x10\x01\x42\x39\n\x13org.lfedge.eve.infoZ\"github.com/lf-edge/eve-api/go/infob\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -21,7 +21,7 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'info.patch_envelope_pb2', _
 if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
-  DESCRIPTOR._serialized_options = b'\n\023org.lfedge.eve.infoZ\"github.com/lf-edge/eve/api/go/info'
+  DESCRIPTOR._serialized_options = b'\n\023org.lfedge.eve.infoZ\"github.com/lf-edge/eve-api/go/info'
   _globals['_EVEPATCHENVELOPESTATE']._serialized_start=365
   _globals['_EVEPATCHENVELOPESTATE']._serialized_end=656
   _globals['_EVEOPAQUESTATUSACTION']._serialized_start=658

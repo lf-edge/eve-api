@@ -10,7 +10,6 @@
 package config
 
 import (
-	config "github.com/lf-edge/eve-api/go/config"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
@@ -194,7 +193,7 @@ func (x *EveOpaqueBase64Data) GetBase64ClearTextData() string {
 	return ""
 }
 
-func (x *EveOpaqueBase64Data) GetBase64CipherTextData() *config.CipherBlock {
+func (x *EveOpaqueBase64Data) GetBase64CipherTextData() *CipherBlock {
 	if x, ok := x.GetTextData().(*EveOpaqueBase64Data_Base64CipherTextData); ok {
 		return x.Base64CipherTextData
 	}
@@ -215,7 +214,7 @@ func (x *EveOpaqueBase64Data) GetBase64ClearTextMetaData() string {
 	return ""
 }
 
-func (x *EveOpaqueBase64Data) GetBase64CipherTextMetaData() *config.CipherBlock {
+func (x *EveOpaqueBase64Data) GetBase64CipherTextMetaData() *CipherBlock {
 	if x, ok := x.GetBase64MetaData().(*EveOpaqueBase64Data_Base64CipherTextMetaData); ok {
 		return x.Base64CipherTextMetaData
 	}
@@ -232,7 +231,7 @@ type EveOpaqueBase64Data_Base64ClearTextData struct {
 
 type EveOpaqueBase64Data_Base64CipherTextData struct {
 	// base 64 encoded and then encrypted
-	Base64CipherTextData *config.CipherBlock `protobuf:"bytes,3,opt,name=base64CipherTextData,proto3,oneof"`
+	Base64CipherTextData *CipherBlock `protobuf:"bytes,3,opt,name=base64CipherTextData,proto3,oneof"`
 }
 
 func (*EveOpaqueBase64Data_Base64ClearTextData) isEveOpaqueBase64Data_TextData() {}
@@ -248,7 +247,7 @@ type EveOpaqueBase64Data_Base64ClearTextMetaData struct {
 }
 
 type EveOpaqueBase64Data_Base64CipherTextMetaData struct {
-	Base64CipherTextMetaData *config.CipherBlock `protobuf:"bytes,5,opt,name=base64CipherTextMetaData,proto3,oneof"`
+	Base64CipherTextMetaData *CipherBlock `protobuf:"bytes,5,opt,name=base64CipherTextMetaData,proto3,oneof"`
 }
 
 func (*EveOpaqueBase64Data_Base64ClearTextMetaData) isEveOpaqueBase64Data_Base64MetaData() {}
@@ -261,7 +260,7 @@ type EveOpaqueBinaryBlob struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Target field of Volume set to AppCustom
-	OpaqueVolume *config.Volume `protobuf:"bytes,1,opt,name=opaqueVolume,proto3" json:"opaqueVolume,omitempty"`
+	OpaqueVolume *Volume `protobuf:"bytes,1,opt,name=opaqueVolume,proto3" json:"opaqueVolume,omitempty"`
 }
 
 func (x *EveOpaqueBinaryBlob) Reset() {
@@ -296,7 +295,7 @@ func (*EveOpaqueBinaryBlob) Descriptor() ([]byte, []int) {
 	return file_config_patch_envelope_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *EveOpaqueBinaryBlob) GetOpaqueVolume() *config.Volume {
+func (x *EveOpaqueBinaryBlob) GetOpaqueVolume() *Volume {
 	if x != nil {
 		return x.OpaqueVolume
 	}
@@ -609,7 +608,7 @@ var file_config_patch_envelope_proto_rawDesc = []byte{
 	0x5f, 0x41, 0x43, 0x54, 0x49, 0x56, 0x41, 0x54, 0x45, 0x10, 0x01, 0x42, 0x3d, 0x0a, 0x15, 0x6f,
 	0x72, 0x67, 0x2e, 0x6c, 0x66, 0x65, 0x64, 0x67, 0x65, 0x2e, 0x65, 0x76, 0x65, 0x2e, 0x63, 0x6f,
 	0x6e, 0x66, 0x69, 0x67, 0x5a, 0x24, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d,
-	0x2f, 0x6c, 0x66, 0x2d, 0x65, 0x64, 0x67, 0x65, 0x2f, 0x65, 0x76, 0x65, 0x2f, 0x61, 0x70, 0x69,
+	0x2f, 0x6c, 0x66, 0x2d, 0x65, 0x64, 0x67, 0x65, 0x2f, 0x65, 0x76, 0x65, 0x2d, 0x61, 0x70, 0x69,
 	0x2f, 0x67, 0x6f, 0x2f, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
 	0x6f, 0x33,
 }
@@ -635,8 +634,8 @@ var file_config_patch_envelope_proto_goTypes = []interface{}{
 	(*EveOpaqueBinaryBlob)(nil),   // 3: org.lfedge.eve.config.EveOpaqueBinaryBlob
 	(*EveBinaryArtifact)(nil),     // 4: org.lfedge.eve.config.EveBinaryArtifact
 	(*EvePatchEnvelope)(nil),      // 5: org.lfedge.eve.config.EvePatchEnvelope
-	(*config.CipherBlock)(nil),    // 6: org.lfedge.eve.config.CipherBlock
-	(*config.Volume)(nil),         // 7: org.lfedge.eve.config.Volume
+	(*CipherBlock)(nil),           // 6: org.lfedge.eve.config.CipherBlock
+	(*Volume)(nil),                // 7: org.lfedge.eve.config.Volume
 	(*timestamppb.Timestamp)(nil), // 8: google.protobuf.Timestamp
 }
 var file_config_patch_envelope_proto_depIdxs = []int32{
@@ -661,6 +660,8 @@ func file_config_patch_envelope_proto_init() {
 	if File_config_patch_envelope_proto != nil {
 		return
 	}
+	file_config_acipherinfo_proto_init()
+	file_config_storage_proto_init()
 	if !protoimpl.UnsafeEnabled {
 		file_config_patch_envelope_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*EveOpaqueBase64Data); i {

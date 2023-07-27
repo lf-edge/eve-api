@@ -12,7 +12,6 @@ package config
 import (
 	auth "github.com/lf-edge/eve-api/go/auth"
 	certs "github.com/lf-edge/eve-api/go/certs"
-	config "github.com/lf-edge/eve/api/go/config"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
@@ -193,8 +192,8 @@ type EdgeDevConfig struct {
 	// Does not apply to legacy override.json and usb.json mechanisms.
 	ConfigTimestamp *timestamppb.Timestamp `protobuf:"bytes,40,opt,name=config_timestamp,json=configTimestamp,proto3" json:"config_timestamp,omitempty"`
 	// Configuration of the Local Operator Console (LOC)
-	LocConfig      *LOCConfig                 `protobuf:"bytes,41,opt,name=loc_config,json=locConfig,proto3" json:"loc_config,omitempty"`
-	PatchEnvelopes []*config.EvePatchEnvelope `protobuf:"bytes,42,rep,name=patchEnvelopes,proto3" json:"patchEnvelopes,omitempty"`
+	LocConfig      *LOCConfig          `protobuf:"bytes,41,opt,name=loc_config,json=locConfig,proto3" json:"loc_config,omitempty"`
+	PatchEnvelopes []*EvePatchEnvelope `protobuf:"bytes,42,rep,name=patchEnvelopes,proto3" json:"patchEnvelopes,omitempty"`
 }
 
 func (x *EdgeDevConfig) Reset() {
@@ -474,7 +473,7 @@ func (x *EdgeDevConfig) GetLocConfig() *LOCConfig {
 	return nil
 }
 
-func (x *EdgeDevConfig) GetPatchEnvelopes() []*config.EvePatchEnvelope {
+func (x *EdgeDevConfig) GetPatchEnvelopes() []*EvePatchEnvelope {
 	if x != nil {
 		return x.PatchEnvelopes
 	}
@@ -862,33 +861,33 @@ func file_config_devconfig_proto_rawDescGZIP() []byte {
 
 var file_config_devconfig_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_config_devconfig_proto_goTypes = []interface{}{
-	(*LOCConfig)(nil),               // 0: org.lfedge.eve.config.LOCConfig
-	(*EdgeDevConfig)(nil),           // 1: org.lfedge.eve.config.EdgeDevConfig
-	(*ConfigRequest)(nil),           // 2: org.lfedge.eve.config.ConfigRequest
-	(*ConfigResponse)(nil),          // 3: org.lfedge.eve.config.ConfigResponse
-	(*BootstrapConfig)(nil),         // 4: org.lfedge.eve.config.BootstrapConfig
-	(*UUIDandVersion)(nil),          // 5: org.lfedge.eve.config.UUIDandVersion
-	(*AppInstanceConfig)(nil),       // 6: org.lfedge.eve.config.AppInstanceConfig
-	(*NetworkConfig)(nil),           // 7: org.lfedge.eve.config.NetworkConfig
-	(*DatastoreConfig)(nil),         // 8: org.lfedge.eve.config.DatastoreConfig
-	(*BaseOSConfig)(nil),            // 9: org.lfedge.eve.config.BaseOSConfig
-	(*DeviceOpsCmd)(nil),            // 10: org.lfedge.eve.config.DeviceOpsCmd
-	(*ConfigItem)(nil),              // 11: org.lfedge.eve.config.ConfigItem
-	(*SystemAdapter)(nil),           // 12: org.lfedge.eve.config.SystemAdapter
-	(*PhysicalIO)(nil),              // 13: org.lfedge.eve.config.PhysicalIO
-	(*NetworkInstanceConfig)(nil),   // 14: org.lfedge.eve.config.NetworkInstanceConfig
-	(*CipherContext)(nil),           // 15: org.lfedge.eve.config.CipherContext
-	(*ContentTree)(nil),             // 16: org.lfedge.eve.config.ContentTree
-	(*Volume)(nil),                  // 17: org.lfedge.eve.config.Volume
-	(*BaseOS)(nil),                  // 18: org.lfedge.eve.config.BaseOS
-	(*VlanAdapter)(nil),             // 19: org.lfedge.eve.config.VlanAdapter
-	(*BondAdapter)(nil),             // 20: org.lfedge.eve.config.BondAdapter
-	(*EdgeViewConfig)(nil),          // 21: org.lfedge.eve.config.EdgeViewConfig
-	(*DisksConfig)(nil),             // 22: org.lfedge.eve.config.DisksConfig
-	(*timestamppb.Timestamp)(nil),   // 23: google.protobuf.Timestamp
-	(*config.EvePatchEnvelope)(nil), // 24: org.lfedge.eve.config.EvePatchEnvelope
-	(*auth.AuthContainer)(nil),      // 25: org.lfedge.eve.auth.AuthContainer
-	(*certs.ZCert)(nil),             // 26: org.lfedge.eve.certs.ZCert
+	(*LOCConfig)(nil),             // 0: org.lfedge.eve.config.LOCConfig
+	(*EdgeDevConfig)(nil),         // 1: org.lfedge.eve.config.EdgeDevConfig
+	(*ConfigRequest)(nil),         // 2: org.lfedge.eve.config.ConfigRequest
+	(*ConfigResponse)(nil),        // 3: org.lfedge.eve.config.ConfigResponse
+	(*BootstrapConfig)(nil),       // 4: org.lfedge.eve.config.BootstrapConfig
+	(*UUIDandVersion)(nil),        // 5: org.lfedge.eve.config.UUIDandVersion
+	(*AppInstanceConfig)(nil),     // 6: org.lfedge.eve.config.AppInstanceConfig
+	(*NetworkConfig)(nil),         // 7: org.lfedge.eve.config.NetworkConfig
+	(*DatastoreConfig)(nil),       // 8: org.lfedge.eve.config.DatastoreConfig
+	(*BaseOSConfig)(nil),          // 9: org.lfedge.eve.config.BaseOSConfig
+	(*DeviceOpsCmd)(nil),          // 10: org.lfedge.eve.config.DeviceOpsCmd
+	(*ConfigItem)(nil),            // 11: org.lfedge.eve.config.ConfigItem
+	(*SystemAdapter)(nil),         // 12: org.lfedge.eve.config.SystemAdapter
+	(*PhysicalIO)(nil),            // 13: org.lfedge.eve.config.PhysicalIO
+	(*NetworkInstanceConfig)(nil), // 14: org.lfedge.eve.config.NetworkInstanceConfig
+	(*CipherContext)(nil),         // 15: org.lfedge.eve.config.CipherContext
+	(*ContentTree)(nil),           // 16: org.lfedge.eve.config.ContentTree
+	(*Volume)(nil),                // 17: org.lfedge.eve.config.Volume
+	(*BaseOS)(nil),                // 18: org.lfedge.eve.config.BaseOS
+	(*VlanAdapter)(nil),           // 19: org.lfedge.eve.config.VlanAdapter
+	(*BondAdapter)(nil),           // 20: org.lfedge.eve.config.BondAdapter
+	(*EdgeViewConfig)(nil),        // 21: org.lfedge.eve.config.EdgeViewConfig
+	(*DisksConfig)(nil),           // 22: org.lfedge.eve.config.DisksConfig
+	(*timestamppb.Timestamp)(nil), // 23: google.protobuf.Timestamp
+	(*EvePatchEnvelope)(nil),      // 24: org.lfedge.eve.config.EvePatchEnvelope
+	(*auth.AuthContainer)(nil),    // 25: org.lfedge.eve.auth.AuthContainer
+	(*certs.ZCert)(nil),           // 26: org.lfedge.eve.certs.ZCert
 }
 var file_config_devconfig_proto_depIdxs = []int32{
 	5,  // 0: org.lfedge.eve.config.EdgeDevConfig.id:type_name -> org.lfedge.eve.config.UUIDandVersion
@@ -938,6 +937,7 @@ func file_config_devconfig_proto_init() {
 	file_config_netinst_proto_init()
 	file_config_storage_proto_init()
 	file_config_edgeview_proto_init()
+	file_config_patch_envelope_proto_init()
 	if !protoimpl.UnsafeEnabled {
 		file_config_devconfig_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*LOCConfig); i {
