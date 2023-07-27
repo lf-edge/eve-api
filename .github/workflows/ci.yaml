@@ -41,7 +41,7 @@ jobs:
           # we run it twice, so that it will report on the logs
           echo "changed and uncommitted files"
           git status --short          
-          if [ $(git status --short) != '' ]; then
+          if [ -n "$(git status --short)" ]; then
             # print the diff so we can fix it, if there is an issue
             git diff
             exit 1
