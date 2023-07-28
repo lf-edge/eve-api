@@ -1,5 +1,6 @@
 proto-diagram:
-	protodot -inc /usr/include -src ./proto/config/devconfig.proto -output devconfig && cp ~/protodot/generated/devconfig.* ./images && dot ./images/devconfig.dot -Tpng -o ./images/devconfig.png && echo generated ./images/devconfig.*
+	rm -rf images/*
+	protodot -inc /usr/include -src ./proto/config/devconfig.proto -output devconfig -generated ./images && dot ./images/devconfig.dot -Tpng -o ./images/devconfig.png && echo generated ./images/devconfig.*
 
 .PHONY: proto-api-%
 
