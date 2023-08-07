@@ -21,21 +21,11 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v2
-      - uses: arduino/setup-protoc@v2
+      - name: Build and run dev container task
+        uses: devcontainers/ci@v0.3
         with:
-          version: '23.4'
-          repo-token: ${{ secrets.GITHUB_TOKEN }}          
-      - uses: actions/setup-go@v2
-        with:
-          go-version: ^1.20
-      - name: install protodot
-        run: go install github.com/seamia/protodot@v1.2.0
-      - name: install protoc-gen-go
-        run: go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
-      - name: Setup Graphviz
-        uses: ts-graphviz/setup-graphviz@v1
-      - name: make
-        run: make proto
+          # Change this to be your CI task/script
+          runCmd: make proto
       - name: check no uncommitted files
         run: |
           echo "changed and uncommitted files, excluding versions"

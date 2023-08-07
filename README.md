@@ -41,13 +41,28 @@ import (
 )
 ```
 
-## Generating the language-specific bindings
+## Development
 
-To compile the protobufs into the target language, run:
+To make changes to this API, you:
+
+1. Edit the specific `.proto` files in the [proto](./proto) directory, or create new ones, as desired.
+1. Run `make proto` to generate the language-specific bindings and visualizations.
+1. Commit the changes to the `.proto` files and the generated files.
+
+The Pull Request process for this repository will regenerate the language-specific bindings and visualizations,
+and check that no files are missing from the repository.
+
+You can do the above inside a ready-to-run docker container with all of the
+prerequisites (recommended), or you can install the prerequisites on your
+local machine.
+
+Either way, you run:
 
 ```bash
 make proto
 ```
+
+### Language-Specific Bindings
 
 To generate just a single language, run:
 
@@ -64,24 +79,35 @@ beginning with the root of an edge device config. These are
 available as `.svg`, `.dot` and `.png` as below. Click to zoom in.
 
 * [![png](./images/devconfig.png "protobuf structure")](./images/devconfig.png)
-* [svg](./images/devconfig.dot.svg)
+* [svg](./images/devconfig.svg)
 * [dot](./images/devconfig.dot)
 
-### Prerequisites
+### Build Environment
 
-To generate the protobufs, you need to have the following prerequisites installed:
+The above `make` commands can be run either in a [devcontainer](http://devcontainers.github.io)
+or locally on your machine.
+
+When run in a devcontainer, all of the prerequsities and their correct versions are set up for you.
+
+#### Devcontainer
+
+To run inside a devcontainer (recommended), use one of the tools that recognizes and supports devcontainers
+to provide a development-time environment. These include [VS Code](https://containers.dev/supporting#dev-containers),
+[GitHub Codespaces](https://containers.dev/supporting#github-codespaces), and the
+[devcontainers CLI](https://containers.dev/supporting#devcontainer-cli).
+
+If using the CLI, run:
+
+```bash
+devcontainer --workspace-folder . up
+devcontainer exec --workspace-folder . make proto
+```
+
+#### Local
+
+If running locally, you need to install the prerequisites yourself.
 
 * [protoc](https://grpc.io/docs/protoc-installation/)
 * [protodot](https://github.com/seamia/protodot)
 * [dot](https://graphviz.org/docs/layouts/dot/)
 
-## Updating Messages
-
-To update the messages:
-
-1. Edit the specific `.proto` files in the [proto](./proto) directory.
-1. Run `make proto` to generate the language-specific bindings and visualizations.
-1. Commit the changes to the `.proto` files and the generated files.
-
-The Pull Request process for this repository will regenerate the language-specific bindings and visualizations,
-and check that no files are missing from the repository.

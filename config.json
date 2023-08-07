@@ -1,0 +1,20 @@
+{
+	"documentation": "https://github.com/seamia/protodot",
+	"settings": {
+	},
+	"templates": {
+	},
+	"colors": {
+	},
+	"locations": {
+	},
+	"options" : {
+		"allow missing imports":	true,
+		"show missing types":		true,
+		"generate .png file":		false,
+		"generate .svg file":		false,
+		"suppress all output":		false
+	},
+	"includes": [
+	]
+}
