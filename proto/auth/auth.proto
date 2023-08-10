@@ -4,6 +4,7 @@
 syntax = "proto3";
 
 import "evecommon/evecommon.proto";
+import "evecommon/acipherinfo.proto";
 
 package org.lfedge.eve.auth;
 option go_package  = "github.com/lf-edge/eve-api/go/auth";
@@ -14,13 +15,21 @@ message AuthBody {
   bytes  payload = 1;
 }
 
+// Envolope which can be signed OR signed and encrypted. If `cipherContext` and
+// `cipherData` are defined and valid, then auth body has to be decrypted first
+// by using the encrypted payload defined in the `cipherData.cipherData` member.
+// Once the `cipherBlock` is decrypted, the actual result of the decryption is
+// fed into the authentication as if it had been in `protectedPayload` (AuthBody
+// type).
 message AuthContainer {
   AuthBody protectedPayload = 1;      // envelope body, a marshalled protobuf data or it can be null
   // if the length of senderCertHash received is not N bytes, as described in hashAlgorithm, then the protobuf
   // message either is not AuthContainer type, or is corrupted. Otherwise, the
-  // receiver may not have the sender's signing certificate
+  // receiver may not have the sender's signing certificate.
   org.lfedge.eve.common.HashAlgorithm algo = 2;        // hash algorithm used by sender Cert
   bytes   senderCertHash = 3;    // N bytes in length, 1st N bytes of sender siging cert sha256 hash
   bytes    signatureHash = 4;    // signature of the sha256 hash of the payload
   bytes    senderCert = 5;       // full senderCert needed for some payloads
+  org.lfedge.eve.common.CipherContext cipherContext = 6; // context for decrypting payload if defined
+  org.lfedge.eve.common.CipherBlock cipherData = 7; // encrypted payload if defined
 }

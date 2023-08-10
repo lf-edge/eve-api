@@ -38,9 +38,11 @@ The `AuthContainer` wrapper is constructed by:
 1. To identify the sender, place a truncated sha of the sender's certificate in `senderCertHash`
 1. Place the algorithm used for the truncated sha in the `algo` field. Currently it's either a SHA256-32bytes or SHA256-16bytes. Note that `senderCertHash` is just for a lookup at the receiver, hence it can be truncated to be a lot shorter without any security implications.
 1. For the case when the receiver might not be able to identify the sender using just the hash, place the full sender's certificate in the `senderCert` field. This is the base64 standard encoding of the PEM format of the certificate. (This is used for the `register` API during onboarding.)
+1. For the case when encryption is needed, encrypt the signed payload, define `cipherData` and `cipherContext`, nullify the `protectedPayload`.
 
 The steps to verify a `AuthContainer` message wrapper are:
 
+1. If the `cipherData` and `cipherContext` are defined, then auth body has to be decrypted first by using the encrypted payload defined in the `cipherData.cipherData` member. Once the `cipherBlock` is decrypted, the actual result of the decryption is fed into the authentication as if it had been in `protectedPayload` (AuthBody type).
 1. Verify that the `algo` is a supported algorithm.
 1. If the `senderCert` field is set, use that base64 encoded PEM format certificate to determine who the sender is, and whether it is authorized to access the particular API endpoint
 1. Else, use the `senderCertHash` to look up the sender. The result of the lookup will be the sender's certificate, and information about what is it authorized to access.
