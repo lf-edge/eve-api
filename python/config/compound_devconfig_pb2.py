@@ -12,10 +12,11 @@ _sym_db = _symbol_database.Default()
 
 
 from auth import auth_pb2 as auth_dot_auth__pb2
+from config import devconfig_pb2 as config_dot_devconfig__pb2
 from profile import local_profile_pb2 as profile_dot_local__profile__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1f\x63onfig/compound_devconfig.proto\x12\x15org.lfedge.eve.config\x1a\x0f\x61uth/auth.proto\x1a\x1bprofile/local_profile.proto\"\x85\x02\n\x15\x43ompoundEdgeDevConfig\x12<\n\x10protected_config\x18\x01 \x01(\x0b\x32\".org.lfedge.eve.auth.AuthContainer\x12\x34\n\x07\x64\x65v_cmd\x18\x02 \x01(\x0b\x32#.org.lfedge.eve.profile.LocalDevCmd\x12=\n\x0c\x61pp_cmd_list\x18\x03 \x01(\x0b\x32\'.org.lfedge.eve.profile.LocalAppCmdList\x12\x39\n\x0cradio_config\x18\x04 \x01(\x0b\x32#.org.lfedge.eve.profile.RadioConfigB=\n\x15org.lfedge.eve.configZ$github.com/lf-edge/eve-api/go/configb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1f\x63onfig/compound_devconfig.proto\x12\x15org.lfedge.eve.config\x1a\x0f\x61uth/auth.proto\x1a\x16\x63onfig/devconfig.proto\x1a\x1bprofile/local_profile.proto\"q\n\x1c\x43ompoundEdgeDevConfigRequest\x12\x1a\n\x12last_cmd_timestamp\x18\x01 \x01(\x04\x12\x35\n\x07\x63\x66g_req\x18\x02 \x01(\x0b\x32$.org.lfedge.eve.config.ConfigRequest\"\x98\x02\n\x15\x43ompoundEdgeDevConfig\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12<\n\x10protected_config\x18\x02 \x01(\x0b\x32\".org.lfedge.eve.auth.AuthContainer\x12\x34\n\x07\x64\x65v_cmd\x18\x03 \x01(\x0b\x32#.org.lfedge.eve.profile.LocalDevCmd\x12=\n\x0c\x61pp_cmd_list\x18\x04 \x01(\x0b\x32\'.org.lfedge.eve.profile.LocalAppCmdList\x12\x39\n\x0cradio_config\x18\x05 \x01(\x0b\x32#.org.lfedge.eve.profile.RadioConfigB=\n\x15org.lfedge.eve.configZ$github.com/lf-edge/eve-api/go/configb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -24,6 +25,8 @@ if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
   DESCRIPTOR._serialized_options = b'\n\025org.lfedge.eve.configZ$github.com/lf-edge/eve-api/go/config'
-  _globals['_COMPOUNDEDGEDEVCONFIG']._serialized_start=105
-  _globals['_COMPOUNDEDGEDEVCONFIG']._serialized_end=366
+  _globals['_COMPOUNDEDGEDEVCONFIGREQUEST']._serialized_start=128
+  _globals['_COMPOUNDEDGEDEVCONFIGREQUEST']._serialized_end=241
+  _globals['_COMPOUNDEDGEDEVCONFIG']._serialized_start=244
+  _globals['_COMPOUNDEDGEDEVCONFIG']._serialized_end=524
 # @@protoc_insertion_point(module_scope)
