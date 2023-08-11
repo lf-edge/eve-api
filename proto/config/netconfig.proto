@@ -7,9 +7,9 @@ package org.lfedge.eve.config;
 option go_package = "github.com/lf-edge/eve-api/go/config";
 option java_package = "org.lfedge.eve.config";
 
-import "config/acipherinfo.proto";
 import "config/fw.proto";
 import "config/netcmn.proto";
+import "evecommon/acipherinfo.proto";
 import "evecommon/evecommon.proto";
 
 message NetworkConfig {
@@ -125,7 +125,7 @@ message CellularAccessPoint {
   CellularAuthProtocol auth_protocol = 3;
   // Cipher data may contain encrypted user credentials
   // (inside cellNetUsername and cellNetPassword fields).
-  CipherBlock cipher_data = 4;
+  org.lfedge.eve.common.CipherBlock cipher_data = 4;
   // The set of cellular network operators that modem should preferably try to register
   // and connect into.
   // Network operator should be referenced by PLMN (Public Land Mobile Network) code,
@@ -168,5 +168,5 @@ message WifiConfig {
   cryptoblock crypto = 20;         // encrypted block
   int32  priority = 25;            // priority of connection, default is 0
 
-  CipherBlock cipherData = 30;     // contains encrypted credential information
+  org.lfedge.eve.common.CipherBlock cipherData = 30; // contains encrypted credential information
 }

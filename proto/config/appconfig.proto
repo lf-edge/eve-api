@@ -7,7 +7,7 @@ package org.lfedge.eve.config;
 option go_package  = "github.com/lf-edge/eve-api/go/config";
 option java_package = "org.lfedge.eve.config";
 
-import "config/acipherinfo.proto";
+import "evecommon/acipherinfo.proto";
 import "config/devcommon.proto";
 import "config/storage.proto";
 import "config/vm.proto";
@@ -153,7 +153,7 @@ message AppInstanceConfig {
   bool remoteConsole = 12;
 
   // contains the encrypted userdata
-  CipherBlock cipherData = 13;
+  org.lfedge.eve.common.CipherBlock cipherData = 13;
 
   // Deprecated 14
 

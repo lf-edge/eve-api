@@ -9,7 +9,7 @@ option java_package = "org.lfedge.eve.config";
 
 import "google/protobuf/timestamp.proto";
 
-import "config/acipherinfo.proto";
+import "evecommon/acipherinfo.proto";
 import "config/storage.proto";
 
 enum EveOpaqueObjectCategory {
@@ -24,12 +24,12 @@ message EveOpaqueBase64Data {
     oneof textData {
         string base64ClearTextData = 2;
         // base 64 encoded and then encrypted
-        CipherBlock base64CipherTextData = 3;
+        org.lfedge.eve.common.CipherBlock base64CipherTextData = 3;
     }
 
     oneof base64MetaData {
         string base64ClearTextMetaData = 4;
-        CipherBlock base64CipherTextMetaData = 5;
+        org.lfedge.eve.common.CipherBlock base64CipherTextMetaData = 5;
     }
 }
 

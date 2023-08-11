@@ -9,7 +9,7 @@ option java_package = "org.lfedge.eve.config";
 
 import "google/protobuf/timestamp.proto";
 
-import "config/acipherinfo.proto";
+import "evecommon/acipherinfo.proto";
 import "config/appconfig.proto";
 import "config/baseosconfig.proto";
 import "config/devcommon.proto";
@@ -76,7 +76,7 @@ message EdgeDevConfig {
   // controller supplies a list of cipher contexts,
   // containing certificate and other details, to be
   // used for sensitive data decryption
-  repeated CipherContext cipherContexts = 19;
+  repeated org.lfedge.eve.common.CipherContext cipherContexts = 19;
 
   // These images aka ContentTrees and Volumes should be created by EVE
   // independently of any application usage.

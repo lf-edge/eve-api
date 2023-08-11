@@ -8,7 +8,7 @@ option go_package = "github.com/lf-edge/eve-api/go/config";
 option java_package = "org.lfedge.eve.config";
 
 import "config/devcommon.proto";
-import "config/acipherinfo.proto";
+import "evecommon/acipherinfo.proto";
 import "evecommon/evecommon.proto";
 
 // XXX this will be deprecated when all deployed instances of EVE
@@ -52,7 +52,7 @@ message DatastoreConfig {
   string region = 6;
 
   // contains the encrypted credentials
-  CipherBlock cipherData = 7;
+  org.lfedge.eve.common.CipherBlock cipherData = 7;
 
   // Uploaded datastore certificate or certificate chain
   repeated bytes dsCertPEM = 8;
