@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1.6.0
 FROM alpine:3.18
 
-ARG TARGETOS
+ARG TARGETOS=linux
 ARG TARGETARCH
 ARG PROTOC_GEN_GO_VERSION=1.31.0
 ARG PROTOC_VERSION=23.4
@@ -17,7 +17,7 @@ RUN arch=$(uname -m); \
   unzip protobuf.zip -d /usr/local; \
   rm -f protobuf.zip
 
-ADD https://github.com/seamia/protodot.git /protodot
+RUN git clone https://github.com/seamia/protodot.git /protodot
 RUN go build -C /protodot -o /usr/local/bin/protodot .
 
 RUN mkdir -p $(go env GOPATH)

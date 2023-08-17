@@ -103,6 +103,14 @@ devcontainer --workspace-folder . up
 devcontainer exec --workspace-folder . make proto
 ```
 
+#### Manual ad-hoc use of devcontainer on Linux
+
+First the devcontainer needs to be built and then run to do the make proto:
+```bash
+docker build -f .devcontainer/Dockerfile -t eve-api-builder .
+docker run --rm -v $(pwd):/src -w /src -u $(id -u) eve-api-builder make proto
+```
+
 #### Local
 
 If running locally, you need to install the prerequisites yourself.
