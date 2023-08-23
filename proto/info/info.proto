@@ -70,6 +70,7 @@ enum ZInfoTypes {
   ZiHardware = 11;
   ZiEdgeview = 12;
   ZiLocation = 13;
+  ZiPatchEnvelope = 14;
 }
 
 // Information about assignable I/O adapter bundles
