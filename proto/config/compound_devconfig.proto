@@ -1,0 +1,22 @@
+// Copyright(c) 2023 Zededa, Inc.
+// All rights reserved.
+
+syntax = "proto3";
+
+package org.lfedge.eve.config;
+option go_package  = "github.com/lf-edge/eve-api/go/config";
+option java_package = "org.lfedge.eve.config";
+
+import "auth/auth.proto";
+import "profile/local_profile.proto";
+
+// CompoundEdgeDevConfig message combines regular edge config, packed in auth
+// envelope, node/applications commands and radio config. This message is
+// needed for the LOC case, when a single "/compound-config" endpoint can be
+// used.
+message CompoundEdgeDevConfig {
+   org.lfedge.eve.auth.AuthContainer protected_config = 1;
+   org.lfedge.eve.profile.LocalDevCmd dev_cmd = 2;
+   org.lfedge.eve.profile.LocalAppCmdList app_cmd_list = 3;
+   org.lfedge.eve.profile.RadioConfig radio_config = 4;
+}
