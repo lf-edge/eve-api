@@ -49,7 +49,7 @@ All messages are defined in subdirectories to the [proto](./proto) directory.
 In general, there is one directory for each API endpoint:
 
 * `register`: The register message sent as part of onboarding a device
-* `config`: The ConfigRequest message sent from the device and the ConfigResponse with EdgeDevConfig message sent from Controller to Device in response.
+* `config`: The ConfigRequest message sent from the device and the ConfigResponse with EdgeDevConfig message sent from Controller to Device in response. See also the description of the `compound-config` below in the text.
 * `info`: The ZInfoMsg message sent from Device to Controller when there is a state change for an object (device, app instance, etc
 )
 * `metrics`: The ZMetricMsg message sent from Device to Controller periodically to report on resource usage etc.
@@ -58,6 +58,10 @@ In general, there is one directory for each API endpoint:
 * `certs`: The ZControllerCert message is sent from Controller to Device, and contains the list of certificates used by Controller. Each ZControllerCert message replaces the current list on the device with the new list of certificates. Therefore, if an empty list is sent, it resets the list on the receiving side.
 * `uuid`: This API is used by the device to fetch its unique idenitifier allocated by the Controller. Along with the uuid, the reply for this request will also contain manufacturer and product model of the device.
 * `attest`: This API anchors all trust and attestation operations from the device. At the top level, the device does a POST of `ZAttestReq` and gets `ZAttestResp` as the response from Controller.
+
+The above endpoints are a common API between the EVE device and main Controller. There is also a special endpoint that is only for the side Controller, also known as Local Operator Console (LOC):
+
+* `compound-config`: The ConfigRequest message sent from the device and the CompoundEdgeDevConfig (see config/compound_devconfig.proto) with encrypted or/and signed EdgeDevConfig message and auxiliary commands sent to Device in response. The CompoundEdgeDevConfig itself is not signed or encrypted, but the EdgeDevConfig is packed using the AuthContainer envelope (see the Authentication paragraph below in the text).
 
 `ZAttestReq` supports 4 types of requests:
 `ATTEST_REQ_CERT` is for sending certificates used by device,
@@ -77,7 +81,7 @@ In general, there is one directory for each API endpoint:
 
 All communication messages MUST be encrypted with TLS v1.2 or higher, and MUST authenticate the server using TLS. It is RECOMMENDED to use TLS v1.3 or higher to provider better privacy for the Device certificate and faster communication initialization. There is no client TLS authentication in this version of the API.
 
-In addition the payload of the message MUST use the [auth.AuthContainer](./proto/auth/auth.proto) to provide end-to-end integrity of the message payload in the presence of MiTM TLS proxies and/or server-side load balancers. More information about this object signing is in [Object Signing](./OBJECT-SIGNING.md).
+In addition the payload of the message MUST use the [auth.AuthContainer](./proto/auth/auth.proto) to provide end-to-end integrity of the message payload in the presence of MiTM TLS proxies and/or server-side load balancers. More information about this object signing is in [Object Signing](./OBJECT-SIGNING.md). However, this requirement has the exception: CompoundEdgeDevConfig (`compound-config` endpoint) is not itself wrapped with the AuthContainer envolope, but the edge device config (EdgeDevConfig) is defined as a member of the compound config and protected (see config/compound_devconfig.proto).
 
 The messages sent by the device use two types of certificates sign the AuthContainers:
 
