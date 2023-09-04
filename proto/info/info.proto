@@ -20,13 +20,15 @@ enum DepMetricItemType {
   DepMetricItemGauge = 1;          // Goes up and down over time
   DepMetricItemCounter = 2;        // Monotonically increasing (until reboot)
   DepMetricItemState = 3;          // Toggles on and off; count transitions
+  DepMetricItemFoo = 4;            // XXX test yetus
+  Bar = 5;                         // XXX test yetus
 }
 
 // A generic metric item.
 // Deprecated: Prefer to use dedicated proto message definitions for all metrics.
 message deprecatedMetricItem {
-  string key = 1;
-  DepMetricItemType type = 2;
+  uint32 key = 1; // XXX test yetus
+  // XXX test yetus DepMetricItemType type = 2;
   oneof metricItemValue {
     bool boolValue = 3;
     uint32 uint32Value = 4; // If timer this is in seconds
