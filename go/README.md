@@ -18,7 +18,7 @@ import (
 To build, go to the root directory of this repository and:
 
 ```bash
-make proto
+make
 ```
 
 To vendor the result into a downstream dependency, e.g. pillar, do the following:

@@ -46,7 +46,7 @@ import (
 To make changes to this API, you:
 
 1. Edit the specific `.proto` files in the [proto](./proto) directory, or create new ones, as desired.
-1. Run `make proto` to generate the language-specific bindings and visualizations.
+1. Run `make` to generate the language-specific bindings and visualizations.
 1. Commit the changes to the `.proto` files and the generated files.
 
 The Pull Request process for this repository will regenerate the language-specific bindings and visualizations,
@@ -74,7 +74,7 @@ make python
 
 ### Visualizations
 
-In addition to the language-specific libraries, `make proto` generates visualizations of the protobuf structure,
+In addition to the language-specific libraries, `make` generates visualizations of the protobuf structure,
 beginning with the root of an edge device config. These are
 available as `.svg`, `.dot` and `.png` as below. Click to zoom in.
 
