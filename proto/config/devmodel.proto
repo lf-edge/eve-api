@@ -153,6 +153,22 @@ message PhysicalIO {
   // list of Virtual Functions (VF) for given Physical Function (PF)
   // only applies for PHY_IO_TYPE_PHY_IO_NET_ETH_PF
   VfList vflist = 9;
+
+  // parentassigngrp
+  //
+  // Parent Assignment Group is there to reference the parent assignment
+  // group in order to make the device dependent on a different device.
+  // Currently the concrete reason to do this is to make a usb device dependent
+  // on the PCI address the USB controller is using to prevent passthrough of
+  // the USB controller in one application while trying to passthrough
+  // a USB device on this controller to another application.
+  //
+  // We only allow these two cases:
+  // - children and their parent devices are assigned to the same application
+  //   instance
+  // - parent device stays in host and one or more children (in separate
+  //   assignment groups) are assigned to one or more application instances
+  string  parentassigngrp         = 10;
 }
 
 message VfList {
