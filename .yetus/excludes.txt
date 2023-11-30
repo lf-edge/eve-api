@@ -1,0 +1,9 @@
+^python/
+^go/
+^images/
+^.+\.patch
+^.+\.diff
+^.+build.yml
+^.+go.mod
+^.+go.sum
+^.+/vendor/.+
