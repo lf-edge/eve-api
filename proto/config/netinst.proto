@@ -75,6 +75,16 @@ message NetworkInstanceLispConfig {
   bool experimental = 20;
 }
 
+message IPRoute {
+  // Destination network address in the CIDR format: <IP-address>/<prefix-length>
+  // It is allowed to submit default route with all-zeroes destination network address
+  // 0.0.0.0/0 or ::/0.
+  string destination_network = 1;
+  // Gateway IP address.
+  // This must be a valid IP address and can not be all-zeroes.
+  string gateway = 2;
+}
+
 message NetworkInstanceConfig {
   UUIDandVersion uuidandversion = 1;
   string displayname = 2;
@@ -107,4 +117,33 @@ message NetworkInstanceConfig {
 
   // static DNS entry, if we are running DNS/DHCP service
   repeated ZnetStaticDNSEntry dns = 41;
+  // Enable to use DHCP to automatically propagate routes for uplink subnets
+  // into applications connected to them indirectly through local network instances.
+  // This option is only valid for local network instances. For other types
+  // of network instances, it will be ignored.
+  bool propagate_connected_routes = 42;
+  // List of IP routes statically added to the network instance routing table.
+  // Statically routed subnets are also propagated to connected applications
+  // using DHCP, with gateway set to the network instance bridge IP if it is
+  // outside of the network instance subnet.
+  //
+  // IP route gateway may point to an external endpoint (provided that network
+  // instance is not air-gapped), or to an IP address of one of the applications
+  // connected to the network instance.
+  //
+  // Static routes are handled independently from connected routes. While connected
+  // routes are propagated to applications only if enabled by propagate_connected_routes,
+  // static routes are always propagated. Both connected and statically configured
+  // routes can be propagated at the same time, there are no restrictions for using both.
+  //
+  // Note that the default route (with the bridge IP as the gateway) is automatically
+  // propagated to connected applications unless explicitly disabled by setting
+  // NetworkInstanceConfig.ip.gateway to an all-zeroes IP or when the uplink is app-shared
+  // (not management) and does not have a default route of its own. In the latter case,
+  // it is possible to enforce default route propagation by configuring a static default
+  // route for the network instance.
+  //
+  // This option is only valid for local network instances. For other types
+  // of network instances, it will be ignored.
+  repeated IPRoute static_routes = 43;
 }
