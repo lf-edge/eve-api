@@ -24,6 +24,9 @@ enum PhyIoType {
   PhyIoSATAStorage = 10;
   PhyIoNetEthPF = 11;
   PhyIoNetEthVF = 12;
+  PhyIoCAN = 13;
+  PhyIoVCAN = 14;
+  PhyIoLCAN = 15;
   PhyIoOther = 255;
 }
 
