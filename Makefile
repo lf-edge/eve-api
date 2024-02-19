@@ -1,6 +1,6 @@
 proto-container:
 	docker build -f .devcontainer/Dockerfile -t eve-api-builder .
-	docker run --rm -v $(PWD):/src -w /src -u $$(id -u) eve-api-builder make proto
+	docker run --rm --env HOME=/src -v $(PWD):/src -w /src -u $$(id -u) eve-api-builder make proto
 
 proto-diagram:
 	protodot -inc /usr/local/include -src ./proto/config/devconfig.proto -output devconfig -generated ./images
