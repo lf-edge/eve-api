@@ -24,9 +24,11 @@ enum PhyIoType {
   PhyIoSATAStorage = 10;
   PhyIoNetEthPF = 11;
   PhyIoNetEthVF = 12;
-  PhyIoCAN = 13;
-  PhyIoVCAN = 14;
-  PhyIoLCAN = 15;
+  PhyIoUSBController = 13;
+  PhyIoUSBDevice = 14;
+  PhyIoCAN = 15;
+  PhyIoVCAN = 16;
+  PhyIoLCAN = 17;
   PhyIoOther = 255;
 }
 
