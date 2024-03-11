@@ -210,6 +210,9 @@ message AppInstanceConfig {
   // allow AppInstance to discover other AppInstances
   // attached to its network instances
   bool allow_to_discover = 24;
+
+  // This edge-node UUID for the Designate Node for the Application
+  string designated_node_id = 25;
 }
 
 message PatchEnvelopeRef {
