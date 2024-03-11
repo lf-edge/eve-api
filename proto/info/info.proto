@@ -3,16 +3,14 @@
 
 syntax = "proto3";
 
+package org.lfedge.eve.info;
+option go_package  = "github.com/lf-edge/eve-api/go/info";
+option java_package = "org.lfedge.eve.info";
+
 import "google/protobuf/timestamp.proto";
 import "evecommon/devmodelcommon.proto";
 import "evecommon/evecommon.proto";
 import "info/patch_envelope.proto";
-
-package org.lfedge.eve.info;
-option go_package  = "github.com/lf-edge/eve-api/go/info";
-
-option java_package = "org.lfedge.eve.info";
-
 
 // Deprecated: see deprecatedMetricItem below
 enum DepMetricItemType {
@@ -921,6 +919,17 @@ message ZInfoSnapshot {
   ErrorInfo snap_err = 6;
 }
 
+enum ZInfoClusterNodeStatus {
+  Z_INFO_CLUSTER_NODE_STATUS_UNSPECIFIED = 0;
+  Z_INFO_CLUSTER_NODE_STATUS_READY       = 1; // cluster reports our node is ready
+  Z_INFO_CLUSTER_NODE_STATUS_NOTREADY    = 2; // cluster reports our node is NOT ready
+  Z_INFO_CLUSTER_NODE_STATUS_DOWN        = 3; // cluster API server can not be reached
+}
+
+message ZInfoClusterNode {
+  ZInfoClusterNodeStatus node_status = 1;
+}
+
 message ZInfoApp {
   reserved 9 to 11, 19; // deprecated
 
@@ -940,6 +949,10 @@ message ZInfoApp {
   repeated ZInfoNetwork network = 16;       // up/down; allocated IP
   repeated string volumeRefs = 17;          // volume UUIDs
   repeated ZInfoSnapshot snapshots = 18;    // optional field, used to send list of snapshots on device
+
+  // Deployed app is scheduled, or rescheduled and launched on this node,
+  // it has the Pod Spec-name of this node, the app can be in any operating state.
+  bool cluster_app_running = 20;
 }
 
 // ipSec state information
@@ -1152,6 +1165,8 @@ message ZInfoMsg {
     ZInfoHardware hwinfo = 18;
     ZInfoLocation locinfo = 19;
     ZInfoPatchEnvelope patchInfo = 20;
+    // 21 reserved
+    ZInfoClusterNode cluster_node = 22;
   }
   google.protobuf.Timestamp atTimeStamp = 6;
 }

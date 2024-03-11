@@ -209,6 +209,13 @@ message AppInstanceConfig {
 
   // PatchEnvelopeRef is used to track all patch envelopes used by the app instance
   PatchEnvelopeRef patchRef = 23;
+
+  // allow AppInstance to discover other AppInstances
+  // attached to its network instances
+  bool allow_to_discover = 25;
+
+  // This edge-node UUID for the Designate Node for the Application
+  string designated_node_id = 26;
 }
 
 message PatchEnvelopeRef {

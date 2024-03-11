@@ -1,0 +1,33 @@
+// Copyright(c) 2024 Zededa, Inc.
+// All rights reserved.
+
+syntax = "proto3";
+
+package org.lfedge.eve.config;
+option go_package = "github.com/lf-edge/eve-api/go/config";
+option java_package = "org.lfedge.eve.config";
+
+import "evecommon/acipherinfo.proto";
+
+message EdgeNodeCluster {
+  // cluster name, in case it has multiple cluster on the same site
+  string cluster_name = 1;
+
+  // cluster UUID
+  string cluster_id = 2;
+
+  // Cluster-Interface, for example "mgmt0", this is the logicallabel of the physicalIO
+  string cluster_interface = 3;
+
+  // the 'cluster-prefix' IP address of the 'Cluster-Interface', 10.244.244.2/28
+  string cluster_ip_prefix = 4;
+
+  // This device is an 'Agent' node
+  bool is_worker_node = 5;
+
+  // Server IP address to join the cluster. E.g. 10.244.244.1
+  string join_server_ip = 6;
+
+  // encrypted token string, use edge-node TPM to decrypt
+  org.lfedge.eve.common.CipherBlock encrypted_cluster_token = 7;
+}
