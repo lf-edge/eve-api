@@ -21,6 +21,13 @@ enum VmMode {
   LEGACY = 5; // HVM, but with fully emulated legacy I/O (IDE disks and e1000 net)
 }
 
+// Boot mechanisms supported by the BIOS of the Virtual Machine
+enum VmBootMode {
+  VM_BOOT_MODE_UNSPECIFIED = 0; // Boot mode not specified, use default
+  VM_BOOT_MODE_LEGACY = 1; // Legacy BIOS, MBR support only
+  VM_BOOT_MODE_UEFI = 2; // UEFI BIOS
+}
+
 message VmConfig {
   string kernel = 1;
   string ramdisk = 2;
@@ -71,4 +78,6 @@ message VmConfig {
   uint32 vmm_maxmem = 21;
   // Enable VNC access to the shim VM harboring the edge application (for containers only)
   bool enable_vnc_shim_vm = 22;
+  // Boot mode: Legacy or UEFI
+  VmBootMode boot_mode = 23;
 }
