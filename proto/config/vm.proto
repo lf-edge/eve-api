@@ -49,7 +49,8 @@ message VmConfig {
   repeated uint32 irqs = 13;
   repeated string iomem = 14;
   VmMode virtualizationMode = 15;
-  bool enableVnc = 16;
+  // Enable VNC access to the edge application
+  bool enable_vnc = 16;
   uint32 vncDisplay = 17;
   string vncPasswd = 18;
   // Change of the 'disable logs' field can be handled without VM reboot
@@ -68,4 +69,6 @@ message VmConfig {
   // for one VM instance (guest RAM + VM monitor) is set according to the
   // following equation: `memory` + `vmm_maxmem`
   uint32 vmm_maxmem = 21;
+  // Enable VNC access to the shim VM harboring the edge application (for containers only)
+  bool enable_vnc_shim_vm = 22;
 }
