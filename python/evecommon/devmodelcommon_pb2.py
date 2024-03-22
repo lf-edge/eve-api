@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1e\x65vecommon/devmodelcommon.proto\x12\x15org.lfedge.eve.common*\xc5\x02\n\tPhyIoType\x12\r\n\tPhyIoNoop\x10\x00\x12\x0f\n\x0bPhyIoNetEth\x10\x01\x12\x0c\n\x08PhyIoUSB\x10\x02\x12\x0c\n\x08PhyIoCOM\x10\x03\x12\x0e\n\nPhyIoAudio\x10\x04\x12\x10\n\x0cPhyIoNetWLAN\x10\x05\x12\x10\n\x0cPhyIoNetWWAN\x10\x06\x12\r\n\tPhyIoHDMI\x10\x07\x12\x14\n\x10PhyIoNVMEStorage\x10\t\x12\x14\n\x10PhyIoSATAStorage\x10\n\x12\x11\n\rPhyIoNetEthPF\x10\x0b\x12\x11\n\rPhyIoNetEthVF\x10\x0c\x12\x16\n\x12PhyIoUSBController\x10\r\x12\x12\n\x0ePhyIoUSBDevice\x10\x0e\x12\x0c\n\x08PhyIoCAN\x10\x0f\x12\r\n\tPhyIoVCAN\x10\x10\x12\r\n\tPhyIoLCAN\x10\x11\x12\x0f\n\nPhyIoOther\x10\xff\x01*\xa0\x01\n\x10PhyIoMemberUsage\x12\x12\n\x0ePhyIoUsageNone\x10\x00\x12\x19\n\x15PhyIoUsageMgmtAndApps\x10\x01\x12\x14\n\x10PhyIoUsageShared\x10\x02\x12\x17\n\x13PhyIoUsageDedicated\x10\x03\x12\x16\n\x12PhyIoUsageDisabled\x10\x04\x12\x16\n\x12PhyIoUsageMgmtOnly\x10\x05\x42R\n\x15org.lfedge.eve.commonB\x0e\x44\x65vModelCommonP\x01Z\'github.com/lf-edge/eve-api/go/evecommonb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1e\x65vecommon/devmodelcommon.proto\x12\x15org.lfedge.eve.common*\xcb\x02\n\tPhyIoType\x12\r\n\tPhyIoNoop\x10\x00\x12\x0f\n\x0bPhyIoNetEth\x10\x01\x12\x0c\n\x08PhyIoUSB\x10\x02\x12\x0c\n\x08PhyIoCOM\x10\x03\x12\x0e\n\nPhyIoAudio\x10\x04\x12\x10\n\x0cPhyIoNetWLAN\x10\x05\x12\x10\n\x0cPhyIoNetWWAN\x10\x06\x12\r\n\tPhyIoHDMI\x10\x07\x12\x14\n\x10PhyIoNVMEStorage\x10\t\x12\x14\n\x10PhyIoSATAStorage\x10\n\x12\x11\n\rPhyIoNetEthPF\x10\x0b\x12\x11\n\rPhyIoNetEthVF\x10\x0c\x12\x16\n\x12PhyIoUSBController\x10\r\x12\x12\n\x0ePhyIoUSBDevice\x10\x0e\x12\x0c\n\x08PhyIoCAN\x10\x0f\x12\r\n\tPhyIoVCAN\x10\x10\x12\r\n\tPhyIoLCAN\x10\x11\x12\x0f\n\nPhyIoOther\x10\xff\x01\"\x04\x08\x08\x10\x08*\xa0\x01\n\x10PhyIoMemberUsage\x12\x12\n\x0ePhyIoUsageNone\x10\x00\x12\x19\n\x15PhyIoUsageMgmtAndApps\x10\x01\x12\x14\n\x10PhyIoUsageShared\x10\x02\x12\x17\n\x13PhyIoUsageDedicated\x10\x03\x12\x16\n\x12PhyIoUsageDisabled\x10\x04\x12\x16\n\x12PhyIoUsageMgmtOnly\x10\x05\x42R\n\x15org.lfedge.eve.commonB\x0e\x44\x65vModelCommonP\x01Z\'github.com/lf-edge/eve-api/go/evecommonb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -23,7 +23,7 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   DESCRIPTOR._options = None
   DESCRIPTOR._serialized_options = b'\n\025org.lfedge.eve.commonB\016DevModelCommonP\001Z\'github.com/lf-edge/eve-api/go/evecommon'
   _globals['_PHYIOTYPE']._serialized_start=58
-  _globals['_PHYIOTYPE']._serialized_end=383
-  _globals['_PHYIOMEMBERUSAGE']._serialized_start=386
-  _globals['_PHYIOMEMBERUSAGE']._serialized_end=546
+  _globals['_PHYIOTYPE']._serialized_end=389
+  _globals['_PHYIOMEMBERUSAGE']._serialized_start=392
+  _globals['_PHYIOMEMBERUSAGE']._serialized_end=552
 # @@protoc_insertion_point(module_scope)
