@@ -23,7 +23,7 @@ message EdgeNodeCluster {
   string cluster_ip_prefix = 4;
 
   // This device is an 'Agent' node
-  bool is_agent = 5;
+  bool is_worker_node = 5;
 
   // Server IP address to join the cluster. E.g. 10.244.244.1
   string join_server_ip = 6;
