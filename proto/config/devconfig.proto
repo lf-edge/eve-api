@@ -12,6 +12,7 @@ import "google/protobuf/timestamp.proto";
 import "evecommon/acipherinfo.proto";
 import "config/appconfig.proto";
 import "config/baseosconfig.proto";
+import "config/edge_node_cluster.proto";
 import "config/devcommon.proto";
 import "config/devmodel.proto";
 import "config/netconfig.proto";
@@ -165,6 +166,9 @@ message EdgeDevConfig {
   // Configuration of the Local Operator Console (LOC)
   LOCConfig loc_config = 41;
   repeated EvePatchEnvelope patchEnvelopes = 42;
+
+  // cluster configuration
+  EdgeNodeCluster cluster = 43;
 }
 
 message ConfigRequest {
