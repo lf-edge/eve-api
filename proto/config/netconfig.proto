@@ -26,6 +26,17 @@ message NetworkConfig {
 
   // wireless specification
   WirelessConfig wireless = 10;
+
+  // Maximum transmission unit (MTU) to set on the associated network adapter(s).
+  // This is the largest IP packet that the underlying link can and is allowed to carry.
+  // This does not include the L2 header size (e.g. Ethernet header or a VLAN tag size).
+  // The value is a 16-byte unsigned integer, representing the MTU size in bytes.
+  // The minimum accepted value for the MTU is 1280 (RFC 8200, "IPv6 minimum link MTU").
+  // If not defined (zero value), EVE will set the default MTU size, which depends
+  // on the network adapter type. Ethernet and WiFi adapters default to 1500 bytes,
+  // while cellular modems typically receive their MTU value from the network provider
+  // (which EVE will use unless user overrides the MTU value).
+  uint32 mtu = 11;
 }
 
 message NetworkAdapter {

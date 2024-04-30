@@ -670,6 +670,7 @@ enum APICapability {
   API_CAPABILITY_VOLUME_SNAPSHOTS = 5; // Volume snapshots supported
   API_CAPABILITY_NETWORK_INSTANCE_ROUTING = 6; // routing config in NetworkInstanceConfig supported
   API_CAPABILITY_BOOT_MODE = 7; // Support different boot modes for Edge Applications (VMs)
+  API_CAPABILITY_MTU = 8; // Allows to set MTU for network adapters and network instances
   // Add new values as new EdgeDevConfig API features are implemented
 }
 

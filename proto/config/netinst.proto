@@ -153,4 +153,34 @@ message NetworkInstanceConfig {
   // This option is only valid for local network instances. For other types
   // of network instances, it will be ignored.
   repeated IPRoute static_routes = 43;
+
+  // Maximum transmission unit (MTU) to set for the network instance and all application
+  // interfaces connected to it.
+  // This is the largest IP packet that the network instance is allowed to carry.
+  // This does not include the L2 header size (e.g. Ethernet header or a VLAN tag size).
+  // The value is a 16-byte unsigned integer, representing the MTU size in bytes.
+  // The minimum accepted value for the MTU is 1280 (RFC 8200, "IPv6 minimum link MTU").
+  // If not defined (zero value), EVE will set the MTU to the default value of 1500 bytes.
+  // On the host side, MTU is set to interfaces by EVE. On the guest (app) side,
+  // the responsibility to set the MTU lies either with EVE or with the user/app, depending on
+  // the network instance and app type (local or switch, VM or container).
+  // For container applications running inside an EVE-created shim-VM, EVE initializes
+  // the MTU of interfaces during shim-VM boot. Furthermore, interfaces connected
+  // to local network instances will have their MTUs automatically updated if there is
+  // a change in MTU configuration. To update the MTU of interfaces connected to switch
+  // network instances, the user may run an external DHCP server in the network and publish
+  // MTU changes via DHCP option 26 (the DHCP client run by EVE inside shim-VM will pick it up
+  // and apply it).
+  // In the case of VM applications, it is the responsibility of the app to configure the MTUs.
+  // For interfaces connected to local network instances, the app can run a DHCP client and
+  // receive the latest MTU via DHCP option 26. For switch network instances, the user should
+  // either run their own external DHCP server in the network with the MTU option configured
+  // or use a different mechanism to set the interface MTU (e.g., cloud-init).
+  // Please note that application traffic leaving or entering the device via a network
+  // adapter associated with the network instance is additionally limited by the MTU
+  // value of the adapter, configured within the NetworkConfig object (refer to netconfig.proto).
+  // If the configured network instance MTU differs from the network adapter MTU, EVE will
+  // flag the network instance with an error and use the adapter's MTU for the network
+  // instance instead (to prevent traffic from being dropped or fragmented inside EVE).
+  uint32 mtu = 44;
 }
