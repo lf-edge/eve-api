@@ -1058,6 +1058,16 @@ message ZInfoNetworkInstance {
   }
   repeated ErrorInfo networkErr = 40;
   ZNetworkInstanceState state = 41;
+
+  // The Maximum Transmission Unit (MTU) set for this network instance and all connected
+  // application interfaces.
+  // Please note that while EVE fully manages the MTU of application interfaces on the host
+  // side, it has limited or no control over the MTUs used by the connected applications
+  // on their guest side and cannot determine and report what their values are.
+  // The MTU configured for the network instance by the user may differ from the actual MTU
+  // used and reported here if the configured MTU is invalid or conflicts with the MTU
+  // of the associated device port (see NetworkInstanceConfig.mtu in netinst.proto).
+  uint32 mtu = 42;
 }
 
 message UsageInfo {
