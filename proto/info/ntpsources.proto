@@ -1,0 +1,80 @@
+// Copyright(c) 2024 Zededa, Inc.
+// SPDX-License-Identifier: Apache-2.0
+
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package org.lfedge.eve.info;
+option go_package  = "github.com/lf-edge/eve-api/go/info";
+
+option java_package = "org.lfedge.eve.info";
+
+// Enum for describing the NTP source state, see chrony client
+// sources https://gitlab.com/chrony/chrony/-/blob/master/client.c
+// and its output of the command 'sources'.
+enum NTPSourceState {               // Source state according to chronyc output:
+  NTP_SOURCE_STATE_UNSPECIFIED = 0; //
+  NTP_SOURCE_STATE_SYNC        = 1; // '*' = current best
+  NTP_SOURCE_STATE_UNREACH     = 2; // '?' = unusable
+  NTP_SOURCE_STATE_FALSETICKER = 3; // 'x' = may be in error
+  NTP_SOURCE_STATE_JITTERY     = 4; // '~' = too variable
+  NTP_SOURCE_STATE_CANDIDATE   = 5; // '+' = combined
+  NTP_SOURCE_STATE_OUTLIER     = 6; // '-' = not combined
+}
+
+// Enum for describing the NTP source mode, see chrony client
+// https://gitlab.com/chrony/chrony/-/blob/master/client.c
+// and its output of the command 'sources'.
+enum NTPSourceMode {               // Source mode according to chronyc output:
+  NTP_SOURCE_MODE_UNSPECIFIED = 0; //
+  NTP_SOURCE_MODE_CLIENT      = 1; // '^' = server
+  NTP_SOURCE_MODE_PEER        = 2; // '=' = peer
+  NTP_SOURCE_MODE_REF         = 3; // '#' = local clock
+}
+
+// Flags from RFC 5905 + defined by chrony
+enum NTPSourceBitmap {
+  NTP_SOURCE_BITMAP_UNSPECIFIED          = 0x0000;
+  NTP_SOURCE_BITMAP_PKT_DUP              = 0x0001;
+  NTP_SOURCE_BITMAP_PKT_BOGUS            = 0x0002;
+  NTP_SOURCE_BITMAP_PKT_INVALID          = 0x0004;
+  NTP_SOURCE_BITMAP_PKT_AUTH             = 0x0008;
+  NTP_SOURCE_BITMAP_PKT_STRATUM          = 0x0010;
+  NTP_SOURCE_BITMAP_PKT_HEADER           = 0x0020;
+  NTP_SOURCE_BITMAP_TST_MAX_DELAY        = 0x0040;
+  NTP_SOURCE_BITMAP_TST_DELAY_RATIO      = 0x0080;
+  NTP_SOURCE_BITMAP_TST_DELAY_DEV_RATION = 0x0100;
+  NTP_SOURCE_BITMAP_TST_SYNC_LOOP        = 0x0200;
+}
+
+// As described in http://doc.ntp.org/current-stable/ntpq.html
+message NTPSource {
+  bool     authenticated             = 1;
+  bool     reachable                 = 2; // (reachability == 0xff), i.e. 8 attempts
+  uint32   reachability              = 3;
+  NTPSourceState state               = 4;
+  NTPSourceMode mode                 = 5;
+  string   hostname                  = 6;
+  string   src_addr                  = 7;
+  uint32   src_port                  = 8;
+  string   dst_addr                  = 9;
+  uint32   dst_port                  = 10;
+  uint32   leap                      = 11;
+  uint32   stratum                   = 12;
+  uint32   precision                 = 13;
+  string   ref_id                    = 14;
+  google.protobuf.Timestamp ref_time = 15;
+  sint32   poll                      = 16;
+  uint32   flags                     = 17; // bitmap from NTPSourceBitmap
+  double   offset                    = 18;
+  double   delay                     = 19;
+  double   dispersion                = 20;
+  double   jitter                    = 21;
+  double   root_delay                = 22;
+  double   root_disp                 = 23;
+}
+
+message ZInfoNTPSources {
+  repeated NTPSource sources = 1;
+}

@@ -11,6 +11,7 @@ import "google/protobuf/timestamp.proto";
 import "evecommon/devmodelcommon.proto";
 import "evecommon/evecommon.proto";
 import "info/patch_envelope.proto";
+import "info/ntpsources.proto";
 
 // Deprecated: see deprecatedMetricItem below
 enum DepMetricItemType {
@@ -67,6 +68,7 @@ enum ZInfoTypes {
   ZiEdgeview = 12;
   ZiLocation = 13;
   ZiPatchEnvelope = 14;
+  ZiNTPSources = 16;
 }
 
 // Information about assignable I/O adapter bundles
@@ -1181,6 +1183,7 @@ message ZInfoMsg {
     ZInfoPatchEnvelope patchInfo = 20;
     // 21 reserved
     ZInfoClusterNode cluster_node = 22;
+    ZInfoNTPSources ntp_sources = 23;
   }
   google.protobuf.Timestamp atTimeStamp = 6;
 }
