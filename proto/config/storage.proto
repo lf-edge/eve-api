@@ -1,4 +1,4 @@
-// Copyright(c) 2017-2020 Zededa, Inc.
+// Copyright(c) 2017-2024 Zededa, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
 syntax = "proto3";
@@ -171,8 +171,9 @@ enum VolumeAccessProtocols {
 
 enum VolumeContentOriginType {
   VCOT_UNKNOWN = 0;
-  VCOT_BLANK = 1;     // Create an empty directory/disk with specified size
-  VCOT_DOWNLOAD = 2;  // Create from downloadContentTreeID
+  VCOT_BLANK = 1;       // Create an empty directory/disk with specified size
+  VCOT_DOWNLOAD = 2;    // Create from downloadContentTreeID
+  VCOT_REPLICATED = 3;  // Use replicated volume from other nodes
 }
 
 message VolumeContentOrigin {
