@@ -673,6 +673,7 @@ enum APICapability {
   API_CAPABILITY_NETWORK_INSTANCE_ROUTING = 6; // routing config in NetworkInstanceConfig supported
   API_CAPABILITY_BOOT_MODE = 7; // Support different boot modes for Edge Applications (VMs)
   API_CAPABILITY_MTU = 8; // Allows to set MTU for network adapters and network instances
+  API_CAPABILITY_ADAPTER_USER_LABELS = 9; // Supports user-defined shared network adapter labels
   // Add new values as new EdgeDevConfig API features are implemented
 }
 
@@ -1040,8 +1041,21 @@ message ZInfoNetworkInstance {
   // OBSOLETE - No longer used.
   ZInfoSW softwareList = 9;    // E.g., VPN version; XXX to be deprecated?
 
-  string CurrentUplinkIntf = 10;  // current uplink interface in use by this NI
-  string CurrentUplinkAlias = 11; // user defined namestring alias to this CurrentUplinkIntf, for future
+  // Current uplink interface in use by this NI.
+  // Deprecated - network instance can be associated with multiple device ports,
+  // not just one. To find out which ports are being used by network instance,
+  // read the reported field "ports" instead (see below). Additionally, "routes"
+  // informs about the routes configured for the NI and which ports are currently
+  // used to route the traffic out (this includes info for the default route)
+  string CurrentUplinkIntf = 10 [deprecated = true];
+  // User defined namestring alias to this CurrentUplinkIntf.
+  // Deprecated for the same reason as CurrentUplinkIntf. Additionally, logical
+  // labels are preferred over aliases.
+  string CurrentUplinkAlias = 11 [deprecated = true];
+  // List of device ports used for external connectivity.
+  // Ports are referenced by logical labels.
+  // Empty if network instance is air-gapped.
+  repeated string ports = 12;
   uint32 bridgeNum = 20;
   string bridgeName = 21;
   string bridgeIPAddr = 22;
@@ -1070,6 +1084,33 @@ message ZInfoNetworkInstance {
   // used and reported here if the configured MTU is invalid or conflicts with the MTU
   // of the associated device port (see NetworkInstanceConfig.mtu in netinst.proto).
   uint32 mtu = 42;
+
+  // Routes configured for the network instance.
+  // This includes link-local routes, DHCP-received routes, user-defined static routes
+  // (NetworkInstanceConfig.static_routes) and the default route (if any).
+  // Note that some user-defined static routes might not be applied (and thus not reported
+  // here) if they do not match IP config of currently used device ports.
+  // Additionally, static routes with shared port labels (matching multiple ports)
+  // are reported here each with the logical label of the (single) port, currently selected
+  // for the route (selected based on connectivity status, port costs, wwan signal strength,
+  // etc.).
+  repeated IPRoute ip_routes = 43;
+}
+
+// Info about IP route configured for a network instance.
+message IPRoute {
+  // Destination network address in the CIDR format: <IP-address>/<prefix-length>
+  string destination_network = 1;
+  // Gateway IP address.
+  string gateway = 2;
+  // Logical label of the output device port for the routed traffic.
+  // Empty if the gateway is IP address of one of the applications. In that case,
+  // 'gateway_app' is defined instead.
+  string port = 3;
+  // UUID of the application used as the gateway for the route.
+  // Empty if the gateway is external (not one of the apps but outside of the device).
+  // In that case, 'port' is defined instead.
+  string gateway_app = 4;
 }
 
 message UsageInfo {

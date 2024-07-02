@@ -498,6 +498,15 @@ message ZMetricNetworkStats {
   NetworkStats tx = 2;
 }
 
+// Metrics published for a NI multipath route with probing-based selection
+// of the output port.
+// The route is identified by dst_network.
+// current_port (and currentIntf) indicate which port is currently selected.
+// The rest are probing metrics and status info used to make the selection.
+// In older EVE versions, probing was less flexible and it only allowed to select
+// a single port for the entire network instance and all its routes. In that case
+// dst_network is published empty and there is only one instance of ZProbeNIMetrics
+// published for the network instance.
 message ZProbeNIMetrics {         // per NI probing stats
   string currentIntf = 1;         // current picked uplink interface
   string remoteEndpoint = 2;      // remote URL or IP address for probing
@@ -516,6 +525,11 @@ message ZProbeNIMetrics {         // per NI probing stats
     uint32 remoteProbeLatency = 19;  // remote host probe latency in msec
   }
   repeated ZProbeIntfMetric intfMetric = 10; // per uplink intf probing stats
+
+  string dst_network = 20;
+  // Logical label of the currently selected output port for the route.
+  // Note that currentIntf reports the interface name of this port.
+  string current_port = 21;
 }
 
 message ZMetricNetworkInstance {
@@ -527,7 +541,11 @@ message ZMetricNetworkInstance {
   bool activated = 7;                // Forwarding enabled
 
   repeated networkMetric network = 10;  // Aggregate counters for bridge
-  ZProbeNIMetrics probeMetric = 12;     // NI uplink probing stats
+  // NI uplink probing stats
+  // Deprecated - newer EVE versions publish a list of probeMetrics (see below),
+  // with one entry for every multipath route with the probing enabled.
+  ZProbeNIMetrics probeMetric = 12 [deprecated = true];
+  repeated ZProbeNIMetrics probeMetrics = 13;
   oneof InstanceContent {
     ZMetricVpn  vpnm = 20;
     // deprecated = 21; ZMetricLisp lispm = 21

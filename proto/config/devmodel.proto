@@ -69,12 +69,35 @@ message SystemAdapter {
   // physicalIO.
   string lowerLayerName = 8;
 
-  // cost of using a port for EVE management traffic (which is determined
-  // from PhysicalIO.usage)
+  // Cost of sending traffic over the port.
+  // Used to prioritize ports and give preference to lower-cost ports (e.g. eth over wwan).
   // 0 is the lowest cost (free); 255 the highest.
-  // Load spreading will apply when multiple adapters have the same cost.
-  // Higher cost adapters are only tried when none of the lower cost ones work.
+  // Can be set for management and app-shared ports.
+  // Cost is used for EVE management traffic and for local network instances with multiple
+  // ports. For any request towards the controller or for an image download, EVE tries ports
+  // in the order of increasing cost, starting with the free ports. Once it finds the lowest
+  // cost port with a working connectivity, it may spread the load if there are multiple
+  // connected ports of the same cost.
+  // For local networking instances with multiple ports, the cost may be used to decide
+  // which port to use for a particular destination network (incl. port selection for
+  // the default route). Unlike the management traffic, load-balancing is currently
+  // not supported for local network instances and the app traffic that is routed through
+  // them.
   uint32 cost = 9;
+
+  // A set of user-defined "shared" labels attached to the adapter.
+  // There are no restrictions on the format of an adapter label, it can be any
+  // non-empty string.
+  // Unlike the logical label (aka port logical name), shared label is not a unique
+  // port identifier. Instead, the same shared label can be assigned to multiple ports.
+  // Note that EVE automatically assigns "all" label to every port, "uplink" label to every
+  // management port and "freeuplink" label to every management port with zero cost.
+  // ("automatically assigns" is meant here in imaginary sense, these labels are not supposed
+  // to be explicitly added by the controller to SystemAdapters inside EdgeDevConfig).
+  // Shared label can be used to designate a group of network adapters to be used by
+  // a network instances for external connectivity, or to limit port-forwarding firewall
+  // rule to only a subset of network adapters.
+  repeated string shared_labels = 10;
 }
 
 // Given additional details for EVE software to how to treat this
