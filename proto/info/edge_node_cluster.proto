@@ -1,0 +1,238 @@
+// Copyright(c) 2024 Zededa, Inc.
+// All rights reserved.
+
+syntax = "proto3";
+
+package org.lfedge.eve.info;
+
+option go_package = "github.com/lf-edge/eve-api/go/info";
+option java_package = "org.lfedge.eve.info";
+
+import "google/protobuf/timestamp.proto";
+
+// KubeNodeStatus follows Kubernetes Node Conditions
+//   Refer here: https://pkg.go.dev/k8s.io/api/core/v1#NodeConditionType
+enum KubeNodeConditionType {
+  KUBE_NODE_CONDITION_TYPE_UNSPECIFIED = 0;
+  KUBE_NODE_CONDITION_TYPE_READY = 1;
+  KUBE_NODE_CONDITION_TYPE_MEMORY_PRESSURE = 2;
+  KUBE_NODE_CONDITION_TYPE_DISK_PRESSURE = 3;
+  KUBE_NODE_CONDITION_TYPE_PID_PRESSURE = 4;
+  KUBE_NODE_CONDITION_TYPE_NETWORK_UNAVAIL = 5;
+}
+
+message KubeNodeCondition {
+  // Type of the condition
+  KubeNodeConditionType type = 1;
+
+  // Condition state
+  bool set = 2;
+}
+
+message KubeNodeInfo {
+  // Name of the node, will match device name
+  string name = 1;
+
+  // Status of the node
+  repeated KubeNodeCondition conditions = 2;
+
+  // Role of the node is server or not
+  bool role_server = 3;
+
+  // Creation Time of the node in the cluster
+  google.protobuf.Timestamp creation_timestamp = 4;
+
+  // Version of the API Server running on the node
+  string api_server_sersion = 5;
+
+  // Internal IP address of the node
+  string internal_ip = 6;
+
+  bool schedulable = 7;
+}
+
+// StorageHealthStatus is a higher level tracking status to show redundancy/failure-zone level
+// and rebuild progress.
+enum StorageHealthStatus {
+  STORAGE_HEALTH_STATUS_UNSPECIFIED = 0;
+  STORAGE_HEALTH_STATUS_HEALTHY = 1;
+  STORAGE_HEALTH_STATUS_DEGRADED_2_REPLICA_AVAILABLE_REPLICATING = 2;
+  STORAGE_HEALTH_STATUS_DEGRADED_2_REPLICA_AVAILABLE_NOT_REPLICATING = 3;
+  STORAGE_HEALTH_STATUS_DEGRADED_1_REPLICA_AVAILABLE_REPLICATING = 4;
+  STORAGE_HEALTH_STATUS_DEGRADED_1_REPLICA_AVAILABLE_NOT_REPLICATING = 5;
+  STORAGE_HEALTH_STATUS_FAILED = 6;
+}
+
+// StorageVolumeState is the kubernetes 'state' field of a replicated csi-driver volume.
+//  Refer to: https://github.com/longhorn/longhorn-manager/blob/v1.6.2/k8s/pkg/apis/longhorn/v1beta1/volume.go#L14
+enum StorageVolumeState {
+  STORAGE_VOLUME_STATE_UNSPECIFIED = 0;
+  STORAGE_VOLUME_STATE_CREATING = 1;
+  STORAGE_VOLUME_STATE_ATTACHED = 2;
+  STORAGE_VOLUME_STATE_DETACHED = 3;
+  STORAGE_VOLUME_STATE_ATTACHING = 4;
+  STORAGE_VOLUME_STATE_DETACHING = 5;
+  STORAGE_VOLUME_STATE_DELETING = 6;
+}
+
+// StorageVolumeRobustness is the 'robustness' of a replicated csi-driver volume.
+//  Refer to: https://github.com/longhorn/longhorn-manager/blob/v1.6.2/k8s/pkg/apis/longhorn/v1beta1/volume.go#L25
+enum StorageVolumeRobustness {
+  STORAGE_VOLUME_ROBUSTNESS_UNSPECIFIED = 0;
+  STORAGE_VOLUME_ROBUSTNESS_HEALTHY = 1;
+  STORAGE_VOLUME_ROBUSTNESS_DEGRADED = 2;
+  STORAGE_VOLUME_ROBUSTNESS_FAULTED = 3;
+}
+
+// StorageVolumePVCStatus is the kubernetes 'phase' of a PVC. Listed as status in cli.
+//  Refer to: https://kubernetes.io/docs/concepts/storage/persistent-volumes#phase
+enum StorageVolumePVCStatus {
+  STORAGE_VOLUME_PVC_STATUS_UNSPECIFIED = 0;
+  STORAGE_VOLUME_PVC_STATUS_BOUND = 1;
+  STORAGE_VOLUME_PVC_STATUS_PENDING = 2; // Accepted but not yet scheduled
+  STORAGE_VOLUME_PVC_STATUS_AVAILABLE = 3;
+  STORAGE_VOLUME_PVC_STATUS_RELEASED = 4;
+  STORAGE_VOLUME_PVC_STATUS_FAILED = 5;
+}
+
+// StorageVolumeReplicaStatus is a higher level status which combines replica and engine
+//    status to show a simplified view of a replica rebuild state.
+enum StorageVolumeReplicaStatus {
+  STORAGE_VOLUME_REPLICA_STATUS_UNSPECIFIED = 0;
+  STORAGE_VOLUME_REPLICA_STATUS_REBUILDING = 1;
+  STORAGE_VOLUME_REPLICA_STATUS_ONLINE = 2;
+  STORAGE_VOLUME_REPLICA_STATUS_FAILED = 3; // Replacement/Rebuilt replica not yet scheduled.
+}
+
+message KubePodNameSpaceInfo {
+  // Name of the namespace
+  string name = 1;
+
+  // Number of pods in the namespace
+  uint32 pod_count = 2;
+
+  // Number of pods in the namespace that are running
+  uint32 pod_running_count = 3;
+
+  // Number of pods in the namespace that are pending
+  uint32 pod_pending_count = 4;
+
+  // Number of pods in the namespace that are failed
+  uint32 pod_failed_count = 5;
+
+  // Number of pods in the namespace that are succeeded
+  uint32 pod_succeeded_count = 6;
+}
+
+// KubePodStatus is a combination of the kubernetes status:
+//  PodPhase: https://pkg.go.dev/k8s.io/api/core/v1#PodPhase
+//  PodConditionType: https://pkg.go.dev/k8s.io/api/core/v1#PodConditionType
+//  ContainerState: https://pkg.go.dev/k8s.io/api/core/v1#ContainerState
+enum KubePodStatus {
+  KUBE_POD_STATUS_UNSPECIFIED = 0; // Necessary for proto yetus
+  KUBE_POD_STATUS_PENDING = 1; // PodPhase
+  KUBE_POD_STATUS_RUNNING = 2; // PodPhase
+  KUBE_POD_STATUS_SUCCEEDED = 3; // PodPhase
+  KUBE_POD_STATUS_CONTAINER_CREATING = 4; // ContainerState:Waiting Reason:ContainerCreating
+  KUBE_POD_STATUS_CRASHLOOP_BACKOFF = 5; // ContainerState:Waiting Reason:CrashLoopBackoff
+  KUBE_POD_STATUS_ERROR = 6; // ContainerState:Terminated Reason:Error
+  KUBE_POD_STATUS_EVICTED = 7; // PodConditionType:DisruptionTarget
+  KUBE_POD_STATUS_FAILED = 8; // PodPhase
+}
+
+message KubeEVEAppPodInfo {
+  // Name of the EVE application
+  string name = 1;
+
+  // Application Status
+  KubePodStatus status = 2;
+
+  // Restart count of the application
+  uint32 restart_count = 3;
+
+  // Restart time of the application
+  google.protobuf.Timestamp restart_timestamp = 4;
+
+  // Creation Time of the application
+  google.protobuf.Timestamp creation_timestamp = 5;
+
+  // IP address of the application, on cni0 interface
+  string ip_address = 6;
+
+  // Node name on which the application is running
+  string node_name = 7;
+}
+
+message KubeVolumeReplicaInfo {
+  // Name of the volume replica
+  string name = 1;
+
+  // Node replica resides on, will match node name
+  string owner_node = 2;
+
+  // Rebuild progress of the volume replica
+  uint32 rebuild_progress_percentage = 3;
+
+  // Replica status
+  StorageVolumeReplicaStatus status = 4;
+}
+
+message KubeVolumeInfo {
+  // Name of the volume
+  string name = 1;
+
+  // Status of the volume
+  StorageVolumeState state = 2;
+
+  // Robustness of the volume
+  StorageVolumeRobustness robustness = 3;
+
+  // Creation Time of the volume in the cluster
+  google.protobuf.Timestamp creation_timestamp = 4;
+
+  // Provisioned size of the volume in bytes
+  uint64 provisioned_bytes = 5;
+
+  // Allocated size of the volume in bytes
+  uint64 allocated_bytes = 6;
+
+  // PV/PVC status of the volume
+  StorageVolumePVCStatus pvc_status = 7;
+
+  // Replicas of the volume
+  repeated KubeVolumeReplicaInfo replica = 8;
+}
+
+message KubeStorageInfo {
+  // Overall status of Longhorn
+  StorageHealthStatus health = 1;
+
+  // Time of the most recent health status transition
+  google.protobuf.Timestamp transition_time = 2;
+
+  // Status of all the volumes in Longhorn
+  repeated KubeVolumeInfo volumes = 3;
+}
+
+// KubeCompUpdateStatus will track status of each
+//  KubeComp which will update serially in a cluster.
+enum KubeCompUpdateStatus {
+  KUBE_COMP_UPDATE_STATUS_UNSPECIFIED = 0;
+  KUBE_COMP_UPDATE_STATUS_DOWNLOAD = 1;
+  KUBE_COMP_UPDATE_STATUS_DOWNLOAD_FAILED = 2;
+  KUBE_COMP_UPDATE_STATUS_IN_PROGRESS = 3;
+  KUBE_COMP_UPDATE_STATUS_FAILED = 4;
+  KUBE_COMP_UPDATE_STATUS_COMPLETED = 5;
+}
+
+// KubeComp is a component installed in eve after usb install.
+//  These are provided to show more detail on cluster update progress.
+enum KubeComp {
+  KUBE_COMP_UNSPECIFIED = 0;
+  KUBE_COMP_CONTAINERD = 1; //every node will publish
+  KUBE_COMP_K3S = 2; // every node will publish
+  KUBE_COMP_MULTUS = 3; // Only the first node to update eve-os will publish the remaining here and below
+  KUBE_COMP_KUBEVIRT = 4;
+  KUBE_COMP_CDI = 5;
+  KUBE_COMP_LONGHORN = 6;
+}

@@ -12,6 +12,7 @@ import "evecommon/devmodelcommon.proto";
 import "evecommon/evecommon.proto";
 import "info/patch_envelope.proto";
 import "info/ntpsources.proto";
+import "info/edge_node_cluster.proto";
 
 // Deprecated: see deprecatedMetricItem below
 enum DepMetricItemType {
@@ -69,6 +70,8 @@ enum ZInfoTypes {
   ZiLocation = 13;
   ZiPatchEnvelope = 14;
   ZiNTPSources = 16;
+  ZiKubeCluster = 17;
+  ZiKubeClusterUpdateStatus = 18;
 }
 
 // Information about assignable I/O adapter bundles
@@ -1233,6 +1236,8 @@ message ZInfoMsg {
     // 21 reserved
     ZInfoClusterNode cluster_node = 22;
     ZInfoNTPSources ntp_sources = 23;
+    ZInfoKubeCluster cluster_info = 24;
+    ZInfoKubeClusterUpdateStatus cluster_update_info = 25;
   }
   google.protobuf.Timestamp atTimeStamp = 6;
 }
@@ -1316,3 +1321,31 @@ message ZInfoLocation {
   string logicallabel = 9;
 }
 
+message ZInfoKubeClusterUpdateStatus {
+  // current_node will have an empty value when no node is in an update
+  string current_node = 1;
+
+  // component currently under update or KUBE_COMP_UNSPECIFIED when no update in progress
+  KubeComp component = 2;
+
+  // status of the current component under update, KUBE_COMP_UPDATE_STATUS_UNSPECIFIED when
+  //   no updates in progress
+  KubeCompUpdateStatus status = 3;
+
+  // Error info in case of failure
+  ErrorInfo error = 4;
+}
+
+message ZInfoKubeCluster {
+  // Info message on a list of cluster nodes
+  repeated KubeNodeInfo nodes = 1;
+
+  // Info message on a list of namespaces's pods summary
+  repeated KubePodNameSpaceInfo pod_name_spaces = 2;
+
+  // Info message on a list of EVE applications
+  repeated KubeEVEAppPodInfo eve_apps = 3;
+
+  // Info message on cluster storage
+  KubeStorageInfo storage = 4;
+}
