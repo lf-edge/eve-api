@@ -102,6 +102,9 @@ enum StorageVolumeReplicaStatus {
   STORAGE_VOLUME_REPLICA_STATUS_REBUILDING = 1;
   STORAGE_VOLUME_REPLICA_STATUS_ONLINE = 2;
   STORAGE_VOLUME_REPLICA_STATUS_FAILED = 3; // Replacement/Rebuilt replica not yet scheduled.
+  STORAGE_VOLUME_REPLICA_STATUS_OFFLINE = 4;
+  STORAGE_VOLUME_REPLICA_STATUS_STARTING = 5;
+  STORAGE_VOLUME_REPLICA_STATUS_STOPPING = 6;
 }
 
 message KubePodNameSpaceInfo {
@@ -181,7 +184,7 @@ message KubeVolumeInfo {
   // Name of the volume
   string name = 1;
 
-  // Status of the volume
+  // Status of the volume attachment
   StorageVolumeState state = 2;
 
   // Robustness of the volume
@@ -201,11 +204,24 @@ message KubeVolumeInfo {
 
   // Replicas of the volume
   repeated KubeVolumeReplicaInfo replica = 8;
+
+  // Robustness substate of the replication status of the volume
+  StorageHealthStatus robustness_substate = 9;
+}
+
+// ServiceStatus denotes a cluster wide
+//  infrastructure component's health.
+//  eg. a daemonset which requires pods on multiple nodes
+enum ServiceStatus {
+  SERVICE_STATUS_UNSPECIFIED = 0;
+  SERVICE_STATUS_FAILED = 1;
+  SERVICE_STATUS_DEGRADED = 2;
+  SERVICE_STATUS_HEALTHY = 3;
 }
 
 message KubeStorageInfo {
-  // Overall status of Longhorn
-  StorageHealthStatus health = 1;
+  // Health of the distributes storage services
+  ServiceStatus health = 1;
 
   // Time of the most recent health status transition
   google.protobuf.Timestamp transition_time = 2;
