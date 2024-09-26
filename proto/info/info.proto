@@ -1348,4 +1348,8 @@ message ZInfoKubeCluster {
 
   // Info message on cluster storage
   KubeStorageInfo storage = 4;
+
+  // Cluster UUID which will match config.EdgeNodeCluster.cluster_id passed
+  //   in to the node by the controller.
+  string cluster_id = 5;
 }

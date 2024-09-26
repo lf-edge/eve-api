@@ -29,6 +29,20 @@ message KubeNodeCondition {
   bool set = 2;
 }
 
+// Cluster Admission status of the eve node
+enum NodeAdmission {
+  NODE_ADMISSION_UNSPECIFIED = 0;
+  // Not Clustered is the default state at first boot
+  NODE_ADMISSION_NOT_CLUSTERED = 1;
+  // Leaving can be a long lived state due to draining existing data
+  NODE_ADMISSION_LEAVING = 2;
+  // Joining can be a long lived state if inter-node networking is not operable
+  NODE_ADMISSION_JOINING = 3;
+  // Joined is reached when the node becomes Ready the first time after a request
+  // to join the cluster
+  NODE_ADMISSION_JOINED = 4;
+}
+
 message KubeNodeInfo {
   // Name of the node, will match device name
   string name = 1;
@@ -49,6 +63,9 @@ message KubeNodeInfo {
   string internal_ip = 6;
 
   bool schedulable = 7;
+
+  // Admission State of the local node in a cluster
+  NodeAdmission admission_status = 8;
 }
 
 // StorageHealthStatus is a higher level tracking status to show redundancy/failure-zone level
