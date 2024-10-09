@@ -1352,4 +1352,7 @@ message ZInfoKubeCluster {
   // Cluster UUID which will match config.EdgeNodeCluster.cluster_id passed
   //   in to the node by the controller.
   string cluster_id = 5;
+
+  // Virtual Machines running on the cluster
+  repeated KubeVMIInfo eve_vm_apps = 6;
 }
