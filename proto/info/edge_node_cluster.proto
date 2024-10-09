@@ -27,6 +27,9 @@ message KubeNodeCondition {
 
   // Condition state
   bool set = 2;
+
+  // last_transition_time is the last time the Condition changed
+  google.protobuf.Timestamp last_transition_time = 3;
 }
 
 // Cluster Admission status of the eve node
@@ -268,4 +271,38 @@ enum KubeComp {
   KUBE_COMP_KUBEVIRT = 4;
   KUBE_COMP_CDI = 5;
   KUBE_COMP_LONGHORN = 6;
+}
+
+// KubeVMIStatus is the VirtualMachineInstancePhase
+// Refer to: https://pkg.go.dev/kubevirt.io/api/core/v1#VirtualMachineInstancePhase
+enum KubeVMIStatus {
+  KUBE_VMI_STATUS_UNSPECIFIED = 0;
+  KUBE_VMI_STATUS_PENDING = 1;
+  KUBE_VMI_STATUS_SCHEDULING = 2;
+  KUBE_VMI_STATUS_SCHEDULED = 3;
+  KUBE_VMI_STATUS_RUNNING = 4;
+  KUBE_VMI_STATUS_SUCCEEDED = 5;
+  KUBE_VMI_STATUS_FAILED = 6;
+  KUBE_VMI_STATUS_UNKNOWN = 7;
+}
+
+// KubeVMIInfo is the VMI status of eve VM apps
+message KubeVMIInfo {
+  // Name of the VirtualMachineInstance
+  string name = 1;
+
+  // Status (VirtualMachineInstance.Status.Phase)
+  KubeVMIStatus status = 2;
+
+  // Creation Time of the VirtualMachineInstance
+  google.protobuf.Timestamp creation_time = 3;
+
+  // LastTransitionTime is the last time is_ready changed
+  google.protobuf.Timestamp last_transition_time = 4;
+
+  // IsReady is true if the VMI has a Ready Condition which is true
+  bool is_ready = 5;
+
+  // NodeName is the current node (kubernetes.io/hostname) the VMI is running on
+  string node_name = 6;
 }
