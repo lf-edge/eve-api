@@ -766,7 +766,9 @@ message DevicePort {
   string gateway = 13;
   // domainname - OBSOLETE - obsoleted by dns
   string domainname = 14;
+  // ntpServer and more_ntp_servers are used to report several NTP servers
   string ntpServer = 15;
+  repeated string more_ntp_servers = 35;
   // dnsServers - OBSOLETE - obsoleted by dns
   repeated string dnsServers = 16;
   string dhcpRangeLow = 17;

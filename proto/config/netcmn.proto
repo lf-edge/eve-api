@@ -83,12 +83,34 @@ message ipspec {
   string subnet = 3;
   string gateway = 5;
   string domain = 6;
+  // ntp and more_ntp are used as a union to specify several NTP servers
+  // via IP address or FQDN
+  // this is for historical reasons when we only allowed to specify one
+  // NTP server
   string ntp = 7;
+  repeated string more_ntp = 10;
   repeated string dns = 8;
 
   // for IPAM management when dhcp is turned on.
   // If none provided, system will default pool.
   ipRange dhcpRange = 9;
+
+  // Even if DhcpType is Client, EVE still accepts static
+  // IP config and will merge it with the DHCP-provided one by default
+  // use the following option to override this behavior
+  DhcpOptionsIgnore dhcp_options_ignore = 11;
+}
+
+// DhcpOptionsIgnore is used to ignore dhcp options like f.e. the NTP servers
+// - currently no other options are supported, but DNS servers might be a
+// good candidate in the future
+// the options defined can be found here:
+// DHCP: https://www.iana.org/assignments/bootp-dhcp-parameters/bootp-dhcp-parameters.xhtml
+// DHCPv6: https://www.iana.org/assignments/dhcpv6-parameters/dhcpv6-parameters.xhtml
+message DhcpOptionsIgnore {
+  // use exclusively specified NTP servers
+  // if set to true and no NTP server is provided then no NTP servers should be used
+  bool ntp_server_exclusively = 1; // DHCP option 42 / DHCPv6 option 56
 }
 
 enum NetworkType {
