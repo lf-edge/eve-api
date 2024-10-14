@@ -84,11 +84,21 @@ message ipspec {
   string gateway = 5;
   string domain = 6;
   string ntp = 7;
+  repeated string moreNtp = 10;
   repeated string dns = 8;
 
   // for IPAM management when dhcp is turned on.
   // If none provided, system will default pool.
   ipRange dhcpRange = 9;
+
+  DhcpOptionsOverride dhcp_options_override = 11;
+}
+
+// DhcpOptionsOverride is used to override or add dhcp options like f.e.
+// the NTP servers - currently no other options are supported, but DNS servers might be a
+// good candidate in the future
+message DhcpOptionsOverride {
+  bool ntpServerExclusively = 1; // use exclusively specified NTP servers
 }
 
 enum NetworkType {

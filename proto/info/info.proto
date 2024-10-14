@@ -767,6 +767,7 @@ message DevicePort {
   // domainname - OBSOLETE - obsoleted by dns
   string domainname = 14;
   string ntpServer = 15;
+  repeated string moreNtpServers = 35;
   // dnsServers - OBSOLETE - obsoleted by dns
   repeated string dnsServers = 16;
   string dhcpRangeLow = 17;
