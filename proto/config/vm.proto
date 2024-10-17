@@ -80,4 +80,6 @@ message VmConfig {
   bool enable_vnc_shim_vm = 22;
   // Boot mode: Legacy or UEFI
   VmBootMode boot_mode = 23;
+  // Custom resolution applies to VM that is runing in FML mode only.
+  string vmResolution = 24;
 }
