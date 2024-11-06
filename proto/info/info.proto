@@ -1334,6 +1334,10 @@ message ZInfoKubeClusterUpdateStatus {
 
   // Error info in case of failure
   ErrorInfo error = 4;
+
+  // Cluster UUID which will match config.EdgeNodeCluster.cluster_id passed
+  //   in to the node by the controller.
+  string cluster_id = 5;
 }
 
 message ZInfoKubeCluster {

@@ -614,6 +614,8 @@ message ZMetricMsg {
   repeated ZMetricVolume vm = 8;
 
   repeated ZMetricProcess pr = 9;
+
+  KubeClusterMetrics cm = 10;
 }
 
 // newlogMetric - stats for newlog
@@ -709,4 +711,50 @@ message FlowlogCounters {
   uint64 drops = 2;
   // The number of failed attempts to publish a flow record.
   uint64 failed_attempts = 3;
+}
+
+// Resources used as reported by kubernetes api for the node objects.
+message KubeNodeMetrics {
+  // Name of the node
+  string name = 1;
+
+  // CPU cores in milli cores
+  uint32 cpu_cores = 2;
+
+  // CPU usage in percentage
+  float cpu_usage = 3;
+
+  // Memory usage in bytes
+  uint32 memory_usage = 4;
+
+  // Memory usage in percentage
+  float memory_usage_percentage = 5;
+}
+
+// Resources used as reported by kubernetes api for running eve user apps.
+message KubeAppMetrics {
+  // Name of the EVE application
+  string name = 1;
+
+  // CPU cores in milli cores
+  uint32 cpu_cores = 2;
+
+  // Memory usage in bytes
+  uint32 memory_usage = 3;
+}
+
+// Parent cluster metrics object to be sent by the node which has leader election.
+message KubeClusterMetrics {
+  // Cluster UUID which will match config.EdgeNodeCluster.cluster_id passed
+  //   in to the node by the controller.
+  string cluster_id = 1;
+
+  // Metrics of the nodes in the cluster
+  repeated KubeNodeMetrics nodes = 2;
+
+  // Metrics of the EVE pod applications in the cluster
+  repeated KubeAppMetrics eve_pod_apps = 3;
+
+  // Metrics of the EVE vmi applications in the cluster
+  repeated KubeAppMetrics eve_vmi_apps = 4;
 }
