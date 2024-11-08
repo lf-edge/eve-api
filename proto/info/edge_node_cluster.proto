@@ -69,6 +69,9 @@ message KubeNodeInfo {
 
   // Admission State of the local node in a cluster
   NodeAdmission admission_status = 8;
+
+  // Id of the eve node matching config.EdgeDevConfig.id
+  string node_id = 9;
 }
 
 // StorageHealthStatus is a higher level tracking status to show redundancy/failure-zone level
@@ -227,6 +230,9 @@ message KubeVolumeInfo {
 
   // Robustness substate of the replication status of the volume
   StorageHealthStatus robustness_substate = 9;
+
+  // Id of the eve volume info.ZInfoVolume.uuid
+  string volume_id = 10;
 }
 
 // ServiceStatus denotes a cluster wide
