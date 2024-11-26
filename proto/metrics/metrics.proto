@@ -655,6 +655,10 @@ message newlogMetric {
   uint32 tooManyRequest = 21;
   // counter for gzip files bypassing the uploading to cloud
   uint32 skipUploadAppFile = 22;
+  // total size of logs on device
+  uint64 total_size_logs = 23;
+  // timestamp of the latest device log saved on device
+  google.protobuf.Timestamp oldest_saved_device_log = 24;
 }
 
 // logfileMetrics - is shared for both device log and application log
