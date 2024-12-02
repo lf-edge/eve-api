@@ -678,6 +678,7 @@ enum APICapability {
   API_CAPABILITY_MTU = 8; // Allows to set MTU for network adapters and network instances
   API_CAPABILITY_ADAPTER_USER_LABELS = 9; // Supports user-defined shared network adapter labels
   API_CAPABILITY_ENFORCED_NET_INTERFACE_ORDER = 10; // EVE is able to enforce the user-defined order of application network interfaces
+  API_CAPABILITY_NTPS_FQDN = 11; // Allow to set NTP server via FQDN instead of only IP and allow setting several NTP servers
   // Add new values as new EdgeDevConfig API features are implemented
 }
 
