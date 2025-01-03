@@ -704,7 +704,6 @@ enum BootReason {
 }
 
 // Different reasons why we are in maintenance mode
-// Must match the values in pkg/pillar/types.MaintenceModeReason
 enum MaintenanceModeReason {
   MAINTENANCE_MODE_REASON_NONE = 0;
   MAINTENANCE_MODE_REASON_USER_REQUESTED = 1;

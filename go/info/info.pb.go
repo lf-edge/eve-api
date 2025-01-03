@@ -1184,7 +1184,6 @@ func (BootReason) EnumDescriptor() ([]byte, []int) {
 }
 
 // Different reasons why we are in maintenance mode
-// Must match the values in pkg/pillar/types.MaintenceModeReason
 type MaintenanceModeReason int32
 
 const (
