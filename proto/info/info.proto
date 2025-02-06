@@ -902,6 +902,7 @@ message ZInfoStorage {
 enum SnapshotType {
   SNAPSHOT_TYPE_UNSPECIFIED = 0;
   SNAPSHOT_TYPE_APP_UPDATE = 1; // Snapshot created as a result of an application update
+  SNAPSHOT_TYPE_IMMEDIATE = 2; // Snapshot created as a result of an immediate snapshot
 }
 
 // Per snapshot information
