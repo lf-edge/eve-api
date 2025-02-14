@@ -10,8 +10,8 @@ option java_package = "org.lfedge.eve.info";
 enum EVE_PATCH_ENVELOPE_STATE {
     PATCH_UNKOWN = 0;
 
-    // There is an error with config or during download
-    //  or verification failed
+    // There is an error with config, during download,
+    //  verification failed, or decryption failure
     PATCH_ERROR = 1;
 
     // Configuration received but no downloads started

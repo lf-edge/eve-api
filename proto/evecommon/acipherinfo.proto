@@ -62,6 +62,11 @@ message CipherBlock {
   bytes clearTextSha256 = 4;
 }
 
+// User of the EncryptionBlock
+enum EncryptionBlockUser {
+  ENCRYPTION_BLOCK_USER_UNSPECIFIED = 0;
+  ENCRYPTION_BLOCK_USER_BINARY_ARTIFACT_METADATA = 1;
+}
 
 // This message will be filled with the
 // details to be encrypted and shared across
@@ -79,4 +84,11 @@ message EncryptionBlock {
   string cellular_net_password = 7;
   // Cluster token
   string cluster_token = 8;
+
+  // A set of general fields to be used for expansion of
+  // this object, if user is specified the encrypted data
+  // will be inside encrypted_data and to be used
+  // by the user specified.
+  EncryptionBlockUser user = 9;
+  string encrypted_data = 10;
 }

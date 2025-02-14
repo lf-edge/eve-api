@@ -8,6 +8,7 @@ option go_package = "github.com/lf-edge/eve-api/go/config";
 option java_package = "org.lfedge.eve.config";
 
 import "google/protobuf/timestamp.proto";
+import "evecommon/acipherinfo.proto";
 
 enum EVE_OPAQUE_OBJECT_CATEGORY {
     UNKOWN = 0;
@@ -28,6 +29,11 @@ message InlineOpaqueBase64Data {
     optional string base64MetaData = 3;
 }
 
+message EncryptedInlineOpaqueBase64Data {
+    // Encrypted serialized copy of InlineOpaqueBase64Data
+    org.lfedge.eve.common.CipherBlock cipher_data = 1;
+}
+
 message ExternalOpaqueBinaryBlob {
     // Name of the image uploaded into data store
     string imageName = 1;
@@ -45,6 +51,11 @@ message ExternalOpaqueBinaryBlob {
     string imageId = 4;
 }
 
+message EncryptedExternalOpaqueBinaryBlob {
+    // Encrypted serialized copy of ExternalOpaqueBinaryBlob
+    org.lfedge.eve.common.CipherBlock cipher_data = 1;
+}
+
 message EveBinaryArtifact {
     // base64 or binary blob only - secret type is invalid
     EVE_OPAQUE_OBJECT_CATEGORY format = 1;
@@ -52,9 +63,25 @@ message EveBinaryArtifact {
     oneof binaryBlob {
         InlineOpaqueBase64Data inline = 2;
         ExternalOpaqueBinaryBlob volumeRef = 3;
+        // There is an intended skip in field IDs here
+        // to handle the existing artifactMetaData
+        // and metadata_cipher_data fields.
+        EncryptedInlineOpaqueBase64Data encrypted_inline = 6;
+        EncryptedExternalOpaqueBinaryBlob encrypted_volumeref = 7;
     }
 
+    // If metadata_cipher_data is set then artifactMetaData can be ignored
     optional string artifactMetaData = 4;
+
+    // Optional encryption for EveBinaryArtifact.artifactMetaData
+    // CipherBlock.cipherData should contain the encrypted serialized
+    // copy of an EncryptionBlock structure with
+    // EncryptionBlock.user = ENCRYPTION_BLOCK_USER_BINARY_ARTIFACT_METADATA
+    // and EncryptionBlock.encrypted_data set to the EveBinaryArtifact.artifactMetaData text.
+    optional org.lfedge.eve.common.CipherBlock metadata_cipher_data = 5;
+
+    // Field Ids will need to continue from encrypted_volumeref above due to the
+    // unexpected ordering here.
 }
 
 enum EVE_PATCH_ENVELOPE_ACTION {
