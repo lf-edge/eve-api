@@ -213,6 +213,9 @@ message AppInstanceConfig {
 
   // Custom resolution applies to VM that is running in FML mode only.
   string vm_resolution = 27;
+
+  // AppRuntimeType - to indicate the types of Application Runtime Deployment
+  AppRuntimeType runtime_type = 28;
 }
 
 message PatchEnvelopeRef {
@@ -231,4 +234,12 @@ message VolumeRef {
   // Indicates volume mount point inside container
   // if mount_dir is empty then it will be mounted on /mnt
   string mount_dir = 3;
+}
+
+// AppRuntimeType - to indicate the types of Application Deployment
+// For instance, the need to gather of docker container metrics and logs
+// from the agent inside applications on EVE device.
+enum AppRuntimeType {
+  APP_RUNTIME_TYPE_UNSPECIFIED = 0;
+  APP_RUNTIME_TYPE_DOCKER = 1;
 }
