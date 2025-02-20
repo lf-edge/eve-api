@@ -72,6 +72,7 @@ enum ZInfoTypes {
   ZiNTPSources = 16;
   ZiKubeCluster = 17;
   ZiKubeClusterUpdateStatus = 18;
+  ZiECCMemoryReport = 19;
 }
 
 // Information about assignable I/O adapter bundles
@@ -680,6 +681,7 @@ enum APICapability {
   API_CAPABILITY_ENFORCED_NET_INTERFACE_ORDER = 10; // EVE is able to enforce the user-defined order of application network interfaces
   API_CAPABILITY_NTPS_FQDN = 11; // Allow to set NTP server via FQDN instead of only IP and allow setting several NTP servers
   API_CAPABILITY_WIN_LIC_PASSTHROUGH = 12; // Support for passing through OEM Windows license from host's the ACPI tables to the VM
+  API_CAPABILITY_HEALTH_CHECKS = 13; // Support health checks for the system
   // Add new values as new EdgeDevConfig API features are implemented
 }
 
@@ -1244,6 +1246,7 @@ message ZInfoMsg {
     ZInfoNTPSources ntp_sources = 23;
     ZInfoKubeCluster cluster_info = 24;
     ZInfoKubeClusterUpdateStatus cluster_update_info = 25;
+    ZInfoECCMemoryReport ecc_memory_report_info = 26;
   }
   google.protobuf.Timestamp atTimeStamp = 6;
 }
@@ -1365,4 +1368,21 @@ message ZInfoKubeCluster {
 
   // Virtual Machines running on the cluster
   repeated KubeVMIInfo eve_vm_apps = 6;
+}
+
+message DimmRankInfo {
+  string rank_name = 1;
+  int64 ce_count = 2;
+  int64 ue_count = 3;
+}
+
+message ECCMemoryControllerInfo {
+  string controller_name = 1;
+  int64 ce_count = 2;
+  int64 ue_count = 3;
+  repeated DimmRankInfo ranks = 4;
+}
+
+message ZInfoECCMemoryReport {
+  repeated ECCMemoryControllerInfo memory_controllers = 1;
 }
