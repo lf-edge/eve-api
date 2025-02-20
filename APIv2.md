@@ -530,6 +530,41 @@ Response:
 
 The response MUST contain no body content.
 
+### Hardware Health info
+
+The hardwarehealth API is used by the device to send hardware health
+information about the components of the device (e.g., reporting ECC errors, CPU
+temperature, etc.).
+
+POST /api/v2/edgeDevice/id/{uuid}/hardwarehealth
+
+Return codes:
+
+* Unauthenticated or invalid credentials: `401`
+* Valid credentials without authorization: `403`
+* Success: `201`
+* Unknown Device: `400`
+* Missing or unprocessable body: `422`
+* Controller is unavailable e.g., being upgraded: `503`
+
+Request:
+
+The request MUST use the Device certificate to sign the protectedPayload in the
+AuthContainer. The senderCerthash MUST be set to the hash of the Device
+certificate.
+
+The request MUST be of mime type "application/x-proto-binary".
+
+The request body MUST be a protobuf message of type AuthContainer where the
+AuthBody is a protobuf message of type
+[hardwarehealth.ZHardwareHealth](./proto/hardwarehealth/hardware_health.proto).
+The message contains one entry of type
+[hardwarehealth.ECCMemoryReport](./proto/hardwarehealth/hardware_health.proto).
+
+Response:
+
+The response MUST contain no body content.
+
 ## Caching Policy
 
 Edge Devices are expected to have intermittent connectivity, with limited bandwidth, memory and storage. It is likely that, at some point, a Device will run out of local memory or storage to cache information, logs or metrics messages that need to be sent to a Controller.
