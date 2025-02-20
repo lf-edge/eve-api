@@ -1,0 +1,50 @@
+// Copyright(c) 2025 Zededa, Inc.
+// All rights reserved.
+
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package org.lfedge.eve.hardwarehealth;
+option go_package  = "github.com/lf-edge/eve-api/go/hardwarehealth";
+option java_package = "org.lfedge.eve.hardwarehealth";
+
+// Request payload for the POST /api/v2/edgeDevice/id/{uuid}/hardwarehealth endpoint.
+//
+// ZHardwareHealth encapsulates periodic health check reports for critical
+// system hardware components. Each message typically contains status updates
+// for key hardware elements, such as ECC memory and storage devices. These
+// reports are generated at a low frequency (e.g., once every 24 hours) and
+// are not retransmitted in case of network failure, as their data remains
+// relatively stable.
+//
+// The message is secured with auth container, which is bound to the device
+// certificate to ensure integrity and authenticity.
+message ZHardwareHealth {
+  string dev_id = 1;
+
+  google.protobuf.Timestamp at_time_stamp = 2;
+
+  ECCMemoryReport mr = 3;
+}
+
+// Info per memory rank in the dimm
+message DimmRankInfo {
+  string rank_name = 1;
+  int64 ce_count = 2; // Correctable error count in the rank
+  int64 ue_count = 3; // Uncorrectable error count in the rank
+}
+
+// Info per memory controller in the system
+message ECCMemoryControllerInfo {
+  string controller_name = 1;
+  int64 ce_count = 2; // Correctable error count in the memory controller
+  int64 ue_count = 3; // Uncorrectable error count in the memory controller
+  repeated DimmRankInfo ranks = 4; // Repeated for each rank
+}
+
+// A report for all memory controllers
+message ECCMemoryReport {
+  repeated ECCMemoryControllerInfo memory_controllers = 1; // Repeated for each memory controller
+}
+
