@@ -469,7 +469,8 @@ enum StorageStatus {
 message StorageDiskState {
   org.lfedge.eve.common.DiskDescription disk_name = 1;
   StorageStatus status = 2;            // In ZFS
-  string state = 3;                   // VDev aux state
+  string state = 3;                    // VDev aux state
+  string smart_status = 4;              // S.M.A.R.T. info availability
 }
 
 enum StorageRaidType {
@@ -495,25 +496,18 @@ message SmartAttr {
   uint64 thresh = 4;  // the value that the Value of the same attribute must reach for the attribute's state to be considered critical.
   string when_failed = 5; // critical state if no empty
   uint64 raw_value = 6; // Contains miscellaneous meter readings (where applicable)
-}
-
-message SmartMetric {
-  SmartAttr reallocated_sector_ct = 1; // Count of reallocated sectors. The higher the attribute value, the more sectors were reallocated
-  SmartAttr power_on_hours = 2; // Count of hours in power-on state.
-  SmartAttr power_cycle_count = 3; // This attribute indicates the count of full hard disk power on/off cycles
-  SmartAttr reallocated_event_count = 4; // Count of remap operations. Shows the total count of attempts.
-  SmartAttr current_pending_sector = 5; // Count of "unstable" sectors (waiting to be remapped, because of unrecoverable read errors)
-  bool need_update = 6; // Indicates that data has changed
-  SmartAttr temperature = 7; // Indicates the device temperature, if the appropriate sensor is fitted.
+  string type = 7; // Informs the condition of the device e.g., pre-fail, old_age, etc.
+  string attribute_name = 8; // the attribute name
 }
 
 message StorageDiskInfo {
+  reserved 3; // deprecated
   string disk_name = 1;
-  repeated SmartMetric smart_data = 3; // smartctl output
   string wwn = 4;
   string serial_number = 5;
   string model = 6; // Intel 123456F
   string collector_errors = 7; // Reports errors when collecting information. Default and normal value = ""
+  repeated SmartAttr smart_attr = 8; // smartctl output
 }
 
 // For nested structures like pool of stripes of mirrors we should define this structure
