@@ -427,6 +427,40 @@ message ZCellularProvider {
   bool forbidden = 5;
 }
 
+// State of a cellular bearer.
+message CellularBearer {
+  // Access Point Network of the bearer.
+  string apn = 1;
+  // Purpose of the bearer.
+  org.lfedge.eve.common.BearerType bearer_type = 2;
+  // The IP addressing type to use for the bearer.
+  org.lfedge.eve.common.CellularIPType ip_type = 3;
+  // Indicates whether or not the bearer is connected.
+  bool connected = 4;
+  // Provides additional information specifying the reason why the modem is not connected
+  // (either due to a failed connection attempt, or due to a a network initiated
+  // disconnection).
+  string connection_error = 5;
+  // Time when the current connection was established.
+  // Zero timestamp if the bearer is not connected.
+  google.protobuf.Timestamp connected_at = 6;
+}
+
+// A cellular profile is a modem-stored configuration that defines how the device
+// connects to a network. It is used mostly during the initial attach procedure.
+message CellularProfile {
+  // The name of the profile.
+  string profile_name = 1;
+  // Access Point Name used by the profile.
+  string apn = 2;
+  // Which bearer type this profile is for.
+  org.lfedge.eve.common.BearerType bearer_type = 3;
+  // The IP addressing type used by the profile.
+  org.lfedge.eve.common.CellularIPType ip_type = 4;
+  // When true, the modem will not connect to networks that require roaming when using this profile.
+  bool forbid_roaming = 5;
+}
+
 // Device Run State
 enum ZDeviceState {
     // Just to handle Un-Initialized runState variable Internally
@@ -677,6 +711,7 @@ enum APICapability {
   API_CAPABILITY_VOLUME_SNAPSHOTS_IMMEDIATE = 13; // Volume snapshots supported
   API_CAPABILITY_ENCRYPTED_PATCH_ENVELOPE = 14; // Support for Patch Envelope Encryption
   API_CAPABILITY_SINGLE_STACK_IP_NETWORK = 15; // Support for V4Only and V6Only NetworkType
+  API_CAPABILITY_CELLULAR_ATTACH_CONFIG = 16; // Support cellular attach configuration
   // Add new values as new EdgeDevConfig API features are implemented
 }
 
@@ -841,6 +876,11 @@ message ZCellularStatus {
   // if the connectivity probing is failing, error is reported here
   // (see CellularConnectivityProbe).
   string probe_error = 11;
+  // Contains all bearers currently associated with the cellular connection,
+  // including the attach (initial) bearer.
+  repeated CellularBearer bearers = 12;
+  // Cellular connection profiles stored on the modem.
+  repeated CellularProfile profiles = 13;
 }
 
 // SW Info for the device base OS

@@ -160,11 +160,17 @@ message CellularAccessPoint {
   uint32 sim_slot = 1;
   // Access Point Network to connect into.
   // By default it is "internet".
+  // Applies to the default bearer.
+  // To modify the attach bearer APN, use attach_apn instead.
   string apn = 2;
   // Authentication protocol used by the network.
+  // Applies to the default bearer.
+  // To modify the authentication protocol for the attach bearer, use attach_auth_protocol instead.
   CellularAuthProtocol auth_protocol = 3;
   // Cipher data may contain encrypted user credentials
   // (inside cellNetUsername and cellNetPassword fields).
+  // Applies to the default bearer.
+  // To set the user credentials for the attach bearer, use attach_cipher_data instead.
   org.lfedge.eve.common.CipherBlock cipher_data = 4;
   // The set of cellular network operators that modem should preferably try to register
   // and connect into.
@@ -181,6 +187,22 @@ message CellularAccessPoint {
   // Not listed technologies will not be tried.
   // If empty, then modem will select RAT automatically.
   repeated org.lfedge.eve.common.RadioAccessTechnology preferred_rats = 7;
+  // The IP addressing type to use for the default bearer.
+  org.lfedge.eve.common.CellularIPType ip_type = 8;
+  // Access Point Name (APN) for the attach (initial) bearer.
+  // This field is optional. If not specified, EVE will not send any attach bearer
+  // configuration to the modem. Instead, the modem will use one of its pre-installed
+  // profiles (see CellularProfile) to determine the configuration.
+  string attach_apn = 9;
+  // The IP addressing type to use for the attach bearer.
+  // Leave undefined if attach_apn is not specified.
+  org.lfedge.eve.common.CellularIPType attach_ip_type = 10;
+  // Authentication protocol used for the attach bearer.
+  // Leave undefined if attach_apn is not specified.
+  CellularAuthProtocol attach_auth_protocol = 11;
+  // Encrypted user credentials for the attach bearer (if required).
+  // Leave empty if attach_apn is not specified.
+  org.lfedge.eve.common.CipherBlock attach_cipher_data = 12;
 }
 
 enum CellularAuthProtocol {
