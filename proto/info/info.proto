@@ -676,6 +676,7 @@ enum APICapability {
   API_CAPABILITY_WIN_LIC_PASSTHROUGH = 12; // Support for passing through OEM Windows license from host's the ACPI tables to the VM
   API_CAPABILITY_VOLUME_SNAPSHOTS_IMMEDIATE = 13; // Volume snapshots supported
   API_CAPABILITY_ENCRYPTED_PATCH_ENVELOPE = 14; // Support for Patch Envelope Encryption
+  API_CAPABILITY_SINGLE_STACK_IP_NETWORK = 15; // Support for V4Only and V6Only NetworkType
   // Add new values as new EdgeDevConfig API features are implemented
 }
 
