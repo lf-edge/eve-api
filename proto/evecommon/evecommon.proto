@@ -35,3 +35,33 @@ enum RadioAccessTechnology {
   // 5G New Radio.
   RADIO_ACCESS_TECHNOLOGY_5GNR = 4;
 }
+
+// The IP addressing type to use for a given attach or default bearer.
+enum CellularIPType {
+  // IP type is not specified.
+  // When unspecified, EVE will not enforce an IP type in the bearer configuration.
+  // The modem will instead use its built-in profiles (see CellularProfile) to determine
+  // the appropriate IP type for the network.
+  CELLULAR_IP_TYPE_UNSPECIFIED = 0;
+  // IPv4 only.
+  CELLULAR_IP_TYPE_IPV4 = 1;
+  // IPv4 and IPv6.
+  CELLULAR_IP_TYPE_IPV4_AND_IPV6 = 2;
+  // IPv6 only.
+  CELLULAR_IP_TYPE_IPV6 = 3;
+}
+
+// Purpose of a given cellular bearer.
+enum BearerType {
+  // Bearer type is not specified.
+  BEARER_TYPE_UNSPECIFIED = 0;
+  // Bearer used for the initial attach procedure.
+  BEARER_TYPE_ATTACH = 1;
+  // Default connection bearer providing packet data access to the network.
+  BEARER_TYPE_DEFAULT = 2;
+  // Secondary context (2G/3G) or dedicated bearer (4G), defined by the user
+  // of the API. These bearers use the same IP address used by a primary
+  // context or default bearer and provide a dedicated flow for specific
+  // traffic with different QoS settings.
+  BEARER_TYPE_DEDICATED = 3;
+}
