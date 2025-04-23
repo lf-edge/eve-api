@@ -10,6 +10,7 @@ option go_package  = "github.com/lf-edge/eve-api/go/nestedappinstancemetrics";
 // for a top level appinstance and all containers
 // inside an app instance.  A single parent NestedAppMetrics returned from
 // GET /api/v1/metrics/nested-app-id/<app-id>
+// This structure is protojson marshaled and unmarshaled, field case cannot change.
 message NestedAppMetrics {
   // The parent NestedAppMetrics.Id will have an app instance uuid
   // to show app level metrics where the app is a group of one or more containers.
@@ -18,24 +19,24 @@ message NestedAppMetrics {
   string id = 1;
 
   string status = 2;  // uptime, pause, stop status
-  uint32 pids = 3;    // number of PIDs within the container
+  uint32 Pids = 3;    // number of PIDs within the container
 
   // CPU stats
   int64 uptime = 4;         // unix.nano, time since container starts
-  uint64 cpu_total = 5;      // container CPU since starts in nanosec
-  uint64 system_cpu_total = 6;// total system, user, idle in nanosec
+  uint64 CPUTotal = 5;      // container CPU since starts in nanosec
+  uint64 SystemCPUTotal = 6;// total system, user, idle in nanosec
 
   // Memory stats
-  uint32 used_mem = 7;      // in MBytes
-  uint32 allocated_mem = 8; // in MBytes
+  uint32 UsedMem = 7;      // in MBytes
+  uint32 AllocatedMem = 8; // in MBytes
 
   // Network stats
-  uint64 tx_bytes = 9;  // in Bytes
-  uint64 rx_bytes = 10; // in Bytes
+  uint64 TxBytes = 9;  // in Bytes
+  uint64 RxBytes = 10; // in Bytes
 
   // Disk stats
-  uint64 read_bytes = 11;  // in MBytes
-  uint64 write_bytes = 12; // in MBytes
+  uint64 ReadBytes = 11;  // in MBytes
+  uint64 WriteBytes = 12; // in MBytes
 
   // Child container metrics
   // id field should be a container name where the prefix
