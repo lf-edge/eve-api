@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n7nestedappinstancemetrics/nestedappinstancemetrics.proto\x12\'org.lfedge.eve.nestedappinstancemetrics\"\xcb\x02\n\x10NestedAppMetrics\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0e\n\x06status\x18\x02 \x01(\t\x12\x0c\n\x04pids\x18\x03 \x01(\r\x12\x0e\n\x06uptime\x18\x04 \x01(\x03\x12\x11\n\tcpu_total\x18\x05 \x01(\x04\x12\x18\n\x10system_cpu_total\x18\x06 \x01(\x04\x12\x10\n\x08used_mem\x18\x07 \x01(\r\x12\x15\n\rallocated_mem\x18\x08 \x01(\r\x12\x10\n\x08tx_bytes\x18\t \x01(\x04\x12\x10\n\x08rx_bytes\x18\n \x01(\x04\x12\x12\n\nread_bytes\x18\x0b \x01(\x04\x12\x13\n\x0bwrite_bytes\x18\x0c \x01(\x04\x12Z\n\x17\x63hild_container_metrics\x18\r \x03(\x0b\x32\x39.org.lfedge.eve.nestedappinstancemetrics.NestedAppMetricsB8Z6github.com/lf-edge/eve-api/go/nestedappinstancemetricsb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n7nestedappinstancemetrics/nestedappinstancemetrics.proto\x12\'org.lfedge.eve.nestedappinstancemetrics\"\xc2\x02\n\x10NestedAppMetrics\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0e\n\x06status\x18\x02 \x01(\t\x12\x0c\n\x04Pids\x18\x03 \x01(\r\x12\x0e\n\x06uptime\x18\x04 \x01(\x03\x12\x10\n\x08\x43PUTotal\x18\x05 \x01(\x04\x12\x16\n\x0eSystemCPUTotal\x18\x06 \x01(\x04\x12\x0f\n\x07UsedMem\x18\x07 \x01(\r\x12\x14\n\x0c\x41llocatedMem\x18\x08 \x01(\r\x12\x0f\n\x07TxBytes\x18\t \x01(\x04\x12\x0f\n\x07RxBytes\x18\n \x01(\x04\x12\x11\n\tReadBytes\x18\x0b \x01(\x04\x12\x12\n\nWriteBytes\x18\x0c \x01(\x04\x12Z\n\x17\x63hild_container_metrics\x18\r \x03(\x0b\x32\x39.org.lfedge.eve.nestedappinstancemetrics.NestedAppMetricsB8Z6github.com/lf-edge/eve-api/go/nestedappinstancemetricsb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -23,5 +23,5 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   DESCRIPTOR._options = None
   DESCRIPTOR._serialized_options = b'Z6github.com/lf-edge/eve-api/go/nestedappinstancemetrics'
   _globals['_NESTEDAPPMETRICS']._serialized_start=101
-  _globals['_NESTEDAPPMETRICS']._serialized_end=432
+  _globals['_NESTEDAPPMETRICS']._serialized_end=423
 # @@protoc_insertion_point(module_scope)
