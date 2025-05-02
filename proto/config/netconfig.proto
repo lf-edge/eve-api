@@ -168,9 +168,9 @@ message CellularAccessPoint {
   // To modify the authentication protocol for the attach bearer, use attach_auth_protocol instead.
   CellularAuthProtocol auth_protocol = 3;
   // Cipher data may contain encrypted user credentials
-  // (inside cellNetUsername and cellNetPassword fields).
-  // Applies to the default bearer.
-  // To set the user credentials for the attach bearer, use attach_cipher_data instead.
+  // (inside cellular_net_* fields of EncryptionBlock).
+  // EncryptionBlock allows separate configuration of credentials for the attach
+  // and default bearers.
   org.lfedge.eve.common.CipherBlock cipher_data = 4;
   // The set of cellular network operators that modem should preferably try to register
   // and connect into.
@@ -200,9 +200,6 @@ message CellularAccessPoint {
   // Authentication protocol used for the attach bearer.
   // Leave undefined if attach_apn is not specified.
   CellularAuthProtocol attach_auth_protocol = 11;
-  // Encrypted user credentials for the attach bearer (if required).
-  // Leave empty if attach_apn is not specified.
-  org.lfedge.eve.common.CipherBlock attach_cipher_data = 12;
 }
 
 enum CellularAuthProtocol {

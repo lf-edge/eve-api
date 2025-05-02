@@ -79,8 +79,11 @@ message EncryptionBlock {
   string wifiPassword = 4;
   string protectedUserData = 5;
   // Username for cellular network.
+  // Applies to the default bearer.
+  // To configure credentials for the attach bearer, use cellular_net_attach_* fields instead.
   string cellular_net_username = 6;
   // Password for cellular network.
+  // Applies to the default bearer.
   string cellular_net_password = 7;
   // Cluster token
   string cluster_token = 8;
@@ -91,4 +94,11 @@ message EncryptionBlock {
   // by the user specified.
   EncryptionBlockUser user = 9;
   string encrypted_data = 10;
+
+  // Username for the cellular attach bearer.
+  // Leave empty if attach_apn in CellularAccessPoint is not specified.
+  string cellular_net_attach_username = 11;
+  // Password for the cellular attach bearer.
+  // Leave empty if attach_apn in CellularAccessPoint is not specified.
+  string cellular_net_attach_password = 12;
 }
