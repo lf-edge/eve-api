@@ -65,3 +65,18 @@ enum BearerType {
   // traffic with different QoS settings.
   BEARER_TYPE_DEDICATED = 3;
 }
+
+// SimActivationMode defines how the SIM card is used in the context of multi-SIM operation.
+enum SimActivationMode {
+  // Not specified (e.g. because older EVE does not recognize SimActivationMode).
+  SIM_ACTIVATION_MODE_UNSPECIFIED = 0;
+  // SIM card is not activated.
+  SIM_ACTIVATION_MODE_DEACTIVATED = 1;
+  // SIM card is in the standby mode (aka backup).
+  // SIM card is present and recognized by the device but is not actively being used
+  // for data connectivity. Instead, it remains in a passive listening state,
+  // ready to be switched to an active state when needed.
+  SIM_ACTIVATION_MODE_STANDBY = 2;
+  // SIM card is activated and used for data connectivity.
+  SIM_ACTIVATION_MODE_ACTIVE = 3;
+}
