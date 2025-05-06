@@ -372,14 +372,21 @@ message ZSimcardInfo {
   // between QMI and MBIM protocols (used to control cellular modules) and there is
   // no 1:1 mapping between them.
   string state = 6;
-  // SIM slot number (of the modem referenced by cell_module_name) which this ZSimcardInfo
-  // describes.
+  // SIM slot number (on the modem referenced by cell_module_name) corresponding to
+  // this ZSimcardInfo.
+  // Even an eSIM module has a slot number assigned, which is shared by all its eSIM
+  // profiles (virtual SIM cards).
   uint32 slot_number = 7;
-  // True if this SIM slot is activated (i.e. inserted SIM card can be used to connect
-  // to cellular network).
+  // True if this SIM slot is activated (i.e., the inserted SIM card can be used to connect
+  // to the cellular network).
+  // Note: eSIM profiles (virtual SIM cards) share the same slot number assigned to
+  // the eSIM module. To determine which eSIM profile is active, refer to sim_activation_mode
+  // of each profile.
   bool slot_activated = 8;
   // Type of the SIM card.
   SimType type = 9;
+  // Report how is the SIM card used in the context of multi-SIM operation.
+  org.lfedge.eve.common.SimActivationMode sim_activation_mode = 10;
 }
 
 // SimType : type of the SIM card.
@@ -712,6 +719,7 @@ enum APICapability {
   API_CAPABILITY_ENCRYPTED_PATCH_ENVELOPE = 14; // Support for Patch Envelope Encryption
   API_CAPABILITY_SINGLE_STACK_IP_NETWORK = 15; // Support for V4Only and V6Only NetworkType
   API_CAPABILITY_CELLULAR_ATTACH_CONFIG = 16; // Support cellular attach configuration
+  API_CAPABILITY_ESIM = 17; // Support for embedded SIM (eSIM)
   // Add new values as new EdgeDevConfig API features are implemented
 }
 
