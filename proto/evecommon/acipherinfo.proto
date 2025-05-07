@@ -101,4 +101,8 @@ message EncryptionBlock {
   // Password for the cellular attach bearer.
   // Leave empty if attach_apn in CellularAccessPoint is not specified.
   string cellular_net_attach_password = 12;
+
+  // Encrypted GZIP Compressed yaml manifest used for
+  // completing registration into a controller.
+  bytes gzip_registration_manifest_yaml = 13;
 }
