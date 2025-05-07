@@ -30,4 +30,8 @@ message EdgeNodeCluster {
 
   // encrypted token string, use edge-node TPM to decrypt
   org.lfedge.eve.common.CipherBlock encrypted_cluster_token = 7;
+
+  // GZIP Compressed yaml manifest used for completing registration
+  // into a controller.
+  bytes gzip_registration_manifest_yaml = 8;
 }
