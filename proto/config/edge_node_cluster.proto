@@ -30,4 +30,8 @@ message EdgeNodeCluster {
 
   // encrypted token string, use edge-node TPM to decrypt
   org.lfedge.eve.common.CipherBlock encrypted_cluster_token = 7;
+
+  // URL to download a yaml manifest for a cluster
+  // These manifests should not define app-instance deployments.
+  org.lfedge.eve.common.CipherBlock encrypted_manifest_yaml_url = 8;
 }
