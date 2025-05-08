@@ -27,6 +27,15 @@ import "auth/auth.proto";
 message LOCConfig {
   // If set indicates URL of the Local Operator Console (LOC)
   string loc_url = 1;
+  // UUID of the datastore to upload the collect-info tarball to - only DsHttp and DsHttps is currently possible
+  // the directory is specified by dpath in DatastoreConfig and the filename is the standard collect-info.sh
+  // filename with the device uuid concatenated,
+  // f.e.: eve-info-v34-2025-05-13-08-53-52-5d0767ee-0547-4569-b530-387e526f8cb9.tar.gz
+  //
+  // several datastores can be specified, but at the current moment only one will be supported
+  // this is done to be extensible to allow to specify the datastore or have alternatives in
+  // case of failure
+  repeated string datastore_collect_info_id = 2;
 }
 
 // This is the response to a GET /api/v1/edgeDevice/config
