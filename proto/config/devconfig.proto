@@ -27,6 +27,7 @@ import "auth/auth.proto";
 message LOCConfig {
   // If set indicates URL of the Local Operator Console (LOC)
   string loc_url = 1;
+  string datastore_collect_info_id = 2; // UUID of the datastore to upload the collect-info tarball to - only DsHttp and DsHttps is currently possible
 }
 
 // This is the response to a GET /api/v1/edgeDevice/config
