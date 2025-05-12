@@ -195,6 +195,16 @@ message LocalDevCmd {
       // on will need to be done through other local means (UPS power cycling
       // the edge node or someone manually power cycling the edge node.)
       COMMAND_SHUTDOWN_POWEROFF = 2;
+      // SHUTDOWN_REBOOT: Edge node will initiate a graceful reboot.
+      // The state of the application instances (HALTING, HALTED, etc) can be
+      // observed since is sent to the api/v1/appinfo API endpoint as normal.
+      // Any local profile server is shut down after all the other app instances
+      // have halted.
+      COMMAND_SHUTDOWN_REBOOT = 3;
+      // COLLECT_INFO: Edge node will call the collect-info.sh script with
+      // the datastore parameters (see datastore_collect_info_id) to upload
+      // the generated output to that datastore
+      COMMAND_COLLECT_INFO = 4;
    }
    // Command to run.
    Command command = 3;
