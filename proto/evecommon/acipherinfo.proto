@@ -101,4 +101,19 @@ message EncryptionBlock {
   // Password for the cellular attach bearer.
   // Leave empty if attach_apn in CellularAccessPoint is not specified.
   string cellular_net_attach_password = 12;
+
+  // Encrypted arguments for eSIM profile provisioning.
+  ESIMProfileProvisioning esim_profile_provisioning = 13;
+}
+
+// Contains arguments for eSIM profile provisioning.
+message ESIMProfileProvisioning {
+  // This is the address (often a URL or FQDN) of the Subscription Manager Data Preparation+
+  // (SM-DP+) server, which is responsible for securely downloading and managing the eSIM
+  // profile onto the device.
+  string sm_dp_plus_address = 1;
+  // A unique code that identifies the specific eSIM profile to be downloaded.
+  // This code is used by the device to request the appropriate profile from the SM-DP+ server.
+  // It is for one-time use only.
+  string activation_code = 2;
 }

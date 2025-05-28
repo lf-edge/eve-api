@@ -118,7 +118,14 @@ message CellularConfig {
   // 1 - activate the first SIM slot
   // 2 - activate the second SIM slot
   // etc.
-  uint32 activated_sim_slot = 5;
+  // If only one APN configuration is defined (see access_points above), this can be left unspecified.
+  // In that case, the SIM slot matched by the APN configuration will be automatically activated.
+  //
+  // Deprecated: This field does not support matching SIM cards by ICCID (which is more suitable for eSIM)
+  // and does not allow multiple active or standby SIM cards. Instead, use CellularAccessPoint.sim_activation_mode
+  // to select active SIM cards. If any CellularAccessPoint in access_points has sim_activation_mode set,
+  // this field will be ignored. Otherwise, EVE will use it for backward compatibility with older versions.
+  uint32 activated_sim_slot = 5 [deprecated=true];
 }
 
 // CellularConnectivityProbe is used to periodically check the connectivity status of a cellular network
@@ -152,12 +159,18 @@ message CellularConnectivityProbe {
 
 // CellularAccessPoint contains config parameters for connecting to a cellular network.
 message CellularAccessPoint {
-  // SIM card slot to which this configuration applies.
-  // 0 - unspecified (apply to currently activated or the only available)
-  // 1 - config for SIM card in the first slot
-  // 2 - config for SIM card in the second slot
+  // SIM card slot this configuration applies to:
+  // 0 - unspecified
+  // 1 - first SIM slot
+  // 2 - second SIM slot
   // etc.
+  // If unspecified, the configuration is matched to the SIM card by ICCID (see sim_iccid field below).
+  // If only one CellularAccessPoint is defined in CellularConfig, both sim_slot and sim_iccid
+  // may be omitted. In that case, EVE will apply this config to whatever SIM card or eSIM profile
+  // is already activated. And if the activated SIM slot is empty but another slot has a SIM
+  // card inserted, EVE will automatically switch to the slot with a card present.
   uint32 sim_slot = 1;
+
   // Access Point Network to connect into.
   // By default it is "internet".
   // Applies to the default bearer.
@@ -167,10 +180,14 @@ message CellularAccessPoint {
   // Applies to the default bearer.
   // To modify the authentication protocol for the attach bearer, use attach_auth_protocol instead.
   CellularAuthProtocol auth_protocol = 3;
-  // Cipher data may contain encrypted user credentials
-  // (inside cellular_net_* fields of EncryptionBlock).
-  // EncryptionBlock allows separate configuration of credentials for the attach
-  // and default bearers.
+  // Cipher data may contain:
+  //  - user credentials for the default bearer
+  //    (see EncryptionBlock, fields cellular_net_username and cellular_net_password)
+  //  - user credentials for the attach bearer
+  //    (see EncryptionBlock, fields cellular_net_attach_username and cellular_net_attach_password)
+  //  - SM-DP+ address and activation code for installing a new eSIM profile
+  //    used only if provision_esim_profile is enabled
+  //    (see EncryptionBlock, field esim_profile_provisioning)
   org.lfedge.eve.common.CipherBlock cipher_data = 4;
   // The set of cellular network operators that modem should preferably try to register
   // and connect into.
@@ -189,6 +206,7 @@ message CellularAccessPoint {
   repeated org.lfedge.eve.common.RadioAccessTechnology preferred_rats = 7;
   // The IP addressing type to use for the default bearer.
   org.lfedge.eve.common.CellularIPType ip_type = 8;
+
   // Access Point Name (APN) for the attach (initial) bearer.
   // This field is optional. If not specified, EVE will not send any attach bearer
   // configuration to the modem. Instead, the modem will use one of its pre-installed
@@ -200,6 +218,22 @@ message CellularAccessPoint {
   // Authentication protocol used for the attach bearer.
   // Leave undefined if attach_apn is not specified.
   CellularAuthProtocol attach_auth_protocol = 11;
+
+  // ICCID of the SIM card this configuration applies to.
+  // Can be used alongside or instead of sim_slot.
+  // Especially useful for matching virtual eSIM profiles, since sim_slot may refer
+  // to the eSIM module's slot number but cannot select a specific profile.
+  string sim_iccid = 12;
+
+  // Instead of matching CellularAccessPoint to an existing SIM card, provision
+  // a new eSIM profile (virtual SIM card) using SM-DP+ address and activation code
+  // sent from the controller inside cipher_data (EncryptionBlock.esim_profile_provisioning).
+  bool provision_esim_profile = 13;
+
+  // SIM role in the context of multi-SIM operation.
+  // If only one APN configuration is defined in CellularConfig, this can be left unspecified.
+  // In that case, the SIM slot matched by the APN configuration will be automatically activated.
+  org.lfedge.eve.common.SimActivationMode sim_activation_mode = 14;
 }
 
 enum CellularAuthProtocol {
