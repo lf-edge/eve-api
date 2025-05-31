@@ -712,6 +712,7 @@ enum APICapability {
   API_CAPABILITY_ENCRYPTED_PATCH_ENVELOPE = 14; // Support for Patch Envelope Encryption
   API_CAPABILITY_SINGLE_STACK_IP_NETWORK = 15; // Support for V4Only and V6Only NetworkType
   API_CAPABILITY_CELLULAR_ATTACH_CONFIG = 16; // Support cellular attach configuration
+  API_CAPABILITY_EDGEVIEW_AUTHENTICATION = 17; // EdgeView authentication, see https://github.com/lf-edge/eve/blob/master/docs/EDGEVIEW-CONTAINER-API.md
   // Add new values as new EdgeDevConfig API features are implemented
 }
 
