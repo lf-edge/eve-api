@@ -12,30 +12,6 @@
 <text text-anchor="middle" x="1136.5" y="-6.45" font-family="Times,serif" font-size="14.00">org.lfedge.eve.config</text>
 </a>
 </g>
-<g id="clust14" class="cluster">
-<title>cluster_c75e6f3a3956</title>
-<g id="a_clust14"><a xlink:title="org.lfedge.eve.common">
-<polygon fill="#caff70" stroke="black" points="1995,-5700.75 1995,-6447.75 2263,-6447.75 2263,-5700.75 1995,-5700.75"/>
-<text text-anchor="middle" x="2129" y="-6430.45" font-family="Times,serif" font-size="14.00">org.lfedge.eve.common</text>
-</a>
-</g>
-</g>
-<g id="clust15" class="cluster">
-<title>cluster_087a8b768833</title>
-<g id="a_clust15"><a xlink:title="config/netconfig.proto">
-<polygon fill="#caff70" stroke="black" points="644.5,-5676.75 644.5,-6040.75 1973,-6040.75 1973,-5676.75 644.5,-5676.75"/>
-<text text-anchor="middle" x="1308.75" y="-6023.45" font-family="Times,serif" font-size="14.00">netconfig.proto</text>
-</a>
-</g>
-</g>
-<g id="clust16" class="cluster">
-<title>cluster_a1a638239bbb</title>
-<g id="a_clust16"><a xlink:title="config/edgeview.proto">
-<polygon fill="#caff70" stroke="black" points="625.5,-71.75 625.5,-267.75 1166.5,-267.75 1166.5,-71.75 625.5,-71.75"/>
-<text text-anchor="middle" x="896" y="-250.45" font-family="Times,serif" font-size="14.00">edgeview.proto</text>
-</a>
-</g>
-</g>
 <g id="clust17" class="cluster">
 <title>cluster_ed03ba9919d5</title>
 <g id="a_clust17"><a xlink:title="config/devcommon.proto">
@@ -84,6 +60,38 @@
 </a>
 </g>
 </g>
+<g id="clust14" class="cluster">
+<title>cluster_c75e6f3a3956</title>
+<g id="a_clust14"><a xlink:title="org.lfedge.eve.common">
+<polygon fill="#caff70" stroke="black" points="1995,-5700.75 1995,-6447.75 2263,-6447.75 2263,-5700.75 1995,-5700.75"/>
+<text text-anchor="middle" x="2129" y="-6430.45" font-family="Times,serif" font-size="14.00">org.lfedge.eve.common</text>
+</a>
+</g>
+</g>
+<g id="clust15" class="cluster">
+<title>cluster_087a8b768833</title>
+<g id="a_clust15"><a xlink:title="config/netconfig.proto">
+<polygon fill="#caff70" stroke="black" points="644.5,-5676.75 644.5,-6040.75 1973,-6040.75 1973,-5676.75 644.5,-5676.75"/>
+<text text-anchor="middle" x="1308.75" y="-6023.45" font-family="Times,serif" font-size="14.00">netconfig.proto</text>
+</a>
+</g>
+</g>
+<g id="clust16" class="cluster">
+<title>cluster_a1a638239bbb</title>
+<g id="a_clust16"><a xlink:title="config/edgeview.proto">
+<polygon fill="#caff70" stroke="black" points="625.5,-71.75 625.5,-267.75 1166.5,-267.75 1166.5,-71.75 625.5,-71.75"/>
+<text text-anchor="middle" x="896" y="-250.45" font-family="Times,serif" font-size="14.00">edgeview.proto</text>
+</a>
+</g>
+</g>
+<g id="clust9" class="cluster">
+<title>cluster_f89bbdbe2429</title>
+<g id="a_clust9"><a xlink:title="config/netinst.proto">
+<polygon fill="#caff70" stroke="black" points="604,-305.75 604,-505.75 1883,-505.75 1883,-305.75 604,-305.75"/>
+<text text-anchor="middle" x="1243.5" y="-488.45" font-family="Times,serif" font-size="14.00">netinst.proto</text>
+</a>
+</g>
+</g>
 <g id="clust10" class="cluster">
 <title>cluster_0eca8c4caf24</title>
 <g id="a_clust10"><a xlink:title="org.lfedge.eve.config">
@@ -113,14 +121,6 @@
 <g id="a_clust8"><a xlink:title="config/storage.proto">
 <polygon fill="#caff70" stroke="black" points="941,-2026.75 941,-2626.75 1865.5,-2626.75 1865.5,-2026.75 941,-2026.75"/>
 <text text-anchor="middle" x="1403.25" y="-2609.45" font-family="Times,serif" font-size="14.00">storage.proto</text>
-</a>
-</g>
-</g>
-<g id="clust9" class="cluster">
-<title>cluster_f89bbdbe2429</title>
-<g id="a_clust9"><a xlink:title="config/netinst.proto">
-<polygon fill="#caff70" stroke="black" points="604,-305.75 604,-505.75 1883,-505.75 1883,-305.75 604,-305.75"/>
-<text text-anchor="middle" x="1243.5" y="-488.45" font-family="Times,serif" font-size="14.00">netinst.proto</text>
 </a>
 </g>
 </g>
