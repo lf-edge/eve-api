@@ -317,6 +317,15 @@ message NetworkInstanceConfig {
   // VLAN configuration for application interfaces is applied separately via AppInstanceConfig
   // (see NetworkAdapter.access_vlan_id).
   repeated VlanAccessPort vlan_access_ports = 51;
+
+  // Enables forwarding of LLDP (Link Layer Discovery Protocol) frames across this
+  // network instance.
+  // LLDP is used by devices to advertise identity and capabilities to directly
+  // connected neighbors, and is often required for topology discovery and network
+  // management tools.
+  // When enabled, LLDP frames (EtherType 0x88cc) are not dropped or suppressed
+  // by the forwarding plane.
+  bool forward_lldp = 52;
 }
 
 // VLAN Access Port config applied to physical port(s) attached to a Switch Network Instance.
