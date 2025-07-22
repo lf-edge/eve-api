@@ -714,6 +714,7 @@ enum APICapability {
   API_CAPABILITY_CELLULAR_ATTACH_CONFIG = 16; // Support cellular attach configuration
   API_CAPABILITY_EDGEVIEW_AUTHENTICATION = 17; // EdgeView authentication, see https://github.com/lf-edge/eve/blob/master/docs/EDGEVIEW-CONTAINER-API.md
   API_CAPABILITY_DISABLE_VTPM = 18; // Support for disabling
+  API_CAPABILITY_LOC_REBOOT_COLLECT_INFO = 19; // Support for rebooting and collect-info from LOC
   // Add new values as new EdgeDevConfig API features are implemented
 }
 
