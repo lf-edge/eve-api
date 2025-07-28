@@ -1,0 +1,40 @@
+// Copyright(c) 2025 Zededa, Inc.
+// SPDX-License-Identifier: Apache-2.0
+
+syntax = "proto3";
+
+package org.lfedge.eve.metrics;
+option go_package  = "github.com/lf-edge/eve-api/go/metrics";
+option java_package = "org.lfedge.eve.metrics";
+
+message FsUsedMetric {
+  // Allocated and Written MB of the filesystem
+  double used_mb = 1;
+  // Allocated space.  eg. thinly allocated, sparse files MB not yet written
+  double allocated_mb = 2;
+}
+
+// NestedAppRuntimeDiskMetric object to serve as a metric for
+// a runtime's persistent filesystem shared by many child nested app instances.
+// A single NestedAppRuntimeDiskMetric will be returned from
+// GET /api/v1/storagemetrics/runtime for each app instance where
+// AppInstanceConfig.runtime_type!=APP_RUNTIME_TYPE_UNSPECIFIED
+message NestedAppRuntimeDiskMetric {
+  // ID of the runtime app instance
+  string uuid = 1;
+  // Total size of the persistent filesystem attached to the runtime.
+  double total_mb = 2;
+  // Allocated and Written MB of the filesystem.  dependent used + runtime overhead.
+  double used_mb = 3;
+  // Allocated space.  eg. thinly allocated, sparse files MB not yet written. dependent allocated + runtime overhead.
+  double allocated_mb = 4;
+  // Key is a nested app instance id running on the runtime.
+  // FsUsedMetric will contain the combined filesystem usage of all
+  // containers which are associated with a nested app.
+  // eg. APP_RUNTIME_TYPE_DOCKER may deploy a nested app which
+  // provisions multiple volumes as sub directories of the persistent
+  // filesystem in the runtime.
+  // This space will also include any persistent filesystem space
+  // used by container images associated with the nested app.
+  map <string, FsUsedMetric> dependent_space_mb = 5;
+}

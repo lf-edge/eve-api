@@ -3,7 +3,8 @@
 nestedappinstancemetrics defines an interface for an http webserver inside of a
 'runtime' on EVE which returns metric data to EVE for containers or groups
 of containers which reside in the runtime.  This runtime can be a VM and
-is expected to be running inside an EVE AppInstance.
+is expected to be running inside an EVE AppInstance and identified by the
+eve-api config where AppInstanceConfig.runtime_type!=APP_RUNTIME_TYPE_UNSPECIFIED.
 The server listens on the address defined by CollectStatsIPAddr in app
 instance config, this address will be on an airgapped local network
 instance with no external access outside of EVE.  The consumer of this
@@ -43,3 +44,22 @@ Return codes:
 Response:
 
 The body will contain the NestedAppMetrics structure in json form.
+
+### Storage Metric
+
+To retrieve runtime level metrics containing usage for all nested applications contained
+inside the runtime this will be returned from a single endpoint below.
+Each NestedAppRuntimeDiskMetric is associated with a runtime persistent filesystem
+and provides the usage snapshot at a runtime scope which
+contains 1 or more nested app ids sharing the fs.
+
+GET /api/v1/storagemetrics/runtime
+
+Return codes:
+
+* Metric Object Returned: `200`
+* Non-Get type request: `405`
+
+Response:
+
+The body will contain the NestedAppRuntimeDiskMetric structure in protobuf form.

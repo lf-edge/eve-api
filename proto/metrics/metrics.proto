@@ -5,6 +5,7 @@ syntax = "proto3";
 
 import "google/protobuf/timestamp.proto";
 import "evecommon/evecommon.proto";
+import "metrics/nestedappruntimemetrics.proto";
 
 package org.lfedge.eve.metrics;
 option go_package  = "github.com/lf-edge/eve-api/go/metrics";
@@ -616,6 +617,11 @@ message ZMetricMsg {
   repeated ZMetricProcess pr = 9;
 
   KubeClusterMetrics cm = 10;
+
+  // Handle multiple runtimes on a device.
+  // This can be any app instance where
+  // AppInstanceConfig.runtime_type!=APP_RUNTIME_TYPE_UNSPECIFIED
+  repeated NestedAppRuntimeDiskMetric nest_metric = 11;
 }
 
 // newlogMetric - stats for newlog
