@@ -101,6 +101,9 @@ message SystemAdapter {
   //  - create a multi-path static IP route (with multiple ports providing access to the routed
   //    destination network)
   repeated string shared_labels = 10;
+
+  // Allow the local operator to make (limited) configuration changes to this network adapter.
+  bool allow_local_modifications = 11;
 }
 
 // Given additional details for EVE software to how to treat this

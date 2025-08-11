@@ -101,16 +101,50 @@ message ipspec {
   DhcpOptionsIgnore dhcp_options_ignore = 11;
 }
 
-// DhcpOptionsIgnore is used to ignore dhcp options like f.e. the NTP servers
-// - currently no other options are supported, but DNS servers might be a
-// good candidate in the future
-// the options defined can be found here:
-// DHCP: https://www.iana.org/assignments/bootp-dhcp-parameters/bootp-dhcp-parameters.xhtml
-// DHCPv6: https://www.iana.org/assignments/dhcpv6-parameters/dhcpv6-parameters.xhtml
+// DhcpOptionsIgnore specifies which DHCP-provided options
+// should be ignored by the device, allowing static configuration
+// to override DHCP where applicable.
+//
+// Currently supported options include:
+//   - IP addresses
+//   - NTP servers
+//   - DNS servers and domains
+//   - Router (gateway) addresses
+//
+// This allows flexible merging or exclusive use of static config fields.
+//
+// For full DHCP option references:
+//   - DHCP: https://www.iana.org/assignments/bootp-dhcp-parameters/bootp-dhcp-parameters.xhtml
+//   - DHCPv6: https://www.iana.org/assignments/dhcpv6-parameters/dhcpv6-parameters.xhtml
 message DhcpOptionsIgnore {
-  // use exclusively specified NTP servers
-  // if set to true and no NTP server is provided then no NTP servers should be used
-  bool ntp_server_exclusively = 1; // DHCP option 42 / DHCPv6 option 56
+  // When true, statically configured NTP servers are used exclusively,
+  // ignoring any NTP servers provided by DHCP.
+  // If true and no static NTP servers are set, no NTP servers will be used.
+  // For DHCP (IPv4), this applies to option 42.
+  // For DHCPv6 (IPv6), this applies to option 56.
+  bool ntp_server_exclusively = 1;
+
+  // When true, statically configured IP addresses are used exclusively,
+  // ignoring any IP addresses provided by DHCP.
+  // If true and no static IP addresses are set, the interface will have no IP assigned.
+  bool ip_addresses_exclusively = 2;
+
+  // When true, statically configured DNS servers and domain name(s) are used
+  // exclusively, ignoring any DNS-related configuration provided by DHCP.
+  // If true and no static DNS servers are set, no DNS servers will be used.
+  // Similarly, if no static domain name(s) are set, no domain name(s) will be used.
+  // For DHCP (IPv4), this applies to option 6 (DNS servers), option 15
+  // (single domain name), and option 119 (search domains).
+  // For DHCPv6 (IPv6), this applies to option 23 (DNS servers) and option 24
+  // (domain search list).
+  bool dns_config_exclusive = 3;
+
+  // When true, statically configured gateway addresses are used exclusively,
+  // ignoring any routers provided by DHCP.
+  // If true and no static routers are set, no gateway will be used.
+  // For DHCP (IPv4), this applies to option 3.
+  // For DHCPv6 (IPv6), this applies to option 24.
+  bool gateways_exclusively = 4;
 }
 
 enum NetworkType {

@@ -827,6 +827,23 @@ message DevicePort {
   uint32 cost = 32; // Zero is free. Max is 255.
   WirelessStatus wireless_status = 33; // defined for cellular/WiFi ports only
   uint32 mtu = 34; // MTU of the port
+
+  // Local modification status for this port.
+  // If modified, the configuration shown reflects local changes and
+  // represents the actual state of the port, not just a copy of the
+  // controller-submitted configuration.
+  LocalModification local_modification = 40;
+}
+
+// Information about locally made configuration changes for this port.
+message LocalModification {
+  // True if this port’s configuration has been locally modified
+  // (e.g., via the Local Profile Server) and differs from the
+  // controller-provided configuration.
+  bool modified = 1;
+
+  // Timestamp of when the last local change for this port was submitted by LPS.
+  google.protobuf.Timestamp submitted_at = 2;
 }
 
 message ProxyStatus {
