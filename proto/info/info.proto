@@ -72,6 +72,7 @@ enum ZInfoTypes {
   ZiNTPSources = 16;
   ZiKubeCluster = 17;
   ZiKubeClusterUpdateStatus = 18;
+  ZiLOC = 19;
 }
 
 // Information about assignable I/O adapter bundles
@@ -111,6 +112,11 @@ message ZInfoManufacturer {
   string biosVendor = 7;
   string biosVersion = 8;
   string biosReleaseDate = 9;
+}
+
+// Info message that is specifically delivered to LOC
+message ZInfoLOC {
+  string device_name = 1; // same as in EdgeDevConfig
 }
 
 message ZInfoNetwork {
