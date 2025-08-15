@@ -679,6 +679,14 @@ message ZInfoDevice {
 
   // OptionalCapabilities of the device
   OptionalCapabilities optional_capabilities = 53;
+
+  // the following are from the EdgeDevConfig
+  // LOC needs to know these to have a good UX
+  string device_name = 54;
+  string enterprise_name = 55;
+  string enterprise_id = 56;
+  string project_name = 57;
+  string project_id = 58;
 }
 
 // OptionalCapabilities indicates any additional capabilities device wants
