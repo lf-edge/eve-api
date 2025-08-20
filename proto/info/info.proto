@@ -836,21 +836,59 @@ message DevicePort {
   WirelessStatus wireless_status = 33; // defined for cellular/WiFi ports only
   uint32 mtu = 34; // MTU of the port
 
-  // Local modification status for this port.
-  // If modified, the configuration shown reflects local changes and
-  // represents the actual state of the port, not just a copy of the
-  // controller-submitted configuration.
-  LocalModification local_modification = 40;
+  // Identifies the source of this network port configuration.
+  PortConfigSource config_source = 40;
 }
 
-// Information about locally made configuration changes for this port.
-message LocalModification {
-  // True if this port’s configuration has been locally modified
-  // (e.g., via the Local Profile Server) and differs from the
-  // controller-provided configuration.
-  bool modified = 1;
+// NetworkConfigOrigin enumerates all possible origins of a network port configuration.
+enum NetworkConfigOrigin {
+  // Unknown or unset origin.
+  NETWORK_CONFIG_ORIGIN_UNSPECIFIED = 0;
+  // Config received from the controller.
+  NETWORK_CONFIG_ORIGIN_CONTROLLER = 1;
+  // Initial device config embedded in the EVE installer, signed by the controller.
+  NETWORK_CONFIG_ORIGIN_BOOTSTRAP = 2;
+  // Manually created JSON config injected into the installer.
+  NETWORK_CONFIG_ORIGIN_OVERRIDE = 3;
+  // Fallback configuration automatically generated to enable DHCP on all Ethernet ports.
+  // Used when no network config is available or when "network.fallback.any.eth" is enabled
+  // and none of the existing configs provide controller connectivity.
+  NETWORK_CONFIG_ORIGIN_LASTRESORT = 4;
+  // Config entered via the terminal UI (TUI).
+  NETWORK_CONFIG_ORIGIN_TUI = 5;
+  // Configuration signed by the controller and delivered through the
+  // Local Operator Console (LOC) in an air-gapped environment.
+  NETWORK_CONFIG_ORIGIN_LOC = 6;
+  // Config changes made locally through the Local Profile Server (LPS).
+  NETWORK_CONFIG_ORIGIN_LPS = 7;
+}
 
-  // Timestamp of when the last local change for this port was submitted by LPS.
+// PortConfigSource describes the origin of the configuration used for a network port.
+// It helps distinguish between controller-provided, locally-modified, or initial configs.
+message PortConfigSource {
+  // Indicates where EVE obtained the network config.
+  NetworkConfigOrigin origin = 1;
+
+  // Timestamp when this port’s configuration was originally submitted
+  // or created at its source.
+  //
+  // Meaning depends on the origin:
+  // - Controller, LOC, bootstrap: timestamp provided by the controller.
+  // - Local override.json: when the file was first loaded by EVE.
+  // - Last-resort: when EVE generated the fallback config.
+  // - LPS modifications: when the modified config was received.
+  // - TUI: when the user submitted the configuration.
+  //
+  // This is different from DevicePortStatus.timePriority, which is used
+  // to compare and prioritize different sources of network configuration
+  // (and may be synthetic for some sources, e.g. year 2000 for override.json,
+  // epoch 0 for last-resort). By contrast, submitted_at represents when this
+  // port’s configuration first came into existence, regardless of when or whether
+  // the device applied it.
+  //
+  // Note: this is a per-port timestamp. The underlying network config may
+  // cover multiple ports, but only the portion relevant to this port is
+  // reflected here.
   google.protobuf.Timestamp submitted_at = 2;
 }
 
