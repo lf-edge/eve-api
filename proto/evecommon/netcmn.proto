@@ -3,9 +3,12 @@
 
 syntax = "proto3";
 
-package org.lfedge.eve.config;
-option go_package = "github.com/lf-edge/eve-api/go/config";
-option java_package = "org.lfedge.eve.config";
+package org.lfedge.eve.common;
+
+option go_package  = "github.com/lf-edge/eve-api/go/evecommon";
+option java_package = "org.lfedge.eve.common";
+option java_multiple_files = true;
+option java_outer_classname = "Evecommon";
 
 message ipRange {
   string start = 1;
@@ -47,12 +50,6 @@ message ProxyConfig {
   // this may be needed either in explicit (has ProxyServer items), automatic
   // (networkProxyEnable) or transparent (network layer not aware of proxy)
   repeated bytes proxyCertPEM = 6;
-}
-
-// deprecated use ZnetStaticDNSEntry
-message ZedServer {
-  string HostName   = 1;
-  repeated string EID = 2;
 }
 
 // These are list of static mapping that can be added to network
@@ -199,4 +196,58 @@ message ConnectivityProbe {
   // Endpoint to probe using the selected probing mechanism to determine
   // the connectivity status.
   ProbeEndpoint probe_endpoint = 2;
+}
+
+enum RadioAccessTechnology {
+  RADIO_ACCESS_TECHNOLOGY_UNSPECIFIED = 0;
+  // Global System for Mobile Communications (2G).
+  RADIO_ACCESS_TECHNOLOGY_GSM = 1;
+  // Universal Mobile Telecommunications System (3G).
+  RADIO_ACCESS_TECHNOLOGY_UMTS = 2;
+  // Long Term Evolution (4G).
+  RADIO_ACCESS_TECHNOLOGY_LTE = 3;
+  // 5G New Radio.
+  RADIO_ACCESS_TECHNOLOGY_5GNR = 4;
+}
+
+// The IP addressing type to use for a given attach or default bearer.
+enum CellularIPType {
+  // IP type is not specified.
+  // When unspecified, EVE will not enforce an IP type in the bearer configuration.
+  // The modem will instead use its built-in profiles (see CellularProfile) to determine
+  // the appropriate IP type for the network.
+  CELLULAR_IP_TYPE_UNSPECIFIED = 0;
+  // IPv4 only.
+  CELLULAR_IP_TYPE_IPV4 = 1;
+  // IPv4 and IPv6.
+  CELLULAR_IP_TYPE_IPV4_AND_IPV6 = 2;
+  // IPv6 only.
+  CELLULAR_IP_TYPE_IPV6 = 3;
+}
+
+// Purpose of a given cellular bearer.
+enum BearerType {
+  // Bearer type is not specified.
+  BEARER_TYPE_UNSPECIFIED = 0;
+  // Bearer used for the initial attach procedure.
+  BEARER_TYPE_ATTACH = 1;
+  // Default connection bearer providing packet data access to the network.
+  BEARER_TYPE_DEFAULT = 2;
+  // Secondary context (2G/3G) or dedicated bearer (4G), defined by the user
+  // of the API. These bearers use the same IP address used by a primary
+  // context or default bearer and provide a dedicated flow for specific
+  // traffic with different QoS settings.
+  BEARER_TYPE_DEDICATED = 3;
+}
+
+// CellularAuthProtocol defines the authentication protocol used for cellular connection.
+enum CellularAuthProtocol {
+  // No authentication.
+  CELLULAR_AUTH_PROTOCOL_NONE = 0;
+  // Password Authentication Protocol.
+  CELLULAR_AUTH_PROTOCOL_PAP = 1;
+  // Challenge-Handshake Authentication Protocol.
+  CELLULAR_AUTH_PROTOCOL_CHAP = 2;
+  // Both PAP and CHAP.
+  CELLULAR_AUTH_PROTOCOL_PAP_AND_CHAP = 3;
 }

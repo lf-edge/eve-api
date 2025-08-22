@@ -8,7 +8,7 @@ option go_package = "github.com/lf-edge/eve-api/go/config";
 option java_package = "org.lfedge.eve.config";
 
 import "config/devcommon.proto";
-import "config/netcmn.proto";
+import "evecommon/netcmn.proto";
 
 enum ZNetworkInstType {
   ZNetInstFirst    = 0;
@@ -141,7 +141,7 @@ message PortProbe {
   uint32 gw_ping_max_cost = 2;
   // User-defined method to use to determine the port connectivity status.
   // Run additionally to gateway pings (if enabled).
-  ConnectivityProbe custom_probe = 3;
+  org.lfedge.eve.common.ConnectivityProbe custom_probe = 3;
 }
 
 // Configuration for the Spanning Tree Protocol (STP), which is run for switch network
@@ -217,10 +217,10 @@ message NetworkInstanceConfig {
   // instance as air-gapped (without port) or mark all NI ports as app-shared
   // (not for management) and ensure that they will not get a default route
   // (e.g. set ip.gateway of the attached NetworkConfig(s) to all-zeroes IP).
-  ipspec ip = 40;
+  org.lfedge.eve.common.ipspec ip = 40;
 
   // static DNS entry, if we are running DNS/DHCP service
-  repeated ZnetStaticDNSEntry dns = 41;
+  repeated org.lfedge.eve.common.ZnetStaticDNSEntry dns = 41;
   // Enable to use DHCP to automatically propagate routes for port subnets
   // into applications connected to them indirectly through local network instances.
   // This option is only valid for local network instances. For other types

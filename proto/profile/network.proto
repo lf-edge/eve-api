@@ -4,9 +4,7 @@
 syntax = "proto3";
 
 import "google/protobuf/timestamp.proto";
-import "evecommon/evecommon.proto";
-import "config/netcmn.proto";
-import "config/netconfig.proto";
+import "evecommon/netcmn.proto";
 
 package org.lfedge.eve.profile;
 
@@ -182,7 +180,7 @@ message NetworkPortConfig {
 
   // Specifies which DHCP options should be ignored when merging static and DHCP
   // configurations.
-  org.lfedge.eve.config.DhcpOptionsIgnore dhcp_options_ignore = 6;
+  org.lfedge.eve.common.DhcpOptionsIgnore dhcp_options_ignore = 6;
 
   // Static IP addresses, in CIDR format (e.g., "192.168.1.10/24").
   repeated string ip_addresses = 7;
@@ -216,7 +214,7 @@ message NetworkPortConfig {
   uint32 mtu = 13;
 
   // Proxy configuration.
-  org.lfedge.eve.config.ProxyConfig proxy_config = 14;
+  org.lfedge.eve.common.ProxyConfig proxy_config = 14;
 
   // Specifies the type of wireless device.
   // Should correspond to which oneof field is set in `wireless_config`.
@@ -298,7 +296,7 @@ message CellularConfig {
 // but can be configured by LPS via network configuration updates.
 message CellularNetworkAuth {
   // Authentication protocol used for cellular network access.
-  org.lfedge.eve.config.CellularAuthProtocol auth_protocol = 1;
+  org.lfedge.eve.common.CellularAuthProtocol auth_protocol = 1;
 
   // Username is not published in NetworkInfo but may be set in NetworkConfigChange.
   string username = 2;
@@ -313,7 +311,7 @@ message WifiConfig {
   string ssid = 1;
 
   // Key management scheme (e.g., WPA-PSK, WPA-EAP).
-  org.lfedge.eve.config.WiFiKeyScheme key_scheme = 2;
+  org.lfedge.eve.common.WiFiKeyScheme key_scheme = 2;
 
   // Identity/username for WPA2 Enterprise networks.
   // Not included in NetworkInfo, but can be updated via NetworkConfigChange.

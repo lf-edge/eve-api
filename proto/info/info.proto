@@ -10,6 +10,7 @@ option java_package = "org.lfedge.eve.info";
 import "google/protobuf/timestamp.proto";
 import "evecommon/devmodelcommon.proto";
 import "evecommon/evecommon.proto";
+import "evecommon/netcmn.proto";
 import "info/patch_envelope.proto";
 import "info/ntpsources.proto";
 import "info/edge_node_cluster.proto";

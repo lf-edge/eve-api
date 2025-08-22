@@ -8,21 +8,20 @@ option go_package = "github.com/lf-edge/eve-api/go/config";
 option java_package = "org.lfedge.eve.config";
 
 import "config/fw.proto";
-import "config/netcmn.proto";
+import "evecommon/netcmn.proto";
 import "evecommon/acipherinfo.proto";
-import "evecommon/evecommon.proto";
 
 message NetworkConfig {
   string id = 1;
-  NetworkType type = 5;
+  org.lfedge.eve.common.NetworkType type = 5;
 
   // network ip specification
-  ipspec ip = 6;
+  org.lfedge.eve.common.ipspec ip = 6;
 
-  repeated ZnetStaticDNSEntry dns = 7;
+  repeated org.lfedge.eve.common.ZnetStaticDNSEntry dns = 7;
 
   // enterprise proxy
-  ProxyConfig entProxy = 8;
+  org.lfedge.eve.common.ProxyConfig entProxy = 8;
 
   // wireless specification
   WirelessConfig wireless = 10;
@@ -91,9 +90,9 @@ message NetworkAdapter {
 }
 
 message WirelessConfig {
-  WirelessType type = 1;                   // either LTE or Wifi
-  repeated CellularConfig cellularCfg = 5; // Cellular config
-  repeated WifiConfig wifiCfg = 10;        // Wifi, can be multiple APs on a single wlan, e.g. one for 2.5Ghz, other 5Ghz SSIDs
+  org.lfedge.eve.common.WirelessType type = 1; // either LTE or Wifi
+  repeated CellularConfig cellularCfg = 5;     // Cellular config
+  repeated WifiConfig wifiCfg = 10;            // Wifi, can be multiple APs on a single wlan, e.g. one for 2.5Ghz, other 5Ghz SSIDs
 }
 
 message CellularConfig {
@@ -147,7 +146,7 @@ message CellularConnectivityProbe {
   // It is recommended to use custom probe for private LTE networks where public DNS servers
   // might not be allowed by the firewall (and hence ping would fail even with a working
   // connectivity).
-  ConnectivityProbe custom_probe = 3;
+  org.lfedge.eve.common.ConnectivityProbe custom_probe = 3;
 }
 
 // CellularAccessPoint contains config parameters for connecting to a cellular network.
@@ -166,7 +165,7 @@ message CellularAccessPoint {
   // Authentication protocol used by the network.
   // Applies to the default bearer.
   // To modify the authentication protocol for the attach bearer, use attach_auth_protocol instead.
-  CellularAuthProtocol auth_protocol = 3;
+  org.lfedge.eve.common.CellularAuthProtocol auth_protocol = 3;
   // Cipher data may contain encrypted user credentials
   // (inside cellular_net_* fields of EncryptionBlock).
   // EncryptionBlock allows separate configuration of credentials for the attach
@@ -199,23 +198,12 @@ message CellularAccessPoint {
   org.lfedge.eve.common.CellularIPType attach_ip_type = 10;
   // Authentication protocol used for the attach bearer.
   // Leave undefined if attach_apn is not specified.
-  CellularAuthProtocol attach_auth_protocol = 11;
-}
-
-enum CellularAuthProtocol {
-  // No authentication.
-  CELLULAR_AUTH_PROTOCOL_NONE = 0;
-  // Password Authentication Protocol.
-  CELLULAR_AUTH_PROTOCOL_PAP = 1;
-  // Challenge-Handshake Authentication Protocol.
-  CELLULAR_AUTH_PROTOCOL_CHAP = 2;
-  // Both PAP and CHAP.
-  CELLULAR_AUTH_PROTOCOL_PAP_AND_CHAP = 3;
+  org.lfedge.eve.common.CellularAuthProtocol attach_auth_protocol = 11;
 }
 
 message WifiConfig {
   string wifiSSID = 1;             // SSID for WIFI
-  WiFiKeyScheme keyScheme = 2;     // key management scheme, WPA-PSK, WPS-EPA, etc
+  org.lfedge.eve.common.WiFiKeyScheme keyScheme = 2; // key management scheme, WPA-PSK, WPS-EPA, etc
   // to be deprecated, use cipherData instead
   string identity = 5;             // WPA2 Enterprise user identity/username
   // to be deprecated, use cipherData instead
