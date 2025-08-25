@@ -10,7 +10,6 @@
 package profile
 
 import (
-	config "github.com/lf-edge/eve-api/go/config"
 	evecommon "github.com/lf-edge/eve-api/go/evecommon"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -630,7 +629,7 @@ type NetworkPortConfig struct {
 	UseDhcp bool `protobuf:"varint,5,opt,name=use_dhcp,json=useDhcp,proto3" json:"use_dhcp,omitempty"`
 	// Specifies which DHCP options should be ignored when merging static and DHCP
 	// configurations.
-	DhcpOptionsIgnore *config.DhcpOptionsIgnore `protobuf:"bytes,6,opt,name=dhcp_options_ignore,json=dhcpOptionsIgnore,proto3" json:"dhcp_options_ignore,omitempty"`
+	DhcpOptionsIgnore *evecommon.DhcpOptionsIgnore `protobuf:"bytes,6,opt,name=dhcp_options_ignore,json=dhcpOptionsIgnore,proto3" json:"dhcp_options_ignore,omitempty"`
 	// Static IP addresses, in CIDR format (e.g., "192.168.1.10/24").
 	IpAddresses []string `protobuf:"bytes,7,rep,name=ip_addresses,json=ipAddresses,proto3" json:"ip_addresses,omitempty"`
 	// Statically configured gateway IP addresses.
@@ -656,7 +655,7 @@ type NetworkPortConfig struct {
 	// (which EVE will use unless user overrides the MTU value).
 	Mtu uint32 `protobuf:"varint,13,opt,name=mtu,proto3" json:"mtu,omitempty"`
 	// Proxy configuration.
-	ProxyConfig *config.ProxyConfig `protobuf:"bytes,14,opt,name=proxy_config,json=proxyConfig,proto3" json:"proxy_config,omitempty"`
+	ProxyConfig *evecommon.ProxyConfig `protobuf:"bytes,14,opt,name=proxy_config,json=proxyConfig,proto3" json:"proxy_config,omitempty"`
 	// Specifies the type of wireless device.
 	// Should correspond to which oneof field is set in `wireless_config`.
 	WirelessDeviceType WirelessType `protobuf:"varint,15,opt,name=wireless_device_type,json=wirelessDeviceType,proto3,enum=org.lfedge.eve.profile.WirelessType" json:"wireless_device_type,omitempty"`
@@ -750,7 +749,7 @@ func (x *NetworkPortConfig) GetUseDhcp() bool {
 	return false
 }
 
-func (x *NetworkPortConfig) GetDhcpOptionsIgnore() *config.DhcpOptionsIgnore {
+func (x *NetworkPortConfig) GetDhcpOptionsIgnore() *evecommon.DhcpOptionsIgnore {
 	if x != nil {
 		return x.DhcpOptionsIgnore
 	}
@@ -806,7 +805,7 @@ func (x *NetworkPortConfig) GetMtu() uint32 {
 	return 0
 }
 
-func (x *NetworkPortConfig) GetProxyConfig() *config.ProxyConfig {
+func (x *NetworkPortConfig) GetProxyConfig() *evecommon.ProxyConfig {
 	if x != nil {
 		return x.ProxyConfig
 	}
@@ -994,7 +993,7 @@ type CellularNetworkAuth struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Authentication protocol used for cellular network access.
-	AuthProtocol config.CellularAuthProtocol `protobuf:"varint,1,opt,name=auth_protocol,json=authProtocol,proto3,enum=org.lfedge.eve.config.CellularAuthProtocol" json:"auth_protocol,omitempty"`
+	AuthProtocol evecommon.CellularAuthProtocol `protobuf:"varint,1,opt,name=auth_protocol,json=authProtocol,proto3,enum=org.lfedge.eve.common.CellularAuthProtocol" json:"auth_protocol,omitempty"`
 	// Username is not published in NetworkInfo but may be set in NetworkConfigChange.
 	Username string `protobuf:"bytes,2,opt,name=username,proto3" json:"username,omitempty"`
 	// Password is not published in NetworkInfo but may be set in NetworkConfigChange.
@@ -1033,11 +1032,11 @@ func (*CellularNetworkAuth) Descriptor() ([]byte, []int) {
 	return file_profile_network_proto_rawDescGZIP(), []int{7}
 }
 
-func (x *CellularNetworkAuth) GetAuthProtocol() config.CellularAuthProtocol {
+func (x *CellularNetworkAuth) GetAuthProtocol() evecommon.CellularAuthProtocol {
 	if x != nil {
 		return x.AuthProtocol
 	}
-	return config.CellularAuthProtocol(0)
+	return evecommon.CellularAuthProtocol(0)
 }
 
 func (x *CellularNetworkAuth) GetUsername() string {
@@ -1063,7 +1062,7 @@ type WifiConfig struct {
 	// SSID (network name) of the WiFi network.
 	Ssid string `protobuf:"bytes,1,opt,name=ssid,proto3" json:"ssid,omitempty"`
 	// Key management scheme (e.g., WPA-PSK, WPA-EAP).
-	KeyScheme config.WiFiKeyScheme `protobuf:"varint,2,opt,name=key_scheme,json=keyScheme,proto3,enum=org.lfedge.eve.config.WiFiKeyScheme" json:"key_scheme,omitempty"`
+	KeyScheme evecommon.WiFiKeyScheme `protobuf:"varint,2,opt,name=key_scheme,json=keyScheme,proto3,enum=org.lfedge.eve.common.WiFiKeyScheme" json:"key_scheme,omitempty"`
 	// Identity/username for WPA2 Enterprise networks.
 	// Not included in NetworkInfo, but can be updated via NetworkConfigChange.
 	Identity string `protobuf:"bytes,3,opt,name=identity,proto3" json:"identity,omitempty"`
@@ -1113,11 +1112,11 @@ func (x *WifiConfig) GetSsid() string {
 	return ""
 }
 
-func (x *WifiConfig) GetKeyScheme() config.WiFiKeyScheme {
+func (x *WifiConfig) GetKeyScheme() evecommon.WiFiKeyScheme {
 	if x != nil {
 		return x.KeyScheme
 	}
-	return config.WiFiKeyScheme(0)
+	return evecommon.WiFiKeyScheme(0)
 }
 
 func (x *WifiConfig) GetIdentity() string {
@@ -1142,11 +1141,8 @@ var file_profile_network_proto_rawDesc = []byte{
 	0x64, 0x67, 0x65, 0x2e, 0x65, 0x76, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x66, 0x69, 0x6c, 0x65, 0x1a,
 	0x1f, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66,
 	0x2f, 0x74, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x1a, 0x19, 0x65, 0x76, 0x65, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2f, 0x65, 0x76, 0x65, 0x63,
-	0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x13, 0x63, 0x6f, 0x6e,
-	0x66, 0x69, 0x67, 0x2f, 0x6e, 0x65, 0x74, 0x63, 0x6d, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x1a, 0x16, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x2f, 0x6e, 0x65, 0x74, 0x63, 0x6f, 0x6e, 0x66,
-	0x69, 0x67, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x89, 0x03, 0x0a, 0x0b, 0x4e, 0x65, 0x74,
+	0x1a, 0x16, 0x65, 0x76, 0x65, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2f, 0x6e, 0x65, 0x74, 0x63,
+	0x6d, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x89, 0x03, 0x0a, 0x0b, 0x4e, 0x65, 0x74,
 	0x77, 0x6f, 0x72, 0x6b, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x4a, 0x0a, 0x0d, 0x6c, 0x61, 0x74, 0x65,
 	0x73, 0x74, 0x5f, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32,
 	0x25, 0x2e, 0x6f, 0x72, 0x67, 0x2e, 0x6c, 0x66, 0x65, 0x64, 0x67, 0x65, 0x2e, 0x65, 0x76, 0x65,
@@ -1236,7 +1232,7 @@ var file_profile_network_proto_rawDesc = []byte{
 	0x65, 0x44, 0x68, 0x63, 0x70, 0x12, 0x58, 0x0a, 0x13, 0x64, 0x68, 0x63, 0x70, 0x5f, 0x6f, 0x70,
 	0x74, 0x69, 0x6f, 0x6e, 0x73, 0x5f, 0x69, 0x67, 0x6e, 0x6f, 0x72, 0x65, 0x18, 0x06, 0x20, 0x01,
 	0x28, 0x0b, 0x32, 0x28, 0x2e, 0x6f, 0x72, 0x67, 0x2e, 0x6c, 0x66, 0x65, 0x64, 0x67, 0x65, 0x2e,
-	0x65, 0x76, 0x65, 0x2e, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x2e, 0x44, 0x68, 0x63, 0x70, 0x4f,
+	0x65, 0x76, 0x65, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x44, 0x68, 0x63, 0x70, 0x4f,
 	0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x49, 0x67, 0x6e, 0x6f, 0x72, 0x65, 0x52, 0x11, 0x64, 0x68,
 	0x63, 0x70, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x49, 0x67, 0x6e, 0x6f, 0x72, 0x65, 0x12,
 	0x21, 0x0a, 0x0c, 0x69, 0x70, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x65, 0x73, 0x18,
@@ -1255,8 +1251,8 @@ var file_profile_network_proto_rawDesc = []byte{
 	0x65, 0x72, 0x73, 0x12, 0x10, 0x0a, 0x03, 0x6d, 0x74, 0x75, 0x18, 0x0d, 0x20, 0x01, 0x28, 0x0d,
 	0x52, 0x03, 0x6d, 0x74, 0x75, 0x12, 0x45, 0x0a, 0x0c, 0x70, 0x72, 0x6f, 0x78, 0x79, 0x5f, 0x63,
 	0x6f, 0x6e, 0x66, 0x69, 0x67, 0x18, 0x0e, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x22, 0x2e, 0x6f, 0x72,
-	0x67, 0x2e, 0x6c, 0x66, 0x65, 0x64, 0x67, 0x65, 0x2e, 0x65, 0x76, 0x65, 0x2e, 0x63, 0x6f, 0x6e,
-	0x66, 0x69, 0x67, 0x2e, 0x50, 0x72, 0x6f, 0x78, 0x79, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x52,
+	0x67, 0x2e, 0x6c, 0x66, 0x65, 0x64, 0x67, 0x65, 0x2e, 0x65, 0x76, 0x65, 0x2e, 0x63, 0x6f, 0x6d,
+	0x6d, 0x6f, 0x6e, 0x2e, 0x50, 0x72, 0x6f, 0x78, 0x79, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x52,
 	0x0b, 0x70, 0x72, 0x6f, 0x78, 0x79, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x12, 0x56, 0x0a, 0x14,
 	0x77, 0x69, 0x72, 0x65, 0x6c, 0x65, 0x73, 0x73, 0x5f, 0x64, 0x65, 0x76, 0x69, 0x63, 0x65, 0x5f,
 	0x74, 0x79, 0x70, 0x65, 0x18, 0x0f, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x24, 0x2e, 0x6f, 0x72, 0x67,
@@ -1310,7 +1306,7 @@ var file_profile_network_proto_rawDesc = []byte{
 	0x72, 0x4e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x41, 0x75, 0x74, 0x68, 0x12, 0x50, 0x0a, 0x0d,
 	0x61, 0x75, 0x74, 0x68, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x18, 0x01, 0x20,
 	0x01, 0x28, 0x0e, 0x32, 0x2b, 0x2e, 0x6f, 0x72, 0x67, 0x2e, 0x6c, 0x66, 0x65, 0x64, 0x67, 0x65,
-	0x2e, 0x65, 0x76, 0x65, 0x2e, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x2e, 0x43, 0x65, 0x6c, 0x6c,
+	0x2e, 0x65, 0x76, 0x65, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x43, 0x65, 0x6c, 0x6c,
 	0x75, 0x6c, 0x61, 0x72, 0x41, 0x75, 0x74, 0x68, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c,
 	0x52, 0x0c, 0x61, 0x75, 0x74, 0x68, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x12, 0x1a,
 	0x0a, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
@@ -1321,7 +1317,7 @@ var file_profile_network_proto_rawDesc = []byte{
 	0x01, 0x28, 0x09, 0x52, 0x04, 0x73, 0x73, 0x69, 0x64, 0x12, 0x43, 0x0a, 0x0a, 0x6b, 0x65, 0x79,
 	0x5f, 0x73, 0x63, 0x68, 0x65, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x24, 0x2e,
 	0x6f, 0x72, 0x67, 0x2e, 0x6c, 0x66, 0x65, 0x64, 0x67, 0x65, 0x2e, 0x65, 0x76, 0x65, 0x2e, 0x63,
-	0x6f, 0x6e, 0x66, 0x69, 0x67, 0x2e, 0x57, 0x69, 0x46, 0x69, 0x4b, 0x65, 0x79, 0x53, 0x63, 0x68,
+	0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x57, 0x69, 0x46, 0x69, 0x4b, 0x65, 0x79, 0x53, 0x63, 0x68,
 	0x65, 0x6d, 0x65, 0x52, 0x09, 0x6b, 0x65, 0x79, 0x53, 0x63, 0x68, 0x65, 0x6d, 0x65, 0x12, 0x1a,
 	0x0a, 0x08, 0x69, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x74, 0x79, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09,
 	0x52, 0x08, 0x69, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x74, 0x79, 0x12, 0x1a, 0x0a, 0x08, 0x70, 0x61,
@@ -1373,24 +1369,24 @@ func file_profile_network_proto_rawDescGZIP() []byte {
 var file_profile_network_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
 var file_profile_network_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_profile_network_proto_goTypes = []interface{}{
-	(ConfigSource)(0),                  // 0: org.lfedge.eve.profile.ConfigSource
-	(IPVersion)(0),                     // 1: org.lfedge.eve.profile.IPVersion
-	(WirelessType)(0),                  // 2: org.lfedge.eve.profile.WirelessType
-	(*NetworkInfo)(nil),                // 3: org.lfedge.eve.profile.NetworkInfo
-	(*NetworkConfigTestingStatus)(nil), // 4: org.lfedge.eve.profile.NetworkConfigTestingStatus
-	(*NetworkConfigChange)(nil),        // 5: org.lfedge.eve.profile.NetworkConfigChange
-	(*NetworkConfig)(nil),              // 6: org.lfedge.eve.profile.NetworkConfig
-	(*NetworkPortAddresses)(nil),       // 7: org.lfedge.eve.profile.NetworkPortAddresses
-	(*NetworkPortConfig)(nil),          // 8: org.lfedge.eve.profile.NetworkPortConfig
-	(*CellularConfig)(nil),             // 9: org.lfedge.eve.profile.CellularConfig
-	(*CellularNetworkAuth)(nil),        // 10: org.lfedge.eve.profile.CellularNetworkAuth
-	(*WifiConfig)(nil),                 // 11: org.lfedge.eve.profile.WifiConfig
-	(*timestamppb.Timestamp)(nil),      // 12: google.protobuf.Timestamp
-	(*config.DhcpOptionsIgnore)(nil),   // 13: org.lfedge.eve.config.DhcpOptionsIgnore
-	(*config.ProxyConfig)(nil),         // 14: org.lfedge.eve.config.ProxyConfig
-	(evecommon.CellularIPType)(0),      // 15: org.lfedge.eve.common.CellularIPType
-	(config.CellularAuthProtocol)(0),   // 16: org.lfedge.eve.config.CellularAuthProtocol
-	(config.WiFiKeyScheme)(0),          // 17: org.lfedge.eve.config.WiFiKeyScheme
+	(ConfigSource)(0),                   // 0: org.lfedge.eve.profile.ConfigSource
+	(IPVersion)(0),                      // 1: org.lfedge.eve.profile.IPVersion
+	(WirelessType)(0),                   // 2: org.lfedge.eve.profile.WirelessType
+	(*NetworkInfo)(nil),                 // 3: org.lfedge.eve.profile.NetworkInfo
+	(*NetworkConfigTestingStatus)(nil),  // 4: org.lfedge.eve.profile.NetworkConfigTestingStatus
+	(*NetworkConfigChange)(nil),         // 5: org.lfedge.eve.profile.NetworkConfigChange
+	(*NetworkConfig)(nil),               // 6: org.lfedge.eve.profile.NetworkConfig
+	(*NetworkPortAddresses)(nil),        // 7: org.lfedge.eve.profile.NetworkPortAddresses
+	(*NetworkPortConfig)(nil),           // 8: org.lfedge.eve.profile.NetworkPortConfig
+	(*CellularConfig)(nil),              // 9: org.lfedge.eve.profile.CellularConfig
+	(*CellularNetworkAuth)(nil),         // 10: org.lfedge.eve.profile.CellularNetworkAuth
+	(*WifiConfig)(nil),                  // 11: org.lfedge.eve.profile.WifiConfig
+	(*timestamppb.Timestamp)(nil),       // 12: google.protobuf.Timestamp
+	(*evecommon.DhcpOptionsIgnore)(nil), // 13: org.lfedge.eve.common.DhcpOptionsIgnore
+	(*evecommon.ProxyConfig)(nil),       // 14: org.lfedge.eve.common.ProxyConfig
+	(evecommon.CellularIPType)(0),       // 15: org.lfedge.eve.common.CellularIPType
+	(evecommon.CellularAuthProtocol)(0), // 16: org.lfedge.eve.common.CellularAuthProtocol
+	(evecommon.WiFiKeyScheme)(0),        // 17: org.lfedge.eve.common.WiFiKeyScheme
 }
 var file_profile_network_proto_depIdxs = []int32{
 	6,  // 0: org.lfedge.eve.profile.NetworkInfo.latest_config:type_name -> org.lfedge.eve.profile.NetworkConfig
@@ -1404,8 +1400,8 @@ var file_profile_network_proto_depIdxs = []int32{
 	12, // 8: org.lfedge.eve.profile.NetworkConfig.submitted_at:type_name -> google.protobuf.Timestamp
 	7,  // 9: org.lfedge.eve.profile.NetworkPortConfig.port_addresses:type_name -> org.lfedge.eve.profile.NetworkPortAddresses
 	1,  // 10: org.lfedge.eve.profile.NetworkPortConfig.ip_version:type_name -> org.lfedge.eve.profile.IPVersion
-	13, // 11: org.lfedge.eve.profile.NetworkPortConfig.dhcp_options_ignore:type_name -> org.lfedge.eve.config.DhcpOptionsIgnore
-	14, // 12: org.lfedge.eve.profile.NetworkPortConfig.proxy_config:type_name -> org.lfedge.eve.config.ProxyConfig
+	13, // 11: org.lfedge.eve.profile.NetworkPortConfig.dhcp_options_ignore:type_name -> org.lfedge.eve.common.DhcpOptionsIgnore
+	14, // 12: org.lfedge.eve.profile.NetworkPortConfig.proxy_config:type_name -> org.lfedge.eve.common.ProxyConfig
 	2,  // 13: org.lfedge.eve.profile.NetworkPortConfig.wireless_device_type:type_name -> org.lfedge.eve.profile.WirelessType
 	9,  // 14: org.lfedge.eve.profile.NetworkPortConfig.cellular_config:type_name -> org.lfedge.eve.profile.CellularConfig
 	11, // 15: org.lfedge.eve.profile.NetworkPortConfig.wifi_config:type_name -> org.lfedge.eve.profile.WifiConfig
@@ -1413,8 +1409,8 @@ var file_profile_network_proto_depIdxs = []int32{
 	15, // 17: org.lfedge.eve.profile.CellularConfig.attach_ip_type:type_name -> org.lfedge.eve.common.CellularIPType
 	10, // 18: org.lfedge.eve.profile.CellularConfig.default_bearer_auth:type_name -> org.lfedge.eve.profile.CellularNetworkAuth
 	10, // 19: org.lfedge.eve.profile.CellularConfig.attach_bearer_auth:type_name -> org.lfedge.eve.profile.CellularNetworkAuth
-	16, // 20: org.lfedge.eve.profile.CellularNetworkAuth.auth_protocol:type_name -> org.lfedge.eve.config.CellularAuthProtocol
-	17, // 21: org.lfedge.eve.profile.WifiConfig.key_scheme:type_name -> org.lfedge.eve.config.WiFiKeyScheme
+	16, // 20: org.lfedge.eve.profile.CellularNetworkAuth.auth_protocol:type_name -> org.lfedge.eve.common.CellularAuthProtocol
+	17, // 21: org.lfedge.eve.profile.WifiConfig.key_scheme:type_name -> org.lfedge.eve.common.WiFiKeyScheme
 	22, // [22:22] is the sub-list for method output_type
 	22, // [22:22] is the sub-list for method input_type
 	22, // [22:22] is the sub-list for extension type_name
