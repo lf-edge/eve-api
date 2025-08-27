@@ -11,9 +11,10 @@ from google.protobuf.internal import builder as _builder
 _sym_db = _symbol_database.Default()
 
 
+from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x16\x65vecommon/netcmn.proto\x12\x15org.lfedge.eve.common\"%\n\x07ipRange\x12\r\n\x05start\x18\x01 \x01(\t\x12\x0b\n\x03\x65nd\x18\x02 \x01(\t\"]\n\x0bProxyServer\x12\x30\n\x05proto\x18\x01 \x01(\x0e\x32!.org.lfedge.eve.common.proxyProto\x12\x0e\n\x06server\x18\x02 \x01(\t\x12\x0c\n\x04port\x18\x03 \x01(\r\"\xb2\x01\n\x0bProxyConfig\x12\x1a\n\x12networkProxyEnable\x18\x01 \x01(\x08\x12\x33\n\x07proxies\x18\x02 \x03(\x0b\x32\".org.lfedge.eve.common.ProxyServer\x12\x12\n\nexceptions\x18\x03 \x01(\t\x12\x0f\n\x07pacfile\x18\x04 \x01(\t\x12\x17\n\x0fnetworkProxyURL\x18\x05 \x01(\t\x12\x14\n\x0cproxyCertPEM\x18\x06 \x03(\x0c\"7\n\x12ZnetStaticDNSEntry\x12\x10\n\x08HostName\x18\x01 \x01(\t\x12\x0f\n\x07\x41\x64\x64ress\x18\x02 \x03(\t\"\x8e\x02\n\x06ipspec\x12-\n\x04\x64hcp\x18\x02 \x01(\x0e\x32\x1f.org.lfedge.eve.common.DHCPType\x12\x0e\n\x06subnet\x18\x03 \x01(\t\x12\x0f\n\x07gateway\x18\x05 \x01(\t\x12\x0e\n\x06\x64omain\x18\x06 \x01(\t\x12\x0b\n\x03ntp\x18\x07 \x01(\t\x12\x10\n\x08more_ntp\x18\n \x03(\t\x12\x0b\n\x03\x64ns\x18\x08 \x03(\t\x12\x31\n\tdhcpRange\x18\t \x01(\x0b\x32\x1e.org.lfedge.eve.common.ipRange\x12\x45\n\x13\x64hcp_options_ignore\x18\x0b \x01(\x0b\x32(.org.lfedge.eve.common.DhcpOptionsIgnore\"\x93\x01\n\x11\x44hcpOptionsIgnore\x12\x1e\n\x16ntp_server_exclusively\x18\x01 \x01(\x08\x12 \n\x18ip_addresses_exclusively\x18\x02 \x01(\x08\x12\x1e\n\x16\x64ns_config_exclusively\x18\x03 \x01(\x08\x12\x1c\n\x14gateways_exclusively\x18\x04 \x01(\x08\"+\n\rProbeEndpoint\x12\x0c\n\x04host\x18\x01 \x01(\t\x12\x0c\n\x04port\x18\x02 \x01(\r\"\x97\x01\n\x11\x43onnectivityProbe\x12\x44\n\x0cprobe_method\x18\x01 \x01(\x0e\x32..org.lfedge.eve.common.ConnectivityProbeMethod\x12<\n\x0eprobe_endpoint\x18\x02 \x01(\x0b\x32$.org.lfedge.eve.common.ProbeEndpoint*_\n\nproxyProto\x12\x0e\n\nPROXY_HTTP\x10\x00\x12\x0f\n\x0bPROXY_HTTPS\x10\x01\x12\x0f\n\x0bPROXY_SOCKS\x10\x02\x12\r\n\tPROXY_FTP\x10\x03\x12\x10\n\x0bPROXY_OTHER\x10\xff\x01*>\n\x08\x44HCPType\x12\x0c\n\x08\x44HCPNoop\x10\x00\x12\n\n\x06Static\x10\x01\x12\x0c\n\x08\x44HCPNone\x10\x02\x12\n\n\x06\x43lient\x10\x04*\x83\x01\n\x0bNetworkType\x12\x13\n\x0fNETWORKTYPENOOP\x10\x00\x12\x06\n\x02V4\x10\x04\x12\x06\n\x02V6\x10\x06\x12\x0c\n\x08\x43ryptoV4\x10\x18\x12\x0c\n\x08\x43ryptoV6\x10\x1a\x12\r\n\tCryptoEID\x10\x0e\x12\n\n\x06V4Only\x10\x07\x12\n\n\x06V6Only\x10\x08\x12\x0c\n\x08\x44ualV4V6\x10\t*4\n\x0cWirelessType\x12\x0c\n\x08TypeNOOP\x10\x00\x12\x08\n\x04WiFi\x10\x01\x12\x0c\n\x08\x43\x65llular\x10\x02*7\n\rWiFiKeyScheme\x12\x0e\n\nSchemeNOOP\x10\x00\x12\n\n\x06WPAPSK\x10\x01\x12\n\n\x06WPAEAP\x10\x02*\x8b\x01\n\x17\x43onnectivityProbeMethod\x12)\n%CONNECTIVITY_PROBE_METHOD_UNSPECIFIED\x10\x00\x12\"\n\x1e\x43ONNECTIVITY_PROBE_METHOD_ICMP\x10\x01\x12!\n\x1d\x43ONNECTIVITY_PROBE_METHOD_TCP\x10\x02*\xc6\x01\n\x15RadioAccessTechnology\x12\'\n#RADIO_ACCESS_TECHNOLOGY_UNSPECIFIED\x10\x00\x12\x1f\n\x1bRADIO_ACCESS_TECHNOLOGY_GSM\x10\x01\x12 \n\x1cRADIO_ACCESS_TECHNOLOGY_UMTS\x10\x02\x12\x1f\n\x1bRADIO_ACCESS_TECHNOLOGY_LTE\x10\x03\x12 \n\x1cRADIO_ACCESS_TECHNOLOGY_5GNR\x10\x04*\x8c\x01\n\x0e\x43\x65llularIPType\x12 \n\x1c\x43\x45LLULAR_IP_TYPE_UNSPECIFIED\x10\x00\x12\x19\n\x15\x43\x45LLULAR_IP_TYPE_IPV4\x10\x01\x12\"\n\x1e\x43\x45LLULAR_IP_TYPE_IPV4_AND_IPV6\x10\x02\x12\x19\n\x15\x43\x45LLULAR_IP_TYPE_IPV6\x10\x03*u\n\nBearerType\x12\x1b\n\x17\x42\x45\x41RER_TYPE_UNSPECIFIED\x10\x00\x12\x16\n\x12\x42\x45\x41RER_TYPE_ATTACH\x10\x01\x12\x17\n\x13\x42\x45\x41RER_TYPE_DEFAULT\x10\x02\x12\x19\n\x15\x42\x45\x41RER_TYPE_DEDICATED\x10\x03*\xa1\x01\n\x14\x43\x65llularAuthProtocol\x12\x1f\n\x1b\x43\x45LLULAR_AUTH_PROTOCOL_NONE\x10\x00\x12\x1e\n\x1a\x43\x45LLULAR_AUTH_PROTOCOL_PAP\x10\x01\x12\x1f\n\x1b\x43\x45LLULAR_AUTH_PROTOCOL_CHAP\x10\x02\x12\'\n#CELLULAR_AUTH_PROTOCOL_PAP_AND_CHAP\x10\x03\x42M\n\x15org.lfedge.eve.commonB\tEvecommonP\x01Z\'github.com/lf-edge/eve-api/go/evecommonb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x16\x65vecommon/netcmn.proto\x12\x15org.lfedge.eve.common\x1a\x1fgoogle/protobuf/timestamp.proto\"%\n\x07ipRange\x12\r\n\x05start\x18\x01 \x01(\t\x12\x0b\n\x03\x65nd\x18\x02 \x01(\t\"]\n\x0bProxyServer\x12\x30\n\x05proto\x18\x01 \x01(\x0e\x32!.org.lfedge.eve.common.proxyProto\x12\x0e\n\x06server\x18\x02 \x01(\t\x12\x0c\n\x04port\x18\x03 \x01(\r\"\xb2\x01\n\x0bProxyConfig\x12\x1a\n\x12networkProxyEnable\x18\x01 \x01(\x08\x12\x33\n\x07proxies\x18\x02 \x03(\x0b\x32\".org.lfedge.eve.common.ProxyServer\x12\x12\n\nexceptions\x18\x03 \x01(\t\x12\x0f\n\x07pacfile\x18\x04 \x01(\t\x12\x17\n\x0fnetworkProxyURL\x18\x05 \x01(\t\x12\x14\n\x0cproxyCertPEM\x18\x06 \x03(\x0c\"7\n\x12ZnetStaticDNSEntry\x12\x10\n\x08HostName\x18\x01 \x01(\t\x12\x0f\n\x07\x41\x64\x64ress\x18\x02 \x03(\t\"\x8e\x02\n\x06ipspec\x12-\n\x04\x64hcp\x18\x02 \x01(\x0e\x32\x1f.org.lfedge.eve.common.DHCPType\x12\x0e\n\x06subnet\x18\x03 \x01(\t\x12\x0f\n\x07gateway\x18\x05 \x01(\t\x12\x0e\n\x06\x64omain\x18\x06 \x01(\t\x12\x0b\n\x03ntp\x18\x07 \x01(\t\x12\x10\n\x08more_ntp\x18\n \x03(\t\x12\x0b\n\x03\x64ns\x18\x08 \x03(\t\x12\x31\n\tdhcpRange\x18\t \x01(\x0b\x32\x1e.org.lfedge.eve.common.ipRange\x12\x45\n\x13\x64hcp_options_ignore\x18\x0b \x01(\x0b\x32(.org.lfedge.eve.common.DhcpOptionsIgnore\"\x93\x01\n\x11\x44hcpOptionsIgnore\x12\x1e\n\x16ntp_server_exclusively\x18\x01 \x01(\x08\x12 \n\x18ip_addresses_exclusively\x18\x02 \x01(\x08\x12\x1e\n\x16\x64ns_config_exclusively\x18\x03 \x01(\x08\x12\x1c\n\x14gateways_exclusively\x18\x04 \x01(\x08\"+\n\rProbeEndpoint\x12\x0c\n\x04host\x18\x01 \x01(\t\x12\x0c\n\x04port\x18\x02 \x01(\r\"\x97\x01\n\x11\x43onnectivityProbe\x12\x44\n\x0cprobe_method\x18\x01 \x01(\x0e\x32..org.lfedge.eve.common.ConnectivityProbeMethod\x12<\n\x0eprobe_endpoint\x18\x02 \x01(\x0b\x32$.org.lfedge.eve.common.ProbeEndpoint\"\x80\x01\n\x10PortConfigSource\x12:\n\x06origin\x18\x01 \x01(\x0e\x32*.org.lfedge.eve.common.NetworkConfigOrigin\x12\x30\n\x0csubmitted_at\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp*_\n\nproxyProto\x12\x0e\n\nPROXY_HTTP\x10\x00\x12\x0f\n\x0bPROXY_HTTPS\x10\x01\x12\x0f\n\x0bPROXY_SOCKS\x10\x02\x12\r\n\tPROXY_FTP\x10\x03\x12\x10\n\x0bPROXY_OTHER\x10\xff\x01*>\n\x08\x44HCPType\x12\x0c\n\x08\x44HCPNoop\x10\x00\x12\n\n\x06Static\x10\x01\x12\x0c\n\x08\x44HCPNone\x10\x02\x12\n\n\x06\x43lient\x10\x04*\x83\x01\n\x0bNetworkType\x12\x13\n\x0fNETWORKTYPENOOP\x10\x00\x12\x06\n\x02V4\x10\x04\x12\x06\n\x02V6\x10\x06\x12\x0c\n\x08\x43ryptoV4\x10\x18\x12\x0c\n\x08\x43ryptoV6\x10\x1a\x12\r\n\tCryptoEID\x10\x0e\x12\n\n\x06V4Only\x10\x07\x12\n\n\x06V6Only\x10\x08\x12\x0c\n\x08\x44ualV4V6\x10\t*4\n\x0cWirelessType\x12\x0c\n\x08TypeNOOP\x10\x00\x12\x08\n\x04WiFi\x10\x01\x12\x0c\n\x08\x43\x65llular\x10\x02*7\n\rWiFiKeyScheme\x12\x0e\n\nSchemeNOOP\x10\x00\x12\n\n\x06WPAPSK\x10\x01\x12\n\n\x06WPAEAP\x10\x02*\x8b\x01\n\x17\x43onnectivityProbeMethod\x12)\n%CONNECTIVITY_PROBE_METHOD_UNSPECIFIED\x10\x00\x12\"\n\x1e\x43ONNECTIVITY_PROBE_METHOD_ICMP\x10\x01\x12!\n\x1d\x43ONNECTIVITY_PROBE_METHOD_TCP\x10\x02*\xc6\x01\n\x15RadioAccessTechnology\x12\'\n#RADIO_ACCESS_TECHNOLOGY_UNSPECIFIED\x10\x00\x12\x1f\n\x1bRADIO_ACCESS_TECHNOLOGY_GSM\x10\x01\x12 \n\x1cRADIO_ACCESS_TECHNOLOGY_UMTS\x10\x02\x12\x1f\n\x1bRADIO_ACCESS_TECHNOLOGY_LTE\x10\x03\x12 \n\x1cRADIO_ACCESS_TECHNOLOGY_5GNR\x10\x04*\x8c\x01\n\x0e\x43\x65llularIPType\x12 \n\x1c\x43\x45LLULAR_IP_TYPE_UNSPECIFIED\x10\x00\x12\x19\n\x15\x43\x45LLULAR_IP_TYPE_IPV4\x10\x01\x12\"\n\x1e\x43\x45LLULAR_IP_TYPE_IPV4_AND_IPV6\x10\x02\x12\x19\n\x15\x43\x45LLULAR_IP_TYPE_IPV6\x10\x03*u\n\nBearerType\x12\x1b\n\x17\x42\x45\x41RER_TYPE_UNSPECIFIED\x10\x00\x12\x16\n\x12\x42\x45\x41RER_TYPE_ATTACH\x10\x01\x12\x17\n\x13\x42\x45\x41RER_TYPE_DEFAULT\x10\x02\x12\x19\n\x15\x42\x45\x41RER_TYPE_DEDICATED\x10\x03*\xa1\x01\n\x14\x43\x65llularAuthProtocol\x12\x1f\n\x1b\x43\x45LLULAR_AUTH_PROTOCOL_NONE\x10\x00\x12\x1e\n\x1a\x43\x45LLULAR_AUTH_PROTOCOL_PAP\x10\x01\x12\x1f\n\x1b\x43\x45LLULAR_AUTH_PROTOCOL_CHAP\x10\x02\x12\'\n#CELLULAR_AUTH_PROTOCOL_PAP_AND_CHAP\x10\x03*\xae\x02\n\x13NetworkConfigOrigin\x12%\n!NETWORK_CONFIG_ORIGIN_UNSPECIFIED\x10\x00\x12$\n NETWORK_CONFIG_ORIGIN_CONTROLLER\x10\x01\x12#\n\x1fNETWORK_CONFIG_ORIGIN_BOOTSTRAP\x10\x02\x12\"\n\x1eNETWORK_CONFIG_ORIGIN_OVERRIDE\x10\x03\x12$\n NETWORK_CONFIG_ORIGIN_LASTRESORT\x10\x04\x12\x1d\n\x19NETWORK_CONFIG_ORIGIN_TUI\x10\x05\x12\x1d\n\x19NETWORK_CONFIG_ORIGIN_LOC\x10\x06\x12\x1d\n\x19NETWORK_CONFIG_ORIGIN_LPS\x10\x07\x42M\n\x15org.lfedge.eve.commonB\tEvecommonP\x01Z\'github.com/lf-edge/eve-api/go/evecommonb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -22,40 +23,44 @@ if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
   DESCRIPTOR._serialized_options = b'\n\025org.lfedge.eve.commonB\tEvecommonP\001Z\'github.com/lf-edge/eve-api/go/evecommon'
-  _globals['_PROXYPROTO']._serialized_start=1043
-  _globals['_PROXYPROTO']._serialized_end=1138
-  _globals['_DHCPTYPE']._serialized_start=1140
-  _globals['_DHCPTYPE']._serialized_end=1202
-  _globals['_NETWORKTYPE']._serialized_start=1205
-  _globals['_NETWORKTYPE']._serialized_end=1336
-  _globals['_WIRELESSTYPE']._serialized_start=1338
-  _globals['_WIRELESSTYPE']._serialized_end=1390
-  _globals['_WIFIKEYSCHEME']._serialized_start=1392
-  _globals['_WIFIKEYSCHEME']._serialized_end=1447
-  _globals['_CONNECTIVITYPROBEMETHOD']._serialized_start=1450
-  _globals['_CONNECTIVITYPROBEMETHOD']._serialized_end=1589
-  _globals['_RADIOACCESSTECHNOLOGY']._serialized_start=1592
-  _globals['_RADIOACCESSTECHNOLOGY']._serialized_end=1790
-  _globals['_CELLULARIPTYPE']._serialized_start=1793
-  _globals['_CELLULARIPTYPE']._serialized_end=1933
-  _globals['_BEARERTYPE']._serialized_start=1935
-  _globals['_BEARERTYPE']._serialized_end=2052
-  _globals['_CELLULARAUTHPROTOCOL']._serialized_start=2055
-  _globals['_CELLULARAUTHPROTOCOL']._serialized_end=2216
-  _globals['_IPRANGE']._serialized_start=49
-  _globals['_IPRANGE']._serialized_end=86
-  _globals['_PROXYSERVER']._serialized_start=88
-  _globals['_PROXYSERVER']._serialized_end=181
-  _globals['_PROXYCONFIG']._serialized_start=184
-  _globals['_PROXYCONFIG']._serialized_end=362
-  _globals['_ZNETSTATICDNSENTRY']._serialized_start=364
-  _globals['_ZNETSTATICDNSENTRY']._serialized_end=419
-  _globals['_IPSPEC']._serialized_start=422
-  _globals['_IPSPEC']._serialized_end=692
-  _globals['_DHCPOPTIONSIGNORE']._serialized_start=695
-  _globals['_DHCPOPTIONSIGNORE']._serialized_end=842
-  _globals['_PROBEENDPOINT']._serialized_start=844
-  _globals['_PROBEENDPOINT']._serialized_end=887
-  _globals['_CONNECTIVITYPROBE']._serialized_start=890
-  _globals['_CONNECTIVITYPROBE']._serialized_end=1041
+  _globals['_PROXYPROTO']._serialized_start=1207
+  _globals['_PROXYPROTO']._serialized_end=1302
+  _globals['_DHCPTYPE']._serialized_start=1304
+  _globals['_DHCPTYPE']._serialized_end=1366
+  _globals['_NETWORKTYPE']._serialized_start=1369
+  _globals['_NETWORKTYPE']._serialized_end=1500
+  _globals['_WIRELESSTYPE']._serialized_start=1502
+  _globals['_WIRELESSTYPE']._serialized_end=1554
+  _globals['_WIFIKEYSCHEME']._serialized_start=1556
+  _globals['_WIFIKEYSCHEME']._serialized_end=1611
+  _globals['_CONNECTIVITYPROBEMETHOD']._serialized_start=1614
+  _globals['_CONNECTIVITYPROBEMETHOD']._serialized_end=1753
+  _globals['_RADIOACCESSTECHNOLOGY']._serialized_start=1756
+  _globals['_RADIOACCESSTECHNOLOGY']._serialized_end=1954
+  _globals['_CELLULARIPTYPE']._serialized_start=1957
+  _globals['_CELLULARIPTYPE']._serialized_end=2097
+  _globals['_BEARERTYPE']._serialized_start=2099
+  _globals['_BEARERTYPE']._serialized_end=2216
+  _globals['_CELLULARAUTHPROTOCOL']._serialized_start=2219
+  _globals['_CELLULARAUTHPROTOCOL']._serialized_end=2380
+  _globals['_NETWORKCONFIGORIGIN']._serialized_start=2383
+  _globals['_NETWORKCONFIGORIGIN']._serialized_end=2685
+  _globals['_IPRANGE']._serialized_start=82
+  _globals['_IPRANGE']._serialized_end=119
+  _globals['_PROXYSERVER']._serialized_start=121
+  _globals['_PROXYSERVER']._serialized_end=214
+  _globals['_PROXYCONFIG']._serialized_start=217
+  _globals['_PROXYCONFIG']._serialized_end=395
+  _globals['_ZNETSTATICDNSENTRY']._serialized_start=397
+  _globals['_ZNETSTATICDNSENTRY']._serialized_end=452
+  _globals['_IPSPEC']._serialized_start=455
+  _globals['_IPSPEC']._serialized_end=725
+  _globals['_DHCPOPTIONSIGNORE']._serialized_start=728
+  _globals['_DHCPOPTIONSIGNORE']._serialized_end=875
+  _globals['_PROBEENDPOINT']._serialized_start=877
+  _globals['_PROBEENDPOINT']._serialized_end=920
+  _globals['_CONNECTIVITYPROBE']._serialized_start=923
+  _globals['_CONNECTIVITYPROBE']._serialized_end=1074
+  _globals['_PORTCONFIGSOURCE']._serialized_start=1077
+  _globals['_PORTCONFIGSOURCE']._serialized_end=1205
 # @@protoc_insertion_point(module_scope)
