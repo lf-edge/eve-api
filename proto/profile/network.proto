@@ -16,14 +16,14 @@ option java_package = "org.lfedge.eve.profile";
 //   - The latest configuration received from the controller.
 //   - The fallback configuration used when controller connectivity is lost
 //     or the latest configuration is invalid.
-//   - Any locally modified configuration (e.g., from LPS) that overrides
-//     controller or fallback settings.
+//   - locally submitted network configuration (from LPS) that overrides
+//     controller or fallback settings for one or more ports.
 //
 // For each port, the `NetworkPortConfig.config_applied` flag indicates which
 // of these configurations is currently active on the device.
 message NetworkInfo {
   // The most recent network configuration received from the controller.
-  NetworkConfig latest_config = 1;
+  repeated NetworkPortConfig latest_config = 1;
 
   // Current status of controller connectivity and the state of fallback configuration.
   NetworkConfigTestingStatus config_testing = 2;
@@ -34,16 +34,15 @@ message NetworkInfo {
 
   // The fallback network configuration currently in use.
   // Empty if not using fallback configuration.
-  NetworkConfig fallback_config = 4;
+  repeated NetworkPortConfig fallback_config = 4;
 
-  // Contains only the ports with locally modified configurations and/or associated
-  // error messages. Errors may result from LPS-provided configuration being invalid
-  // or from changes not being permitted for the given port.
-  // This represents the subset of the configuration that differs from
-  // the controller-provided configuration due to changes requested by LPS.
+  // Contains information about locally provided network configuration.
+  // Includes only ports with local configuration and any associated errors.
+  // Errors may result from invalid input from the Local Profile Server (LPS)
+  // or from attempts to configure ports that cannot be modified locally.
   // Ports not listed here are using either the latest controller config
-  // or the fallback config, as indicated by `config_testing`.
-  NetworkConfig local_changes = 5;
+  // or the fallback config, as indicated by `NetworkPortConfig.config_applied`.
+  LocalNetworkConfigInfo local_config = 5;
 }
 
 // Reports the current status of controller connectivity testing.
@@ -54,65 +53,50 @@ message NetworkConfigTestingStatus {
   // Describes the last connectivity failure; empty if connectivity is fine.
   string connectivity_error = 2;
 
-  // Timestamp of the most recent controller connectivity test.
+  // Timestamp of the most recent (completed) controller connectivity test.
   google.protobuf.Timestamp last_test_time = 3;
+
+  // Indicates whether connectivity testing is still in progress.
+  // True if the device has not yet completed the test.
+  bool testing_in_progress = 4;
+
+  // Optional human-readable description of the current testing phase or reason
+  // for waiting (e.g., interface not yet available, waiting for DHCP IP,
+  // waiting for DNS configuration). Empty if testing is not in progress.
+  string testing_phase = 5;
 }
 
-// NetworkConfigChange is optionally returned by the local profile server in response to a POST
-// request to the `api/v1/network` endpoint.
-// If no changes are required, LPS may return HTTP code 204 (no content).
-message NetworkConfigChange {
+// LocalNetworkConfigInfo reports the current state of locally provided
+// network configuration. It lists all ports configured locally,
+// and any errors from processing the local configuration
+message LocalNetworkConfigInfo {
+  // List of ports with locally provided network configuration.
+  repeated NetworkPortConfig ports = 1;
+
+  // Error related to the processing of the local configuration as a whole.
+  // Indicates problems that prevented EVE from accepting or processing the request
+  // (e.g., invalid token, malformed payload, or missing logical labels).
+  // Unlike per-port errors (reported in NetworkPortConfig.error_message),
+  // this error is not tied to a specific port. Empty if the local configuration
+  // was accepted without errors.
+  string error_message = 2;
+}
+
+// LocalNetworkConfig is optionally returned by the Local Profile Server in response
+// to a POST request to the `api/v1/network` endpoint.
+// If the server responds with HTTP 204 (no content), EVE will continue using the
+// most recently submitted local configuration without changes.
+message LocalNetworkConfig {
   // Security token. EVE verifies that `server_token` matches the profile server
   // token provisioned via the controller.
   string server_token = 1;
 
-  // New or updated network configuration for one or more network ports.
-  // Ports not listed here will keep their current configuration unchanged.
-  NetworkConfig config_changes = 2;
-}
-
-// ConfigSource specifies where the network configuration originated.
-enum ConfigSource {
-  // The origin of the configuration is unknown.
-  CONFIG_SOURCE_UNSPECIFIED = 0;
-  // Received device configuration directly from the controller over HTTPS.
-  CONFIG_SOURCE_CONTROLLER = 1;
-  // Exported device config from the controller with the controller's signature,
-  // and installed via the Single-Use EVE installer as the device's initial configuration.
-  CONFIG_SOURCE_BOOTSTRAP = 2;
-  // Manually provided network-only config in JSON format and embedded into the EVE installer.
-  CONFIG_SOURCE_OVERRIDE = 3;
-  // Exported device config from the controller with the controller's signature,
-  // imported into the Local Operator Console (LOC), and fetched by the device over HTTPS.
-  CONFIG_SOURCE_LOC = 4;
-  // Created using a Local Profile Server (LPS) application and fetched
-  // by the device using the LPS API (currently HTTP-only).
-  CONFIG_SOURCE_LPS = 5;
-}
-
-// NetworkConfig represents a collection of network port configurations.
-// When included in a NetworkConfigChange message, it should contain only
-// the ports that require updated configurations.
-message NetworkConfig {
-  // List of network port configurations.
-  repeated NetworkPortConfig ports = 1;
-
-  // Identifies the origin of this configuration.
-  ConfigSource config_source = 2;
-
-  // Timestamp indicating when this configuration was applied.
-  // When included in a NetworkConfigChange message, this field should be left empty.
-  // EVE will automatically populate it with the time the configuration was received
-  // from LPS.
-  google.protobuf.Timestamp submitted_at = 3;
-
-  // Error message describing why the last submitted configuration was
-  // not fully/partially applied.
-  // This may include validation errors for configurations received from either
-  // the controller or LPS, or permission-related errors for configuration changes
-  // requested by LPS. Empty if the last submitted configuration was applied successfully.
-  // For port-specific validation/permission errors, see `NetworkPortConfig.error_message`
-  string error_message = 4;
+  // Declarative network configuration for ports managed locally.
+  // Contains all ports with locally defined configuration, regardless of whether
+  // they were newly configured, updated, or remain unchanged since the last submission.
+  // Ports not listed here are expected to use the controller-provided (or fallback)
+  // configuration.
+  repeated NetworkPortConfig ports = 2;
 }
 
 // Specifies the IP version(s) enabled on a network port.
@@ -130,9 +114,9 @@ enum IPVersion {
 
 // Specifies system and hardware identifiers for a network port.
 // These fields are included in NetworkInfo to help the user identify the port,
-// but may be omitted in NetworkConfigChange. None of these identifiers
+// but may be omitted in LocalNetworkConfig. None of these identifiers
 // (including the interface name) can be changed.
-// For identification in NetworkConfigChange, use the port's logical label instead.
+// For identification in LocalNetworkConfig, use the port's logical label instead.
 message NetworkPortAddresses {
   // The interface name assigned by the Linux kernel.
   string interface_name = 1;
@@ -142,7 +126,7 @@ message NetworkPortAddresses {
   // USB address of the network adapter in the format `<BUS>:[<PORT>]`, with nested ports
   // separated by dots. For example: `1:2.3`
   // Empty if the network adapter is not a USB device.
-  string usb_adapter = 3;
+  string usb_address = 3;
 }
 
 // NetworkPortConfig defines the configuration settings for a network port on a device.
@@ -158,15 +142,21 @@ message NetworkPortAddresses {
 // For cellular modems, IP settings are always provided by the cellular network,
 // so user-specified IP configurations are ignored during cellular modem updates.
 message NetworkPortConfig {
-  // Port logical name used in the device model.
-  string logical_name = 1;
+  // Logical label of the port as defined in the device model.
+  // This identifier is used to reference the port across configurations
+  // and status reports.
+  string logical_label = 1;
 
-  // System and hardware identifiers for the network port, used for informational purposes only.
+  // System and hardware identifiers of the network port (informational only).
+  // When included in `LocalNetworkConfig.ports` received from LPS,
+  // this field is ignored by EVE. Port identification must be done exclusively
+  // using the logical label.
   NetworkPortAddresses port_addresses = 2;
 
   // Indicates whether this configuration is currently applied to the port.
   // If false, the port is using a different configuration (latest controller config,
-  // local change, or fallback) instead of this one.
+  // local config, or fallback) instead of this one.
+  // Inside `LocalNetworkConfig.ports`, received by EVE from LPS, this field is ignored.
   bool config_applied = 3;
 
   // IP version(s) enabled for the port.
@@ -220,11 +210,10 @@ message NetworkPortConfig {
   // Should correspond to which oneof field is set in `wireless_config`.
   WirelessType wireless_device_type = 15;
 
-  // Configuration for wireless adapter (WiFi or cellular modem).
-  // When cellular modem configuration is being changed in NetworkConfigChange,
-  // IP fields like addresses, DNS, gateways, etc. should not be specified because
-  // they are always received from the cellular network (EVE will ignore
-  // user-specified IP config).
+  // Configuration for a wireless adapter (WiFi or cellular modem).
+  // For cellular modems, IP-related fields such as addresses, DNS, gateways, etc.
+  // must not be specified, because they are always obtained dynamically from the
+  // cellular network. Any user-specified values will be ignored by EVE.
   oneof wireless_config {
     // Configuration details specific to a cellular modem.
     CellularConfig cellular_config = 16;
@@ -233,16 +222,20 @@ message NetworkPortConfig {
     WifiConfig wifi_config = 17;
   }
 
+  // Identifies the source of this network port configuration.
+  // Inside `LocalNetworkConfig.ports`, received by EVE from LPS, this field is ignored.
+  org.lfedge.eve.common.PortConfigSource config_source = 18;
+
   // Error message associated with this specific port configuration.
-  // Indicates whether the configuration is invalid or if a change requested
-  // by the Local Profile Server was not permitted.
-  // This field is empty if the last applied configuration for this port
-  // was accepted successfully.
-  // If the configuration is invalid or not permitted, EVE may reject it,
-  // although the exact behavior depends on the configuration source.
-  // Use the `config_applied` field to check whether this configuration
-  // was at least partially applied and is currently active despite any errors.
-  string error_message = 20;
+  // Indicates problems with the configuration itself (invalid values or disallowed settings)
+  // or with the port's current state (e.g., missing IP/DNS on the management port,
+  // link down, or other connectivity issues).
+  // Empty if the configuration for this port was accepted and fully operational.
+  // Even if an error is reported, the configuration might still be (at least partially)
+  // applied; use the `config_applied` field to determine whether the port is currently
+  // using the requested configuration despite any issues.
+  // Inside `LocalNetworkConfig.ports`, received by EVE from LPS, this field is ignored.
+  string error_message = 19;
 }
 
 // Enum representing the type of wireless device associated with the network port.
@@ -280,14 +273,24 @@ message CellularConfig {
   // etc.
   uint32 activate_sim_slot = 5;
 
-  // If true, roaming is disabled.
-  bool disable_roaming = 6;
+  // If true, then modem will avoid connecting to networks with roaming.
+  bool forbid_roaming = 6;
 
   // Authentication settings for the default bearer.
   CellularNetworkAuth default_bearer_auth = 7;
 
   // Authentication settings for the attach bearer.
   CellularNetworkAuth attach_bearer_auth = 8;
+
+  // Optional cellular connectivity probing.
+  // By default it is enabled.
+  CellularConnectivityProbe probe = 9;
+
+  // Some LTE modems have GNSS receiver integrated and can be used for device
+  // location tracking.
+  // Enable this option to have location info periodically obtained from this
+  // modem and published to controller and to applications.
+  bool location_tracking = 10;
 }
 
 // CellularNetworkAuth defines the authentication credentials and protocol
@@ -298,11 +301,33 @@ message CellularNetworkAuth {
   // Authentication protocol used for cellular network access.
   org.lfedge.eve.common.CellularAuthProtocol auth_protocol = 1;
 
-  // Username is not published in NetworkInfo but may be set in NetworkConfigChange.
+  // Username is not published in NetworkInfo but may be set in LocalNetworkConfig.
   string username = 2;
 
-  // Password is not published in NetworkInfo but may be set in NetworkConfigChange.
+  // Password is not published in NetworkInfo but may be set in LocalNetworkConfig.
   string password = 3;
+}
+
+// CellularConnectivityProbe is used to periodically check the connectivity status
+// of a cellular network by probing a remote endpoint.
+// Whenever the probe fails, the cellular connection is automatically restarted.
+message CellularConnectivityProbe {
+  // If true, then probing is disabled.
+  bool disable = 1;
+  // User-defined probe for cellular connectivity testing.
+  // Only IP address is allowed as ConnectivityProbe.probe_address (and port if needed),
+  // not hostname.
+  // The probing algorithm is more complex that just testing reachability of a remote
+  // endpoint and the goal is to minimize generated traffic, probing time and false negatives
+  // (that would trigger undesired re-connect).
+  // EVE will periodically check the modem status, accessibility of DNS server(s) and potentially
+  // also proxies in the local network, and only as the last resort (if connectivity state
+  // is still unclear) it will probe the remote endpoint. If custom_probe is not defined,
+  // EVE will try to ping "8.8.8.8" (Google public DNS).
+  // It is recommended to use custom probe for private LTE networks where public DNS servers
+  // might not be allowed by the firewall (and hence ping would fail even with a working
+  // connectivity).
+  org.lfedge.eve.common.ConnectivityProbe custom_probe = 3;
 }
 
 // Configuration details specific to a WiFi adapter.
@@ -314,12 +339,12 @@ message WifiConfig {
   org.lfedge.eve.common.WiFiKeyScheme key_scheme = 2;
 
   // Identity/username for WPA2 Enterprise networks.
-  // Not included in NetworkInfo, but can be updated via NetworkConfigChange.
+  // Not included in NetworkInfo, but can be updated via LocalNetworkConfig.
   string identity = 3;
 
   // WiFi password or pre-shared key (PSK).
   // This value should be the hashed PSK generated by the `wpa_passphrase` tool.
   // For security, it is excluded from NetworkInfo but can be updated through
-  // NetworkConfigChange.
+  // LocalNetworkConfig.
   string password = 4;
 }
