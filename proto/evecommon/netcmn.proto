@@ -134,7 +134,7 @@ message DhcpOptionsIgnore {
   // (single domain name), and option 119 (search domains).
   // For DHCPv6 (IPv6), this applies to option 23 (DNS servers) and option 24
   // (domain search list).
-  bool dns_config_exclusive = 3;
+  bool dns_config_exclusively = 3;
 
   // When true, statically configured gateway addresses are used exclusively,
   // ignoring any routers provided by DHCP.
