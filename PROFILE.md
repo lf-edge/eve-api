@@ -329,11 +329,13 @@ If no changes are required, the Local Profile Server MAY return HTTP 204
 * An authorization token (`server_token`) to verify the request against
   the controller-provisioned secret.
 * New or updated network configuration for one or more adapters.
+* A list of adapters for which previously submitted local changes should be
+  reverted, restoring the controller-provided configuration.
 
 Behavior:
 
-* EVE validates the received configuration to ensure it is well-formed and only
-  includes adapters for which local modifications are permitted by the
+* EVE validates the received configuration change to ensure it is well-formed
+  and only includes adapters for which local modifications are permitted by the
   controller user.
 * Locally-modifiable fields include the IP configuration, wireless settings,
   and proxy configuration — the attributes defined in [NetworkPortConfig](proto/profile/network.proto).
@@ -352,6 +354,8 @@ Behavior:
   as appropriate.
 * If the controller revokes local modification permissions or un-configures LPS,
   EVE reverts affected adapters to the controller configuration.
+* LPS may explicitly request to revert one or more previously changed adapters,
+  by including them in the `reverted_ports` field of `NetworkConfigChange`.
 * When LPS (temporarily or indefinitely) throttles/cancels the communication
   stream by returning `404`, all previously submitted network configuration
   changes are reverted.
@@ -366,7 +370,7 @@ Behavior:
 * The current controller connectivity status is included in the request to help
   the local operator make informed changes.
 * When configuration changes fail validation or application, EVE reports errors
-  back in `NetworkInfo`.
+  back in `NetworkInfo.local_changes`.
 
 ## Security
 
