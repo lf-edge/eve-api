@@ -1,0 +1,154 @@
+// Copyright(c) 2024 Zededa, Inc.
+// All rights reserved.
+
+syntax = "proto3";
+
+package org.lfedge.eve.info;
+
+option go_package = "github.com/lf-edge/eve-api/go/info";
+option java_package = "org.lfedge.eve.info";
+
+message USBAddress {
+        // https://elixir.bootlin.com/linux/v6.16.9/source/include/linux/usb.h#L451
+        // https://github.com/gregkh/usbutils/blob/master/lsusb-t.c#L48
+        uint32 bus = 1;
+        // https://elixir.bootlin.com/linux/v6.16.9/source/include/linux/usb.h#L657
+        // https://github.com/gregkh/usbutils/blob/master/lsusb-t.c#L63
+        uint32 devnum = 2;
+}
+
+message BusParent {
+        optional PCIAddress pci_parent = 1;
+        optional USBAddress usb_parent = 2;
+}
+
+message USBDevice {
+        optional BusParent parent = 1;
+
+        // these are uint16, protobuf only supports from uint32
+        // https://elixir.bootlin.com/linux/v6.16.9/source/include/linux/usb.h#L984
+        uint32 vendor_id = 2;
+        uint32 product_id = 3;
+
+        USBAddress bus_devnum = 4;
+        string driver = 5;      // kernel driver bound to this device
+        uint32 class_id = 6;    // 3 bytes: (base_class, sub_class, protocol)
+        // Optional: EVE's suggested assignment group for this device.
+        // Controller may derive its own based on parent relationships.
+        string suggested_assigngrp = 7;
+        bool acs_enabled = 8;
+}
+
+message PCIAddress {
+        // https://github.com/lyonel/lshw/blob/master/src/core/pci.cc#L223
+        uint32 domain = 1;
+        uint32 bus = 2;
+        uint32 device = 3;
+        uint32 function = 4;
+}
+
+message PCIDevice {
+        optional PCIAddress parent_pci_device_address = 1;
+        string driver = 2;
+        PCIAddress address = 3;
+        // https://elixir.bootlin.com/linux/v6.16.9/source/include/linux/pci.h#L347
+        // using uint32 because uint16 is not available in protobuf
+        uint32 vendor_id = 4;
+        uint32 device_id = 5;
+        uint32 revision = 6;
+        uint32 subsystem_id = 7;
+        uint32 class_id = 8; // 3 bytes: (base,sub,prog-if)
+        uint64 subclass_id = 9;
+        // IOMMU group names apparently are strings: https://elixir.bootlin.com/linux/v6.16.9/source/drivers/iommu/iommu.c#L1101
+        string iommu_group = 10;
+}
+
+message SerialPort {
+        optional BusParent parent = 1;
+
+        string ioport_range = 2;  // I/O port range, e.g. "03f8-03ff"
+        uint64 irq = 3;
+
+        // f.e. /dev/ttyS0
+        string devpath = 4;
+}
+
+message CANDevice {
+        optional BusParent parent = 1;
+        string ifname = 2;
+}
+
+enum NetworkDeviceType {
+        NETWORK_DEVICE_TYPE_UNKNOWN  = 0;
+        NETWORK_DEVICE_TYPE_ETHERNET = 1;   // PhyIoNetEth
+        NETWORK_DEVICE_TYPE_WIFI     = 5;   // PhyIoNetWLAN
+        NETWORK_DEVICE_TYPE_WWAN     = 6;   // PhyIoNetWWAN (Cellular)
+        NETWORK_DEVICE_TYPE_ETH_PF   = 11;  // PhyIoNetEthPF (SR-IOV Physical Function)
+        NETWORK_DEVICE_TYPE_ETH_VF   = 12;  // PhyIoNetEthVF (SR-IOV Virtual Function)
+}
+
+message NetworkDevice {
+        optional BusParent parent = 1;
+
+        string ifname = 2;
+        NetworkDeviceType type = 3;
+
+        string mac_address = 4; // e.g. "00:11:22:33:44:AA"
+        uint32 speed_mbps = 5;  // link speed if known
+}
+
+message BIOS {
+        string vendor = 1;
+        string version = 2;
+        // Curated BIOS attributes; not a full dump.
+        map<string,string> attributes = 1000;
+}
+
+message CPU {
+        string model = 1;
+        string vendor = 2;          // e.g. "GenuineIntel"
+        uint32 id = 3;              // logical CPU id
+        uint64 freq = 4;            // nominal frequency
+}
+
+message CPUInfo {
+        repeated CPU cpus = 1;
+}
+
+message TPM {
+  bool present            = 1;
+  string manufacturer     = 2;  // e.g., "Infineon", "Nuvoton"
+  string firmware_version = 3;  // e.g., "7.85"
+  string spec_version     = 4;  // e.g., "2.0"
+}
+
+message HardwareInventory {
+  repeated PCIDevice pci_devices = 3;
+  repeated USBDevice usb_devices = 4;
+  repeated SerialPort serial_devices = 5;
+  repeated NetworkDevice network_devices = 6;
+  repeated CANDevice can_devices = 7;
+
+  BIOS bios = 8;
+  CPUInfo cpu_info = 9;
+
+  // ------------------------------------------------------------------
+  // Node-level summary
+  //  - system memory
+  //  - system storage
+  //  - amount of CPUs
+  //  - availability of watchdog, TPM, status LED
+  //  - kernel flavor & version
+  //  - EVE platform
+  // ------------------------------------------------------------------
+  uint64 total_memory_bytes  = 10;  // total system RAM
+  uint64 total_storage_bytes = 11;  // total non-removable storage
+  uint32 cpu_count           = 12;  // logical CPU count
+
+  bool watchdog_present      = 13;
+  TPM tpm                    = 14;
+  bool status_led_present    = 15;
+  // Free-form extension for things not modeled yet.
+  // New keys must be promoted to typed fields in a follow-up.
+  map<string,string> misc = 1000;
+}
