@@ -14,6 +14,28 @@ import "evecommon/netcmn.proto";
 import "info/patch_envelope.proto";
 import "info/ntpsources.proto";
 import "info/edge_node_cluster.proto";
+import "info/hardware.proto";
+
+message SmartAttr {
+  uint32 id = 1;
+  uint64 value = 2;   // the current value of the parameter
+  uint64 worst = 3;   // worst value that Value has ever reached
+  uint64 thresh = 4;  // the value that the Value of the same attribute must reach for the attribute's state to be considered critical.
+  string when_failed = 5; // critical state if no empty
+  uint64 raw_value = 6; // Contains miscellaneous meter readings (where applicable)
+  string type = 7; // Informs the condition of the device e.g., pre-fail, old_age, etc.
+  string attribute_name = 8; // the attribute name
+}
+
+message StorageDiskInfo {
+  reserved 3; // deprecated
+  string disk_name = 1;
+  string wwn = 4;
+  string serial_number = 5;
+  string model = 6; // Intel 123456F
+  string collector_errors = 7; // Reports errors when collecting information. Default and normal value = ""
+  repeated SmartAttr smart_attr = 8; // smartctl output
+}
 
 // Deprecated: see deprecatedMetricItem below
 enum DepMetricItemType {
@@ -524,27 +546,6 @@ enum StorageTypeInfo {
   STORAGE_TYPE_INFO_ZFS = 2;
 }
 
-message SmartAttr {
-  uint32 id = 1;
-  uint64 value = 2;   // the current value of the parameter
-  uint64 worst = 3;   // worst value that Value has ever reached
-  uint64 thresh = 4;  // the value that the Value of the same attribute must reach for the attribute's state to be considered critical.
-  string when_failed = 5; // critical state if no empty
-  uint64 raw_value = 6; // Contains miscellaneous meter readings (where applicable)
-  string type = 7; // Informs the condition of the device e.g., pre-fail, old_age, etc.
-  string attribute_name = 8; // the attribute name
-}
-
-message StorageDiskInfo {
-  reserved 3; // deprecated
-  string disk_name = 1;
-  string wwn = 4;
-  string serial_number = 5;
-  string model = 6; // Intel 123456F
-  string collector_errors = 7; // Reports errors when collecting information. Default and normal value = ""
-  repeated SmartAttr smart_attr = 8; // smartctl output
-}
-
 // For nested structures like pool of stripes of mirrors we should define this structure
 message StorageChildren {
   StorageRaidType current_raid = 1;
@@ -568,11 +569,6 @@ message StorageInfo {
   string collector_errors = 10; // Reports errors when collecting information. Default and normal value = ""
   repeated StorageChildren children = 11; // If we have nested objects we should define them here
   string pool_status_msg = 12;  // pool status msg
-}
-
-// Information about the system that is sent once when the system boots
-message ZInfoHardware {
-  repeated StorageDiskInfo disks = 1; // S.M.A.R.T. info for disks
 }
 
 // Base device info, as discovered by Xen (or OS on bare metal)
@@ -1421,4 +1417,22 @@ message ZInfoKubeCluster {
 
   // Virtual Machines running on the cluster
   repeated KubeVMIInfo eve_vm_apps = 6;
+}
+
+// Information about the system that is sent once when the system boots
+message ZInfoHardware {
+  // NOTE: deprecated - SMART info will be moved into ZHardwareHealth.
+  // Kept here for backward compatibility with older EVE/controller versions.
+  repeated StorageDiskInfo disks = 1; // S.M.A.R.T. info for disks
+
+  // as in /etc/eve-release
+  string eve_release = 2;
+
+  HardwareInventory inventory = 3;
+
+  string kernel_flavor       = 4;  // e.g. "pc", "rt", "virt"
+  string kernel_version      = 5;  // e.g. "6.6.45-eve"
+  string eve_platform        = 6;  // board/platform name
+  string partition           = 7;  // e.g. "IMGA", "IMGB"
+  string kernel_cmdline      = 8;  // current kernel command line
 }
