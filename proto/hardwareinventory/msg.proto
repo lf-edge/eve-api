@@ -1,0 +1,88 @@
+// Copyright(c) 2025 Zededa, Inc.
+// SPDX-License-Identifier: Apache-2.0
+
+syntax = "proto3";
+
+package org.lfedge.eve.hardwareinventory;
+option go_package  = "github.com/lf-edge/eve-api/go/hardwareinventory";
+option java_package = "org.lfedge.eve.hardwareinventory";
+
+message USBBusDevnum {
+        // https://elixir.bootlin.com/linux/v6.16.9/source/include/linux/usb.h#L451
+        int64 bus = 1;
+        // https://elixir.bootlin.com/linux/v6.16.9/source/include/linux/usb.h#L657
+        int64 devnum = 2;
+}
+
+message USBDevice {
+        optional PCIAddress pci_parent = 1;
+        optional USBBusDevnum usb_parent = 2;
+
+        // these are uint16, protobuf only supports from uint32
+        // https://elixir.bootlin.com/linux/v6.16.9/source/include/linux/usb.h#L984
+        uint32 vendor_id = 3;
+        uint32 product_id = 4;
+
+        USBBusDevnum bus_devnum = 5;
+}
+
+message PCIAddress {
+        // https://github.com/lyonel/lshw/blob/master/src/core/pci.cc#L223
+        uint32 domain = 1;
+        uint32 bus = 2;
+        uint32 device = 3;
+        uint32 function = 4;
+}
+
+message PCIDevice {
+        optional PCIAddress parent_pci_device_address = 1;
+        string driver = 2;
+        PCIAddress address = 3;
+        // https://elixir.bootlin.com/linux/v6.16.9/source/include/linux/pci.h#L347
+        // using uint32 because uint16 is not available in protobuf
+        uint32 vendor_id = 4;
+        uint32 device_id = 5;
+        uint32 revision = 6;
+        uint32 subsystem_id = 7;
+        uint32 class_id = 8; // 3 bytes: (base,sub,prog-if)
+        uint64 subclass_id = 9;
+        // IOMMU group names apparently are strings: https://elixir.bootlin.com/linux/v6.16.9/source/drivers/iommu/iommu.c#L1101
+        string iommu_group = 10;
+}
+
+message SerialPort {
+        optional PCIAddress pci_parent = 1;
+        optional USBBusDevnum usb_parent = 2;
+
+        string ioports = 3;
+        uint64 irq = 4;
+
+        // f.e. /dev/ttyS0
+        string devpath = 5;
+}
+
+message CANDevice {
+        optional PCIAddress pci_parent = 1;
+        optional USBBusDevnum usb_parent = 2;
+
+        string ifname = 3;
+}
+
+message NetworkDevice {
+        optional PCIAddress pci_parent = 1;
+        optional USBBusDevnum usb_parent = 2;
+
+        string ifname = 3;
+        bool wireless = 4;
+}
+
+// this message is POSTed to /inventory/{serial}/{softserial}
+message InventoryMsg {
+        string eve_version = 1;
+
+        repeated PCIDevice pci_devices = 2;
+        repeated USBDevice usb_devices = 3;
+        repeated SerialPort serial_devices = 4;
+        repeated NetworkDevice network_devices = 5;
+        repeated CANDevice can_devices = 6;
+}
