@@ -11,9 +11,13 @@ from google.protobuf.internal import builder as _builder
 _sym_db = _symbol_database.Default()
 
 
+from validate import validate_pb2 as validate_dot_validate__pb2
+from google.api import annotations_pb2 as google_dot_api_dot_annotations__pb2
+from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
+from protoc_gen_openapiv2.options import annotations_pb2 as protoc__gen__openapiv2_dot_options_dot_annotations__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x17register/register.proto\x12\x17org.lfedge.eve.register\"W\n\x0cZRegisterMsg\x12\x12\n\nonBoardKey\x18\x01 \x01(\t\x12\x0f\n\x07pemCert\x18\x02 \x01(\x0c\x12\x0e\n\x06serial\x18\x03 \x01(\t\x12\x12\n\nsoftSerial\x18\x04 \x01(\tBA\n\x17org.lfedge.eve.registerZ&github.com/lf-edge/eve-api/go/registerb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x17register/register.proto\x12\x17org.lfedge.eve.register\x1a\x17validate/validate.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"\xa1\x01\n\x0cZRegisterMsg\x12\x16\n\nonBoardKey\x18\x01 \x01(\tB\x02\x18\x01\x12\x1b\n\x07pemCert\x18\x02 \x01(\x0c\x42\n\xfa\x42\x07z\x05\x10\x64\x18\x80P\x12,\n\x06serial\x18\x03 \x01(\tB\x1c\xfa\x42\x19r\x17\x10\x01\x18\x80\x02\x32\x10^[a-zA-Z0-9_-]+$\x12.\n\nsoftSerial\x18\x04 \x01(\tB\x1a\xfa\x42\x17r\x15\x18\x80\x02\x32\x10^[a-zA-Z0-9_-]*$2\xe5\x04\n\x0fRegisterService\x12\xd1\x04\n\x0eRegisterDevice\x12%.org.lfedge.eve.register.ZRegisterMsg\x1a\x16.google.protobuf.Empty\"\xff\x03\x92\x41\xd5\x03\x12)Register a new Device for the first time.\"d\n+API for Device to Controller communications\x12\x35https://github.com/lf-edge/eve-api/blob/main/APIv2.md*\x0eRegisterDeviceJ,\n\x03\x32\x30\x30\x12%\n#Repeat valid registration of DeviceJ%\n\x03\x32\x30\x31\x12\x1e\n\x1cValid registration of DeviceJ/\n\x03\x34\x30\x31\x12(\n&Unauthenticated or invalid credentialsJ0\n\x03\x34\x30\x33\x12)\n\'Valid credentials without authorizationJ\x19\n\x03\x34\x30\x39\x12\x12\n\x10\x44uplicate DeviceJ&\n\x03\x34\x32\x32\x12\x1f\n\x1dMissing or unprocessable bodyJ7\n\x03\x35\x30\x33\x12\x30\n.Controller is unavailable e.g., being upgraded\x82\xd3\xe4\x93\x02 \"\x1b/api/v1/edgedevice/register:\x01*B\x7f\n\x17org.lfedge.eve.registerZ&github.com/lf-edge/eve-api/go/register\x92\x41;*\x01\x02\x32\x1a\x61pplication/x-proto-binary:\x1a\x61pplication/x-proto-binaryb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -21,7 +25,19 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'register.register_pb2', _gl
 if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
-  DESCRIPTOR._serialized_options = b'\n\027org.lfedge.eve.registerZ&github.com/lf-edge/eve-api/go/register'
-  _globals['_ZREGISTERMSG']._serialized_start=52
-  _globals['_ZREGISTERMSG']._serialized_end=139
+  DESCRIPTOR._serialized_options = b'\n\027org.lfedge.eve.registerZ&github.com/lf-edge/eve-api/go/register\222A;*\001\0022\032application/x-proto-binary:\032application/x-proto-binary'
+  _ZREGISTERMSG.fields_by_name['onBoardKey']._options = None
+  _ZREGISTERMSG.fields_by_name['onBoardKey']._serialized_options = b'\030\001'
+  _ZREGISTERMSG.fields_by_name['pemCert']._options = None
+  _ZREGISTERMSG.fields_by_name['pemCert']._serialized_options = b'\372B\007z\005\020d\030\200P'
+  _ZREGISTERMSG.fields_by_name['serial']._options = None
+  _ZREGISTERMSG.fields_by_name['serial']._serialized_options = b'\372B\031r\027\020\001\030\200\0022\020^[a-zA-Z0-9_-]+$'
+  _ZREGISTERMSG.fields_by_name['softSerial']._options = None
+  _ZREGISTERMSG.fields_by_name['softSerial']._serialized_options = b'\372B\027r\025\030\200\0022\020^[a-zA-Z0-9_-]*$'
+  _REGISTERSERVICE.methods_by_name['RegisterDevice']._options = None
+  _REGISTERSERVICE.methods_by_name['RegisterDevice']._serialized_options = b'\222A\325\003\022)Register a new Device for the first time.\"d\n+API for Device to Controller communications\0225https://github.com/lf-edge/eve-api/blob/main/APIv2.md*\016RegisterDeviceJ,\n\003200\022%\n#Repeat valid registration of DeviceJ%\n\003201\022\036\n\034Valid registration of DeviceJ/\n\003401\022(\n&Unauthenticated or invalid credentialsJ0\n\003403\022)\n\'Valid credentials without authorizationJ\031\n\003409\022\022\n\020Duplicate DeviceJ&\n\003422\022\037\n\035Missing or unprocessable bodyJ7\n\003503\0220\n.Controller is unavailable e.g., being upgraded\202\323\344\223\002 \"\033/api/v1/edgedevice/register:\001*'
+  _globals['_ZREGISTERMSG']._serialized_start=185
+  _globals['_ZREGISTERMSG']._serialized_end=346
+  _globals['_REGISTERSERVICE']._serialized_start=349
+  _globals['_REGISTERSERVICE']._serialized_end=962
 # @@protoc_insertion_point(module_scope)

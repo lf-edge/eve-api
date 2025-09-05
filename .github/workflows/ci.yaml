@@ -1,44 +1,44 @@
 # yamllint disable rule:line-length
 ---
 name: Build and Test
-on:  # yamllint disable-line rule:truthy
-  pull_request:
-    types: [opened, synchronize, reopened]
-  push:
-    branches:
-      - main
+on: # yamllint disable-line rule:truthy
+    pull_request:
+        types: [opened, synchronize, reopened]
+    push:
+        branches:
+            - main
 
 jobs:
-  report:
-    name: Report
-    runs-on: ubuntu-latest
-    steps:
-      - name: ref
-        run: echo ${{ github.ref }}
-      - name: event_name
-        run: echo ${{ github.event_name }}
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    steps:
-      - name: checkout
-        uses: actions/checkout@v4
-      - name: Build and run dev container task
-        uses: devcontainers/ci@v0.3
-        with:
-          # Change this to be your CI task/script
-          runCmd: make proto
-      - name: check no uncommitted files
-        run: |
-          echo "changed and uncommitted files, excluding versions"
-          diff=$(git diff -I'^\/\/\s+protoc(-gen-go)?\s+v[0-9]+\.[0-9+\.[0-9]+\s*$' -- . ':!*.png' ':!*.svg')
-          if [ -n "$diff" ]; then
-            # print the diff so we can fix it, if there is an issue
-            echo
-            echo "differences other than image and tool version changes:"
-            git diff -I'^\/\/\s+protoc(-gen-go)?\s+v[0-9]+\.[0-9+\.[0-9]+\s*$' -- . ':!*.png' ':!*.svg'
-            echo
-            echo "all differences:"
-            git diff
-            exit 1
-          fi
+    report:
+        name: Report
+        runs-on: ubuntu-latest
+        steps:
+            - name: ref
+              run: echo ${{ github.ref }}
+            - name: event_name
+              run: echo ${{ github.event_name }}
+    build:
+        name: Build
+        runs-on: ubuntu-latest
+        steps:
+            - name: checkout
+              uses: actions/checkout@v4
+            - name: Build and run dev container task
+              uses: devcontainers/ci@v0.3
+              with:
+                  # Change this to be your CI task/script
+                  runCmd: make proto-local proto-validate-go-local
+            - name: check no uncommitted files
+              run: |
+                  echo "changed and uncommitted files, excluding versions"
+                  diff=$(git diff -I'^\/\/\s+protoc(-gen-go)?\s+v[0-9]+\.[0-9+\.[0-9]+\s*$' -- . ':!*.png' ':!*.svg')
+                  if [ -n "$diff" ]; then
+                    # print the diff so we can fix it, if there is an issue
+                    echo
+                    echo "differences other than image and tool version changes:"
+                    git diff -I'^\/\/\s+protoc(-gen-go)?\s+v[0-9]+\.[0-9+\.[0-9]+\s*$' -- . ':!*.png' ':!*.svg'
+                    echo
+                    echo "all differences:"
+                    git diff
+                    exit 1
+                  fi
