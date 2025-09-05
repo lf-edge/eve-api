@@ -9,6 +9,12 @@ option java_package = "org.lfedge.eve.config";
 
 import "evecommon/acipherinfo.proto";
 
+enum ClusterType {
+  CLUSTER_TYPE_UNSPECIFIED = 0;
+  CLUSTER_TYPE_BASE = 1;
+  CLUSTER_TYPE_REPLICATED_STORAGE = 2;
+}
+
 message EdgeNodeCluster {
   // cluster name, in case it has multiple cluster on the same site
   string cluster_name = 1;
@@ -30,4 +36,10 @@ message EdgeNodeCluster {
 
   // encrypted token string, use edge-node TPM to decrypt
   org.lfedge.eve.common.CipherBlock encrypted_cluster_token = 7;
+
+  // Cluster Type for eve to determine component, app, and volume scheduling needs
+  ClusterType cluster_type = 8;
+
+  // Node Id for eve to disable all pod scheduling
+  string tie_breaker_node_id = 9;
 }
