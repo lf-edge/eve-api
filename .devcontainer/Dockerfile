@@ -17,7 +17,7 @@ RUN apk add --no-cache bash curl git make graphviz ttf-freefont
 
 RUN arch="$(uname -m)" && \
     case "$arch" in \
-    aarch64|arm64) arch="aarch_64" ;; \
+    aarch64|arm64) arch="arm64" ;; \
     riscv64) arch="riscv_64" ;; \
     x86_64) arch="amd64";; \
     *) echo "Unsupported architecture: $arch" && exit 1 ;; \
