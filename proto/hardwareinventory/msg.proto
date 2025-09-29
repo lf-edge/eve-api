@@ -9,9 +9,11 @@ option java_package = "org.lfedge.eve.hardwareinventory";
 
 message USBBusDevnum {
         // https://elixir.bootlin.com/linux/v6.16.9/source/include/linux/usb.h#L451
-        int64 bus = 1;
+        // https://github.com/gregkh/usbutils/blob/master/lsusb-t.c#L48
+        uint32 bus = 1;
         // https://elixir.bootlin.com/linux/v6.16.9/source/include/linux/usb.h#L657
-        int64 devnum = 2;
+        // https://github.com/gregkh/usbutils/blob/master/lsusb-t.c#L63
+        uint32 devnum = 2;
 }
 
 message USBDevice {
@@ -76,13 +78,29 @@ message NetworkDevice {
         bool wireless = 4;
 }
 
+message BIOS {
+        string vendor = 1;
+        string version = 2;
+}
+
+message CPU {
+        string model = 1;
+}
+message NUMA {
+        repeated CPU cpus = 1;
+}
+
 // this message is POSTed to /inventory/{serial}/{softserial}
 message InventoryMsg {
-        string eve_version = 1;
+        // as in /etc/eve-release
+        string eve_release = 1;
 
         repeated PCIDevice pci_devices = 2;
         repeated USBDevice usb_devices = 3;
         repeated SerialPort serial_devices = 4;
         repeated NetworkDevice network_devices = 5;
         repeated CANDevice can_devices = 6;
+
+        BIOS bios = 7;
+        NUMA numa = 8;
 }
