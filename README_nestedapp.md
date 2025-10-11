@@ -63,3 +63,21 @@ Return codes:
 Response:
 
 The body will contain the NestedAppRuntimeDiskMetric structure in protobuf form.
+
+### Runtime Status
+
+To retrieve the status of config applied to a runtime such as cloud-init networking config
+a runtime will return a RuntimeStatus protobuf structure at the following endpoint. EVE
+should read the error present in the RuntimeStatus and set it in the ZInfoApp for the
+App Instance containing the runtime.
+
+GET /api/v1/runtime/status
+
+Return codes:
+
+* Metric Object Returned: `200`
+* Non-Get type request: `405`
+
+Response:
+
+The body will contain the RuntimeStatus structure in protobuf form.
