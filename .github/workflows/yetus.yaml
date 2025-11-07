@@ -22,8 +22,13 @@ jobs:
           path: src
           fetch-depth: 0
 
+      - name: Setup buf dependencies
+        run: |
+          cd src/proto
+          buf mod update || buf dep update || true
+
       - name: Yetus
-        uses: apache/yetus-test-patch-action@0.14.1
+        uses: apache/yetus-test-patch-action@0.15.1
         with:
           basedir: ./src
           bufbasedir: ./src/proto
