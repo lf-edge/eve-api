@@ -160,8 +160,19 @@ message AttestStorageKeysResp {
   AttestStorageKeysResponseCode response = 1;    //Result of processing Z_ATTEST_REQ_TYPE_STORE_KEYS in Controller
 }
 
+message AttestPolicyPcrList {
+  repeated uint32 pcr_indices = 1; // list of PCR indices
+  uint32 policy_id = 2;            // policy ID, or version for audit purposes
+}
+
 message AttestVolumeKeyData {
   bytes encrypted_key = 1; //key in encrypted format
   bytes digest_sha256 = 2; //SHA 256 digest of the key
+  // Controller can choose to send a list of PCR indices that must be used
+  // to bind this key in TPM, this allows for more granular control over
+  // which PCRs to use, for example excluding PCRs that are volatile in nature
+  // like PCR 1 (Host Platform Configuration). If not present, default PCRs
+  // as per EVE design will be used.
+  bool has_policy_pcr_list = 3; //whether policy_pcr_list is present
+  AttestPolicyPcrList policy_pcr_list = 4; //PCR list for this key
 }
-
