@@ -160,8 +160,14 @@ message AttestStorageKeysResp {
   AttestStorageKeysResponseCode response = 1;    //Result of processing Z_ATTEST_REQ_TYPE_STORE_KEYS in Controller
 }
 
+message AttestPolicyPcrList {
+  repeated uint32 pcr_indices = 1; // list of PCR indices
+  uint32 policy_id = 2;            // policy ID, or version for audit purposes
+}
+
 message AttestVolumeKeyData {
   bytes encrypted_key = 1; //key in encrypted format
   bytes digest_sha256 = 2; //SHA 256 digest of the key
+  AttestPolicyPcrList policy_pcr_list = 3; //PCR list for this key
 }
 
