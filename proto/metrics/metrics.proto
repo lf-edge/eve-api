@@ -588,7 +588,7 @@ message ZMetricProcess {
   uint64 vm_bytes = 11;
   uint64 rss_bytes = 12;
   float memory_percent = 13;
-  // We report the stack for !watched proceeses which have been running for a while
+  // We report the stack for !watched processes which have been running for a while
   string stack = 14;
 }
 
