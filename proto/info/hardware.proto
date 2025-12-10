@@ -36,6 +36,8 @@ message USBDevice {
         // Optional: EVE's suggested assignment group for this device.
         // Controller may derive its own based on parent relationships.
         string suggested_assigngrp = 7;
+        // True if upstream PCIe ACS (Access Control Services) is enabled for this
+        // device (either natively or via ACS override), for safer isolation/passthrough.
         bool acs_enabled = 8;
 }
 
