@@ -211,7 +211,9 @@ type USBDevice struct {
 	// Optional: EVE's suggested assignment group for this device.
 	// Controller may derive its own based on parent relationships.
 	SuggestedAssigngrp string `protobuf:"bytes,7,opt,name=suggested_assigngrp,json=suggestedAssigngrp,proto3" json:"suggested_assigngrp,omitempty"`
-	AcsEnabled         bool   `protobuf:"varint,8,opt,name=acs_enabled,json=acsEnabled,proto3" json:"acs_enabled,omitempty"`
+	// True if upstream PCIe ACS (Access Control Services) is enabled for this
+	// device (either natively or via ACS override), for safer isolation/passthrough.
+	AcsEnabled bool `protobuf:"varint,8,opt,name=acs_enabled,json=acsEnabled,proto3" json:"acs_enabled,omitempty"`
 }
 
 func (x *USBDevice) Reset() {
