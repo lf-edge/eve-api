@@ -56,7 +56,7 @@ In general, there is one directory for each API endpoint:
 * `logs`: The LogBundle message sent from Device to Controller containing internal device logs.
 * `apps/instanceid/{app-instance-uuid}/logs`: The LogBundle message sent from Device to Controller containing application console device logs.
 * `certs`: The ZControllerCert message is sent from Controller to Device, and contains the list of certificates used by Controller. Each ZControllerCert message replaces the current list on the device with the new list of certificates. Therefore, if an empty list is sent, it resets the list on the receiving side.
-* `uuid`: This API is used by the device to fetch its unique idenitifier allocated by the Controller. Along with the uuid, the reply for this request will also contain manufacturer and product model of the device.
+* `uuid`: This API is used by the device to fetch its unique identifier allocated by the Controller. Along with the uuid, the reply for this request will also contain manufacturer and product model of the device.
 * `attest`: This API anchors all trust and attestation operations from the device. At the top level, the device does a POST of `ZAttestReq` and gets `ZAttestResp` as the response from Controller.
 
 The above endpoints are a common API between the EVE device and main Controller. There is also a special endpoint that is only for the side Controller, also known as Local Operator Console (LOC):

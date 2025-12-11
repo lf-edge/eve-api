@@ -11,7 +11,7 @@ import "google/protobuf/timestamp.proto";
 import "evecommon/acipherinfo.proto";
 
 enum EVE_OPAQUE_OBJECT_CATEGORY {
-    UNKOWN = 0;
+    UNKNOWN = 0;
     BASE64 = 1;
     BINARYBLOB = 2;
     SECRET = 3;
@@ -25,7 +25,7 @@ message InlineOpaqueBase64Data {
     // same file name shall be advertised to application agent
     string fileNameToUse = 2;
 
-    // any arbitraty metadata encoded to base64 string
+    // any arbitrary metadata encoded to base64 string
     optional string base64MetaData = 3;
 }
 
