@@ -3,6 +3,7 @@
 
 syntax = "proto3";
 
+import "evecommon/evecommon.proto";
 import "info/info.proto";
 import "metrics/metrics.proto";
 import "google/protobuf/timestamp.proto";
@@ -216,3 +217,87 @@ message LocalDevCmd {
    // Command to run.
    Command command = 3;
 }
+
+// AppBootConfig contains boot configuration for a single application instance.
+// This message is part of the AppBootConfigList returned by LPS in response to
+// POST /api/v1/appbootinfo.
+message AppBootConfig {
+   // Reference the application by its ID (UUID). At least one of id/displayname must be set.
+   string id = 1;
+   // Reference the application by its user-friendly displayname.
+   string displayname = 2;
+   // USB boot mode for this application.
+   // See org.lfedge.eve.common.BootOrder enum for available values.
+   org.lfedge.eve.common.BootOrder usb_boot = 3;
+}
+
+// AppBootConfigList contains boot configurations for applications.
+// Returned by LPS in response to POST /api/v1/appbootinfo (when status code is 200).
+// EVE posts AppBootInfoList with current boot status, LPS responds with this config.
+//
+// Persistence behavior:
+// EVE caches and persists the received configuration to disk. This is needed
+// to handle EVE reboots: since LPS runs as a VM on the same device, it's
+// unavailable until EVE and the LPS VM come back up. The persisted cache
+// ensures boot order settings are applied immediately when VMs start.
+//
+// - LPS unavailable (during EVE boot): Cache preserved, persisted config applied.
+// - HTTP 404: Cache cleared; all apps reset to default. This means "LPS has
+//   no config for this device" - fall back to Controller/Device settings.
+// - HTTP 204: Cache preserved (no changes requested).
+// - HTTP 200 with apps: Cache updated. Apps in response get new values;
+//   apps NOT in response are removed from cache and reset to default.
+// - HTTP 200 with empty app_configs: Cache cleared; all apps reset to default.
+//
+// Key: LPS unavailable preserves cache; 404 clears cache.
+message AppBootConfigList {
+   string server_token = 1;
+   repeated AppBootConfig app_configs = 2;
+}
+
+// BootOrderSource indicates which configuration source determined the effective
+// boot order for an application. This is published by EVE to LPS via the
+// POST /api/v1/appbootinfo endpoint to help operators understand which setting
+// "won" when multiple sources are configured.
+enum BootOrderSource {
+   // Default/unspecified - no explicit boot order was configured from any source.
+   BOOT_ORDER_SOURCE_UNSPECIFIED = 0;
+   // Boot order was set by the Local Profile Server (LPS) via /api/v1/appbootinfo.
+   // This is the highest priority source.
+   BOOT_ORDER_SOURCE_LPS = 1;
+   // Boot order was set by the Controller API via VmConfig.boot_order.
+   // Used when LPS does not specify a value.
+   BOOT_ORDER_SOURCE_CONTROLLER = 2;
+   // Boot order was set by the device property app.boot.order.
+   // Used when neither LPS nor Controller specifies a value.
+   BOOT_ORDER_SOURCE_DEVICE_PROPERTY = 3;
+}
+
+// AppBootInfo contains the effective boot order and its source for a single
+// application instance. This is published by EVE to LPS via POST /api/v1/appbootinfo.
+message AppBootInfo {
+   // Application UUID.
+   string id = 1;
+   // User-friendly application display name.
+   string displayname = 2;
+   // The effective boot order applied to this application.
+   // This is the result of merging LPS, Controller, and Device Property settings.
+   org.lfedge.eve.common.BootOrder boot_order = 3;
+   // Which configuration source determined the effective boot order.
+   BootOrderSource source = 4;
+}
+
+// AppBootInfoList is sent by EVE to LPS via POST /api/v1/appbootinfo.
+// This allows LPS to display the effective boot order and its source for each
+// application, helping operators understand which configuration "won" when
+// multiple sources (LPS, Controller API, Device Property) are configured.
+//
+// LPS responds with AppBootConfigList containing new boot configurations:
+// - HTTP 200: Response contains AppBootConfigList with new config to apply.
+// - HTTP 204: No changes; EVE preserves current cached config.
+// - HTTP 404: Not implemented or no config for this device; cache cleared.
+message AppBootInfoList {
+   // List of boot information for all application instances.
+   repeated AppBootInfo apps_boot_info = 1;
+}
+
