@@ -4,6 +4,8 @@
 
 syntax = "proto3";
 
+import "evecommon/evecommon.proto";
+
 package org.lfedge.eve.config;
 option go_package = "github.com/lf-edge/eve-api/go/config";
 option java_package = "org.lfedge.eve.config";
@@ -97,4 +99,20 @@ message VmConfig {
   // Disable vTPM for the VM, this defaults to false according to the
   // proto3 specification.
   bool disable_vtpm = 26;
+  // Boot order configuration for this VM.
+  // Controls boot device priority, particularly for USB devices.
+  //
+  // Priority hierarchy (highest to lowest):
+  //   1. LPS API (/api/v1/app-boot-config) - if LPS has a cached config for the app
+  //   2. This field (boot_order) - if not BOOT_ORDER_UNSPECIFIED
+  //   3. Device property (app.boot.order) - device-wide default
+  //
+  // Note: LPS config is cached and persisted to disk. This allows boot order
+  // to be applied immediately after EVE reboot, before LPS VM is available.
+  // If LPS returns 404, the cache is cleared and Controller/Device settings apply.
+  // See PROFILE.md for detailed LPS response handling.
+  //
+  // The setting is passed to OVMF via fw_cfg "opt/eve.bootorder" when the VM starts.
+  // Changes take effect on the next VM restart.
+  org.lfedge.eve.common.BootOrder boot_order = 27;
 }
