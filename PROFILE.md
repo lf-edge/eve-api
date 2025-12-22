@@ -177,6 +177,76 @@ To check if the last requested command has completed, compare its timestamp with
 `last_cmd_timestamp` field from `LocalAppInfo` message, submitted by EVE in
 the request body of the API.
 
+### App Boot Config
+
+Retrieve boot configuration for application instances.
+This endpoint allows LPS to configure USB boot priority on a per-application
+basis.
+
+```http
+   GET /api/v1/app-boot-config
+```
+
+Return codes:
+
+* Valid; with boot configuration in the response: `200`
+* Valid; no changes since last fetch: `204`
+* Not implemented or no config for this device: `404`
+
+Request:
+
+The request MUST use HTTP for this request.
+The request MUST NOT contain any body content.
+
+Response:
+
+The response mime type MUST be `application/x-proto-binary`. The response MUST
+contain a single protobuf message of type
+[AppBootConfigList](./proto/profile/local_profile.proto).
+
+The requester MUST verify that the response payload has the correct
+`server_token`.
+
+The `AppBootConfigList` contains boot configurations for one or more
+applications.
+Each `AppBootConfig` entry specifies:
+
+* `id` - Application UUID (at least one of id/displayname must be set)
+* `displayname` - User-friendly application name
+* `usb_boot` - USB boot mode for this application. Supported values:
+  * `""` (empty string) or unset: Default boot order (no modification).
+    The actual behavior depends on whether a custom OVMF.fd is used:
+    if custom OVMF.fd is provided, its precooked boot order applies;
+    otherwise, USB has priority according to the UEFI standard.
+  * `"usb"`: Enable USB boot priority - OVMF will prioritize USB devices in boot
+    order
+  * `"nousb"`: Disable USB boot - OVMF will deprioritize USB devices in boot
+    order
+
+The setting is passed to OVMF via fw_cfg `opt/eve.bootorder` when the VM starts.
+
+**Behavior (for 200 response):**
+
+* Each response from LPS is treated as the complete desired state for boot
+  configuration.
+* Applications included in `app_configs` will have their boot order set to the
+  specified `usb_boot` value.
+* Applications NOT included in the response will use the default boot order.
+* To explicitly set default boot order for an app, include it with `usb_boot`
+  set to empty string `""`.
+* Changes take effect on the next VM restart.
+
+**Note:** A `204` response means "no changes" - EVE will preserve the current
+boot configuration
+without modification.
+
+**Throttling:**
+
+When LPS returns `404`, EVE will throttle polling to approximately once per 5
+minutes
+instead of the normal 10 second interval. This reduces load when LPS has no
+configuration for the device.
+
 ### DevInfo
 
 Publish the current state of the device to LPS and optionally obtain a command

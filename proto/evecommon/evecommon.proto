@@ -16,6 +16,20 @@ enum HashAlgorithm {
   HASH_ALGORITHM_SHA256_32BYTES = 2; // hash with sha256, the whole 32 bytes of result
 }
 
+// BootOrder controls boot device priority for VMs.
+// Used by both Controller API (VmConfig.boot_order) and LPS API (AppBootConfig.usb_boot).
+enum BootOrder {
+  // Default boot order (no modification). The actual behavior depends on
+  // whether a custom OVMF.fd is used: if custom OVMF.fd is provided, its
+  // precooked boot order applies; otherwise, USB has priority according
+  // to the UEFI standard.
+  BOOT_ORDER_UNSPECIFIED = 0;
+  // Enable USB boot priority - OVMF will prioritize USB devices in boot order.
+  BOOT_ORDER_USB = 1;
+  // Disable USB boot - OVMF will deprioritize USB devices in boot order.
+  BOOT_ORDER_NOUSB = 2;
+}
+
 //DiskDescription describes disk
 //we can use different data to locate disk in the system
 message DiskDescription {

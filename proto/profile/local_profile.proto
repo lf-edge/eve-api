@@ -3,6 +3,7 @@
 
 syntax = "proto3";
 
+import "evecommon/evecommon.proto";
 import "info/info.proto";
 import "metrics/metrics.proto";
 import "google/protobuf/timestamp.proto";
@@ -215,4 +216,40 @@ message LocalDevCmd {
    }
    // Command to run.
    Command command = 3;
+}
+
+// AppBootConfig contains boot configuration for a single application instance.
+// This message is part of the AppBootConfigList sent from LPS to EVE via GET /api/v1/app-boot-config.
+message AppBootConfig {
+   // Reference the application by its ID (UUID). At least one of id/displayname must be set.
+   string id = 1;
+   // Reference the application by its user-friendly displayname.
+   string displayname = 2;
+   // USB boot mode for this application.
+   // See org.lfedge.eve.common.BootOrder enum for available values.
+   org.lfedge.eve.common.BootOrder usb_boot = 3;
+}
+
+// AppBootConfigList contains boot configurations for applications.
+// Sent from LPS to EVE in response to GET /api/v1/app-boot-config.
+// This is a one-way configuration - EVE does not report status back.
+//
+// Persistence behavior:
+// EVE caches and persists the received configuration to disk. This is needed
+// to handle EVE reboots: since LPS runs as a VM on the same device, it's
+// unavailable until EVE and the LPS VM come back up. The persisted cache
+// ensures boot order settings are applied immediately when VMs start.
+//
+// - LPS unavailable (during EVE boot): Cache preserved, persisted config applied.
+// - HTTP 404: Cache cleared; all apps reset to default. This means "LPS has
+//   no config for this device" - fall back to Controller/Device settings.
+// - HTTP 204: Cache preserved (no changes requested).
+// - HTTP 200 with apps: Cache updated. Apps in response get new values;
+//   apps NOT in response are removed from cache and reset to default.
+// - HTTP 200 with empty app_configs: Cache cleared; all apps reset to default.
+//
+// Key: LPS unavailable preserves cache; 404 clears cache.
+message AppBootConfigList {
+   string server_token = 1;
+   repeated AppBootConfig app_configs = 2;
 }
