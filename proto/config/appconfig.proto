@@ -92,6 +92,16 @@ message SnapshotConfig {
   repeated SnapshotDesc snapshots = 4;
 }
 
+// Type of app instance affinity
+enum AffinityType {
+  // Preferred - designated_node_id is preferred for placement but
+  // if the node is unhealthy, app can run on other nodes.
+  AFFINITY_TYPE_PREFERRED = 0;
+  // Required - designated_node_id is required to be healthy for
+  // app instance to boot, app will not failover to other nodes.
+  AFFINITY_TYPE_REQUIRED = 1;
+}
+
 // The complete configuration for an Application Instance
 // When changing key fields such as the drives/volumeRefs or the number
 // of interfaces, the controller is required to issue a purge command i.e.,
@@ -209,7 +219,10 @@ message AppInstanceConfig {
   // PatchEnvelopeRef is used to track all patch envelopes used by the app instance
   PatchEnvelopeRef patchRef = 23;
 
-  // This edge-node UUID for the Designate Node for the Application
+  // Designated Node Id is used for cluster nodes to determine placement of
+  // the AppInstance when an EdgeNodeCluster config is present.
+  // See affinity below to set the desired node affinity.
+  // eg. Preferred or Required.
   string designated_node_id = 26;
 
   // Custom resolution applies to VM that is running in FML mode only.
@@ -217,6 +230,11 @@ message AppInstanceConfig {
 
   // AppRuntimeType - to indicate the types of Application Runtime Deployment
   AppRuntimeType runtime_type = 28;
+
+  // Affinity is used for cluster nodes to determine
+  // preferred or required node scheduling for app instances.
+  // Node Id for scheduling is defined in designated_node_id.
+  AffinityType affinity = 29;
 }
 
 message PatchEnvelopeRef {
