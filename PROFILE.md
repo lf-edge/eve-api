@@ -183,6 +183,15 @@ Retrieve boot configuration for application instances.
 This endpoint allows LPS to configure USB boot priority on a per-application
 basis.
 
+**Precedence**: Boot order can be configured from two sources:
+
+1. **Controller API** - via `VmConfig.boot_order` in `AppInstanceConfig`
+2. **LPS API** - via this `/api/v1/app-boot-config` endpoint
+
+When both are configured, LPS takes precedence over the controller setting.
+When LPS removes its configuration for an app, EVE falls back to the
+controller's `boot_order` setting (on the next config poll).
+
 ```http
    GET /api/v1/app-boot-config
 ```
