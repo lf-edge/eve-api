@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x19\x65vecommon/evecommon.proto\x12\x15org.lfedge.eve.common\"E\n\x0f\x44iskDescription\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x14\n\x0clogical_name\x18\x02 \x01(\t\x12\x0e\n\x06serial\x18\x03 \x01(\t*q\n\rHashAlgorithm\x12\x1a\n\x16HASH_ALGORITHM_INVALID\x10\x00\x12!\n\x1dHASH_ALGORITHM_SHA256_16BYTES\x10\x01\x12!\n\x1dHASH_ALGORITHM_SHA256_32BYTES\x10\x02\x42M\n\x15org.lfedge.eve.commonB\tEvecommonP\x01Z\'github.com/lf-edge/eve-api/go/evecommonb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x19\x65vecommon/evecommon.proto\x12\x15org.lfedge.eve.common\"E\n\x0f\x44iskDescription\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x14\n\x0clogical_name\x18\x02 \x01(\t\x12\x0e\n\x06serial\x18\x03 \x01(\t*q\n\rHashAlgorithm\x12\x1a\n\x16HASH_ALGORITHM_INVALID\x10\x00\x12!\n\x1dHASH_ALGORITHM_SHA256_16BYTES\x10\x01\x12!\n\x1dHASH_ALGORITHM_SHA256_32BYTES\x10\x02*Q\n\tBootOrder\x12\x1a\n\x16\x42OOT_ORDER_UNSPECIFIED\x10\x00\x12\x12\n\x0e\x42OOT_ORDER_USB\x10\x01\x12\x14\n\x10\x42OOT_ORDER_NOUSB\x10\x02\x42M\n\x15org.lfedge.eve.commonB\tEvecommonP\x01Z\'github.com/lf-edge/eve-api/go/evecommonb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -24,6 +24,8 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   DESCRIPTOR._serialized_options = b'\n\025org.lfedge.eve.commonB\tEvecommonP\001Z\'github.com/lf-edge/eve-api/go/evecommon'
   _globals['_HASHALGORITHM']._serialized_start=123
   _globals['_HASHALGORITHM']._serialized_end=236
+  _globals['_BOOTORDER']._serialized_start=238
+  _globals['_BOOTORDER']._serialized_end=319
   _globals['_DISKDESCRIPTION']._serialized_start=52
   _globals['_DISKDESCRIPTION']._serialized_end=121
 # @@protoc_insertion_point(module_scope)
