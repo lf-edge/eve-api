@@ -183,14 +183,79 @@ Retrieve boot configuration for application instances.
 This endpoint allows LPS to configure USB boot priority on a per-application
 basis.
 
-**Precedence**: Boot order can be configured from two sources:
+**Precedence**: Boot order can be configured from multiple sources (highest to
+lowest priority):
 
-1. **Controller API** - via `VmConfig.boot_order` in `AppInstanceConfig`
-2. **LPS API** - via this `/api/v1/app-boot-config` endpoint
+1. **LPS API** - via this `/api/v1/app-boot-config` endpoint (per-app)
+2. **Controller API** - via `VmConfig.boot_order` in `AppInstanceConfig` (per-app)
+3. **Device Property** - via `app.boot.order` device configuration (device-wide)
 
-When both are configured, LPS takes precedence over the controller setting.
-When LPS removes its configuration for an app, EVE falls back to the
-controller's `boot_order` setting (on the next config poll).
+EVE uses the highest priority source that provides a specified value. A source
+"provides" a boot order when:
+
+* **LPS**: EVE has a cached LPS config for the app with `usb_boot` set to
+  `BOOT_ORDER_USB` or `BOOT_ORDER_NOUSB` (not `BOOT_ORDER_UNSPECIFIED`)
+  (see "LPS Response Handling" below for how the cache is populated/cleared)
+* **Controller API**: `VmConfig.boot_order` is `BOOT_ORDER_USB` or `BOOT_ORDER_NOUSB`
+  (not `BOOT_ORDER_UNSPECIFIED`)
+* **Device Property**: `app.boot.order` is `"usb"` or `"nousb"` (not empty `""`)
+
+`BOOT_ORDER_UNSPECIFIED` (for API fields) or empty string `""` (for device property)
+means "no override" - fall back to the next priority level. If all sources are
+unspecified/empty, OVMF default behavior applies.
+
+**LPS Response Handling and Persistence**:
+
+EVE caches LPS boot configurations and persists them to disk. This is primarily
+needed to handle EVE reboots: since LPS typically runs as a VM on the same
+EVE device, when EVE reboots, LPS is unavailable until EVE and the LPS VM come
+back up. The persisted cache ensures boot order settings remain active during
+this window.
+
+| LPS Response | Effect on Cache | Behavior |
+|--------------|-----------------|----------|
+| **LPS unavailable** | Cache preserved | Persisted boot order applied |
+| **404 Not Found** | Cache cleared | Fall back to Controller/Device |
+| **204 No Content** | Cache preserved | No changes; keep current order |
+| **200 OK with apps** | Cache updated | Update listed apps; reset others |
+| **200 OK with empty list** | Cache cleared | ALL apps reset to default |
+
+**Key behavior during EVE reboot**:
+
+1. EVE starts, LPS VM is not yet running
+2. EVE loads persisted LPS boot configs from disk and applies them
+3. VMs start with the previously configured boot order
+4. LPS VM starts and begins responding to requests
+5. EVE fetches fresh config from LPS; if unchanged, no action needed
+
+**Key distinction for 404**: When LPS returns 404, it means "LPS is running but
+has no config for this device" - the cache is **cleared** and boot order falls
+back to Controller/Device settings. This is different from LPS being unavailable
+(e.g., during EVE boot), where the cache is **preserved**.
+
+**Priority Resolution Examples**:
+
+| Device | Controller | LPS Cache | Effective |
+|--------|------------|-----------|-----------|
+| `"usb"` | `UNSPECIFIED` | *(empty)* | `usb` |
+| `"usb"` | `NOUSB` | *(empty)* | `nousb` |
+| `"usb"` | `NOUSB` | `USB` | `usb` |
+| `"nousb"` | `USB` | `NOUSB` | `nousb` |
+| `""` | `UNSPECIFIED` | *(empty)* | *(default)* |
+| `""` | `USB` | *(empty)* | `usb` |
+
+**LPS Response Scenarios (detailed)**:
+
+| LPS Response | App in List | `usb_boot` | Effect |
+|--------------|-------------|------------|--------|
+| Unavailable | N/A | N/A | Cache preserved; use persisted config |
+| 404 | N/A | N/A | Cache cleared; reset to default |
+| 204 | N/A | N/A | Cache preserved; no changes |
+| 200 | No (empty) | N/A | Cache cleared; ALL apps reset |
+| 200 | No (others) | N/A | This app reset to default |
+| 200 | Yes | `BOOT_ORDER_UNSPECIFIED` | Unspecified; falls back |
+| 200 | Yes | `BOOT_ORDER_USB` | LPS wins; use USB priority |
+| 200 | Yes | `BOOT_ORDER_NOUSB` | LPS wins; deprioritize USB |
 
 ```http
    GET /api/v1/app-boot-config
@@ -222,15 +287,14 @@ Each `AppBootConfig` entry specifies:
 
 * `id` - Application UUID (at least one of id/displayname must be set)
 * `displayname` - User-friendly application name
-* `usb_boot` - USB boot mode for this application. Supported values:
-  * `""` (empty string) or unset: Default boot order (no modification).
-    The actual behavior depends on whether a custom OVMF.fd is used:
-    if custom OVMF.fd is provided, its precooked boot order applies;
-    otherwise, USB has priority according to the UEFI standard.
-  * `"usb"`: Enable USB boot priority - OVMF will prioritize USB devices in boot
-    order
-  * `"nousb"`: Disable USB boot - OVMF will deprioritize USB devices in boot
-    order
+* `usb_boot` - USB boot mode for this application (BootOrder enum):
+  * `BOOT_ORDER_UNSPECIFIED` (0): No override - use the next priority level
+    (Controller API setting, then Device Property, then OVMF default).
+    This allows selectively overriding only specific apps via LPS.
+  * `BOOT_ORDER_USB` (1): Enable USB boot priority - OVMF will prioritize USB
+    devices in boot order
+  * `BOOT_ORDER_NOUSB` (2): Disable USB boot - OVMF will remove USB devices from
+    boot order completely, ensuring the VM boots from disk
 
 The setting is passed to OVMF via fw_cfg `opt/eve.bootorder` when the VM starts.
 
@@ -242,7 +306,7 @@ The setting is passed to OVMF via fw_cfg `opt/eve.bootorder` when the VM starts.
   specified `usb_boot` value.
 * Applications NOT included in the response will use the default boot order.
 * To explicitly set default boot order for an app, include it with `usb_boot`
-  set to empty string `""`.
+  set to `BOOT_ORDER_UNSPECIFIED`.
 * Changes take effect on the next VM restart.
 
 **Note:** A `204` response means "no changes" - EVE will preserve the current
