@@ -131,9 +131,14 @@ enum AttestVolumeKeyType {
   ATTEST_VOLUME_KEY_TYPE_VSK = 1;     //Volume storage key, for /persist/vault
 }
 
+enum AttestVolumeKeyVersion {
+  ATTEST_VOLUME_KEY_VERSION_LEGACY = 0; // Zero or absent version indicates legacy volume storage key
+  ATTEST_VOLUME_KEY_VERSION_V1 = 1; // Version 1 uses AES-GCM encryption with TPM-bound key
+}
 message AttestVolumeKey {
   AttestVolumeKeyType key_type = 1;
   bytes key = 2;
+  AttestVolumeKeyVersion version = 3; // Version gives clue about the key format, particularly the encryption scheme used
 }
 
 message ZAttestQuoteResp {
