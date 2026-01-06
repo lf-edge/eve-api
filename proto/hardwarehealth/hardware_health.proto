@@ -4,6 +4,7 @@
 syntax = "proto3";
 
 import "google/protobuf/timestamp.proto";
+import "info/info.proto";
 
 package org.lfedge.eve.hardwarehealth;
 option go_package  = "github.com/lf-edge/eve-api/go/hardwarehealth";
@@ -26,6 +27,8 @@ message ZHardwareHealth {
   google.protobuf.Timestamp at_time_stamp = 2;
 
   ECCMemoryReport mr = 3;
+
+  repeated org.lfedge.eve.info.StorageDiskInfo disks = 4; // S.M.A.R.T. info for disks
 }
 
 // Info per memory rank in the dimm

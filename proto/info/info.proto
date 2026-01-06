@@ -1421,9 +1421,9 @@ message ZInfoKubeCluster {
 
 // Information about the system that is sent once when the system boots
 message ZInfoHardware {
-  // NOTE: deprecated - SMART info will be moved into ZHardwareHealth.
+  // NOTE: deprecated - SMART info has been moved to ZHardwareHealth.
   // Kept here for backward compatibility with older EVE/controller versions.
-  repeated StorageDiskInfo disks = 1; // S.M.A.R.T. info for disks
+  repeated StorageDiskInfo disks = 1 [deprecated = true]; // S.M.A.R.T. info for disks
 
   // as in /etc/eve-release
   string eve_release = 2;
