@@ -337,6 +337,7 @@ The request body MUST indicate the type of information it is sending, and the co
 * List of blobs via `ZInfoBlobList`: information about the blobs (aka layers) which make up the nodes in a content tree.
 * List of tasks via `ZInfoDeviceTasks`: information about the containerd tasks present on the device.
 * App instance metadata via `ZInfoAppInstMetaData`: information about the app instance meta data like kubeconfig, etc. Max size of data is less than equal to 32KB.
+* Overview of the devices hardware via `ZInfoHardware`: information about the device hardware like CPU, Memory, Storage, etc.
 
 An information message is expected to be reliable. A Device MUST retry until it successfully delivers information messages. How often information messages are sent, retries and other caching mechanisms on the Device are NOT specified here, as they are implementation questions.
 
@@ -544,7 +545,7 @@ The response MUST contain no body content.
 
 The hardwarehealth API is used by the device to send hardware health
 information about the components of the device (e.g., reporting ECC errors, CPU
-temperature, etc.).
+temperature, S.M.A.R.T. metrics etc.).
 
 POST /api/v2/edgedevice/id/{uuid}/hardwarehealth
 
