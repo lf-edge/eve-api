@@ -135,10 +135,20 @@ enum AttestVolumeKeyVersion {
   ATTEST_VOLUME_KEY_VERSION_LEGACY = 0; // Zero or absent version indicates legacy volume storage key
   ATTEST_VOLUME_KEY_VERSION_V1 = 1; // Version 1 uses AES-GCM encryption with TPM-bound key
 }
+
 message AttestVolumeKey {
+  reserved 3; //reserved for backward compatibility
+  reserved "version"; //reserved for backward compatibility
+
   AttestVolumeKeyType key_type = 1;
   bytes key = 2;
-  AttestVolumeKeyVersion version = 3; // Version gives clue about the key format, particularly the encryption scheme used
+  // Controller can choose to send a list of PCR indices that must be used
+  // to bind this key in TPM, this allows for more granular control over
+  // which PCRs to use, for example excluding PCRs that are volatile in nature
+  // like PCR 1 (Host Platform Configuration). If not present, default PCRs
+  // as per EVE design will be used.
+  bool has_policy_pcr_list = 4; //whether policy_pcr_list is present
+  AttestPolicyPcrList policy_pcr_list = 5; //PCR list for this key
 }
 
 message ZAttestQuoteResp {
@@ -171,13 +181,11 @@ message AttestPolicyPcrList {
 }
 
 message AttestVolumeKeyData {
+  reserved 3, 4; //reserved for backward compatibility
+  reserved "has_policy_pcr_list", "policy_pcr_list"; //reserved for backward compatibility
+
   bytes encrypted_key = 1; //key in encrypted format
   bytes digest_sha256 = 2; //SHA 256 digest of the key
-  // Controller can choose to send a list of PCR indices that must be used
-  // to bind this key in TPM, this allows for more granular control over
-  // which PCRs to use, for example excluding PCRs that are volatile in nature
-  // like PCR 1 (Host Platform Configuration). If not present, default PCRs
-  // as per EVE design will be used.
-  bool has_policy_pcr_list = 3; //whether policy_pcr_list is present
-  AttestPolicyPcrList policy_pcr_list = 4; //PCR list for this key
+  AttestVolumeKeyVersion version = 5; // Version gives clue about the key format, particularly the encryption scheme used
 }
+
