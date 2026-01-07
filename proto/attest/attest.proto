@@ -180,5 +180,6 @@ message AttestPolicyPcrList {
 message AttestVolumeKeyData {
   bytes encrypted_key = 1; //key in encrypted format
   bytes digest_sha256 = 2; //SHA 256 digest of the key
+  AttestVolumeKeyVersion version = 3; // Version gives clue about the key format, particularly the encryption scheme used
 }
 
