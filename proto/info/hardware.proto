@@ -27,6 +27,7 @@ message BusParent {
 }
 
 message USBDevice {
+        reserved 8; // was acs_enabled
         optional BusParent parent = 1;
 
         // these are uint16, protobuf only supports from uint32
@@ -40,9 +41,6 @@ message USBDevice {
         // Optional: EVE's suggested assignment group for this device.
         // Controller may derive its own based on parent relationships.
         string suggested_assigngrp = 7;
-        // True if upstream PCIe ACS (Access Control Services) is enabled for this
-        // device (either natively or via ACS override), for safer isolation/passthrough.
-        bool acs_enabled = 8;
 }
 
 message PCIAddress {
@@ -129,6 +127,8 @@ message TPM {
 }
 
 message HardwareInventory {
+  reserved 12;  // was cpu_count
+
   repeated PCIDevice pci_devices = 3;
   repeated USBDevice usb_devices = 4;
   repeated SerialPort serial_devices = 5;
@@ -149,7 +149,6 @@ message HardwareInventory {
   // ------------------------------------------------------------------
   uint64 total_memory_bytes  = 10;  // total system RAM
   uint64 total_storage_bytes = 11;  // total non-removable storage
-  uint32 cpu_count           = 12;  // logical CPU count
 
   bool watchdog_present      = 13;
   TPM tpm                    = 14;
