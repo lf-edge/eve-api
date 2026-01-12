@@ -692,6 +692,7 @@ message ZInfoDevice {
 message OptionalCapabilities {
   // Virtualization type Kubevirt
   bool hv_type_kubevirt = 1;
+  bool hw_inventory_support = 2;
 }
 
 // Capabilities indicates features in the EdgeDevConfig where there is
