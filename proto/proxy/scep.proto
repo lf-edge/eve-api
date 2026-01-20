@@ -1,0 +1,104 @@
+// Copyright(c) 2025 Zededa, Inc.
+// All rights reserved.
+
+syntax = "proto3";
+
+package org.lfedge.eve.proxy;
+
+option go_package   = "github.com/lf-edge/eve-api/go/proxy";
+option java_package = "org.lfedge.eve.proxy";
+
+// ==========================================================
+// SCEP Proxy Request
+// ==========================================================
+//
+// Request payload for:
+//   POST /api/v2/edgedevice/id/{uuid}/proxy/scep
+//
+// The message is wrapped inside AuthContainer.
+message SCEPProxyRequest {
+  // Name of the SCEP profile to use for this request.
+  //
+  // The profile is resolved by the controller and defines the actual
+  // SCEP server URL and related policy. This prevents the device from
+  // specifying arbitrary SCEP endpoints and ensures that requests are
+  // only forwarded to SCEP servers explicitly configured and authorized
+  // for the device.
+  string scep_profile_name = 1;
+
+  // SCEP operation to perform.
+  SCEPOperation operation = 2;
+
+  // Raw SCEP message payload.
+  //
+  // - For PKIOperation:
+  //     CMS/PKCS#7 DER bytes
+  // - For GetCACert / GetNextCACert:
+  //     Usually empty
+  bytes message = 3;
+
+  // HTTP method to use when forwarding the request
+  // Defaults may be inferred if unspecified.
+  HTTPMethod http_method = 4;
+
+  // Optional HTTP header fields to include in the forwarded request.
+  repeated HTTPHeaderField http_header_fields = 5;
+}
+
+// Represents a single HTTP header field.
+message HTTPHeaderField {
+  string name = 1;
+  string value = 2;
+}
+
+// ==========================================================
+// SCEP Proxy Response
+// ==========================================================
+//
+// Response payload for:
+//   POST /api/v2/edgedevice/id/{uuid}/proxy/scep
+//
+// The message is wrapped inside AuthContainer.
+message SCEPProxyResponse {
+  // Name of the SCEP profile that was used to process this request.
+  // The controller resolved this profile to the actual SCEP server URL
+  // and forwarded the request accordingly.
+  string scep_profile_name = 1;
+
+  // SCEP operation that was executed.
+  SCEPOperation operation = 2;
+
+  // Raw response payload from the SCEP server.
+  //
+  // - For successful PKIOperation:
+  //     CMS/PKCS#7 DER bytes
+  // - For GetCACert:
+  //     DER-encoded certificate or certificate chain
+  bytes message = 3;
+
+  // HTTP status code returned by the SCEP server
+  uint32 http_status_code = 4;
+
+  // HTTP header fields received in the response from the SCEP server.
+  repeated HTTPHeaderField http_header_fields = 5;
+
+  // Optional error body returned by the server (truncated if needed).
+  // Present only when http_status_code >= 400.
+  bytes error_body = 6;
+}
+
+// Supported SCEP operations
+enum SCEPOperation {
+  SCEP_OPERATION_UNSPECIFIED = 0;
+  SCEP_OPERATION_GET_CA_CAPS = 1;
+  SCEP_OPERATION_GET_CA_CERT = 2;
+  SCEP_OPERATION_GET_NEXT_CA_CERT = 3;
+  SCEP_OPERATION_PKI_MESSAGE = 4;
+}
+
+// HTTP methods allowed for proxying SCEP requests
+enum HTTPMethod {
+  HTTP_METHOD_UNSPECIFIED = 0;
+  HTTP_METHOD_GET = 1;
+  HTTP_METHOD_POST = 2;
+}

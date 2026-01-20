@@ -20,6 +20,7 @@ import "config/netinst.proto";
 import "config/storage.proto";
 import "config/edgeview.proto";
 import "config/patch_envelope.proto";
+import "config/scep.proto";
 
 import "certs/certs.proto";
 import "auth/auth.proto";
@@ -178,6 +179,16 @@ message EdgeDevConfig {
 
   // cluster configuration
   EdgeNodeCluster cluster = 43;
+
+  // Port access control configuration per PhysicalIO port.
+  repeated PNAC pnacs = 50;
+
+  // SCEP (Simple Certificate Enrollment Protocol) profiles.
+  // Currently used only in conjunction with 802.1X to enroll certificates
+  // which are then used for port-based authentication.
+  // Support for additional certificate enrollment protocols may be added
+  // in the future, each with its own configuration type and profile list.
+  repeated SCEPProfile scep_profiles = 51;
 }
 
 message ConfigRequest {

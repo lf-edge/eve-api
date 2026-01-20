@@ -1,0 +1,108 @@
+// Copyright(c) 2025 Zededa, Inc.
+// All rights reserved.
+
+syntax = "proto3";
+
+package org.lfedge.eve.config;
+option go_package = "github.com/lf-edge/eve-api/go/config";
+option java_package = "org.lfedge.eve.config";
+
+import "evecommon/acipherinfo.proto";
+
+// SCEP (Simple Certificate Enrollment Protocol) configuration profile.
+// Defines how a device enrolls for X.509 certificates using SCEP,
+// including server connectivity, trust anchors, and CSR parameters.
+message SCEPProfile {
+  // User-assigned logical name for this certificate enrollment profile.
+  // Must be unique within the device configuration.
+  //
+  // Currently, this name is unique among EdgeDevConfig.scep_profiles only.
+  // In the future, when additional certificate enrollment protocols are supported,
+  // profile names are expected to be unique across all enrollment profile types.
+  string profile_name = 1;
+
+  // Full SCEP server URL, including scheme, host, and path.
+  // Example: https://ca.example.com/scep
+  string scep_url = 2;
+
+  // If true, SCEP requests are sent via the controller-provided SCEP proxy.
+  // If false, the device connects directly to the SCEP server.
+  // The proxy option is intended for deployments where the SCEP server
+  // is not reachable from the unauthenticated or provisioning network.
+  bool use_controller_proxy = 3;
+
+  // Encrypted SCEP challenge password.
+  // Used for one-time or shared-secret–based authorization during
+  // certificate enrollment.
+  org.lfedge.eve.common.CipherBlock scep_challenge_password = 4;
+
+  // Trusted CA certificate chain used for SCEP operations.
+  // Required by RFC 8894, Section 2.2.
+  //
+  // - Each certificate in the chain that is capable of key encryption
+  //   (typically only the issuing CA) will receive a copy of the encrypted
+  //   symmetric key used to encrypt the PKCS#7 certificate enrollment request.
+  // - The full set of certificates is used to validate the CA signature
+  //   on SCEP responses.
+  repeated bytes ca_cert_pem = 5;
+
+  // Certificate Signing Request (CSR) configuration profile.
+  // Defines subject attributes, key parameters, and extensions
+  // for the certificate enrollment request.
+  CSRProfile csr_profile = 6;
+}
+
+// Certificate Signing Request (CSR) configuration profile.
+// Defines subject identity, extensions, cryptographic parameters,
+// and renewal behavior for certificate enrollment.
+message CSRProfile {
+  // X.509 Distinguished Name (DN) attributes.
+  string common_name = 1;            // CN
+  string organization = 2;           // O
+  string organizational_unit = 3;    // OU
+  string country = 4;                // C
+  string state = 5;                  // ST
+  string locality = 6;               // L
+  string email_address = 7;          // Email address
+
+  // X.509 Subject Alternative Name (SAN) attributes.
+  repeated string san_dns = 10;       // DNS names
+  repeated string san_ip = 11;        // IP addresses
+  repeated string san_uri = 12;       // URIs
+  repeated string san_email = 13;     // Email addresses
+
+  // Certificate renewal settings.
+  // Percentage of the certificate validity period after which
+  // the device should attempt renewal (e.g., 80 = renew after 80%).
+  uint32 renew_period_percent = 20;
+
+  // Key algorithm and parameters used to generate the private key.
+  KeyType key_type = 21;
+
+  // Hash algorithm used for signing operations
+  // (CSR generation, SCEP messages, etc.).
+  HashAlgorithm hash_algorithm = 22;
+}
+
+// Supported key types (algorithm and parameters).
+enum KeyType {
+  KEY_TYPE_UNSPECIFIED = 0;
+
+  // RSA key types.
+  KEY_TYPE_RSA_2048 = 1;
+  KEY_TYPE_RSA_3072 = 2;
+  KEY_TYPE_RSA_4096 = 3;
+
+  // ECDSA key types.
+  KEY_TYPE_ECDSA_P256 = 10;
+  KEY_TYPE_ECDSA_P384 = 11;
+  KEY_TYPE_ECDSA_P521 = 12;
+}
+
+// Supported hash algorithms for signing.
+enum HashAlgorithm {
+  HASH_ALGORITHM_UNSPECIFIED = 0;
+  HASH_ALGORITHM_SHA256 = 1;
+  HASH_ALGORITHM_SHA384 = 2;
+  HASH_ALGORITHM_SHA512 = 3;
+}

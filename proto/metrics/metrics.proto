@@ -297,6 +297,9 @@ message deviceMetric {
   // of network connectivity.
   uint64 dormant_time_in_seconds = 22;
   repeated StorageMetric storage_metrics = 23;  // Storage metrics from ZFS
+
+  // 802.1X per-port metrics
+  repeated PNACMetrics pnac_metrics = 30;
 }
 
 message AclMetric {
@@ -767,4 +770,29 @@ message KubeClusterMetrics {
 
   // Metrics of the EVE vmi applications in the cluster
   repeated KubeAppMetrics eve_vmi_apps = 4;
+}
+
+// IEEE 802.1X Port-Based Network Access Control (PNAC) metrics reported by the device
+// for the given port.
+message PNACMetrics {
+  // Logical label identifying the network port associated with these metrics.
+  string logicallabel = 1;
+  // Total number of EAPOL frames received from the authenticator.
+  uint64 eapol_frames_rx = 2;
+  // Total number of EAPOL frames transmitted to the authenticator.
+  uint64 eapol_frames_tx = 3;
+  // Number of EAPOL-Start frames transmitted to initiate authentication.
+  uint64 eapol_start_frames_tx = 4;
+  // Number of EAPOL-Logoff frames transmitted to terminate authentication.
+  uint64 eapol_logoff_frames_tx = 5;
+  // Number of EAP-Response frames transmitted in response to authentication requests.
+  uint64 eapol_resp_frames_tx = 6;
+  // Number of EAP-Request Identity frames received from the authenticator.
+  uint64 eapol_req_id_frames_rx = 7;
+  // Total number of other EAP-Request frames received from the authenticator.
+  uint64 eapol_req_frames_rx = 8;
+  // Number of invalid or malformed EAPOL frames received.
+  uint64 invalid_eapol_frames_rx = 9;
+  // Number of received EAPOL frames with incorrect length or truncated payload.
+  uint64 eap_length_error_frames_rx = 10;
 }
