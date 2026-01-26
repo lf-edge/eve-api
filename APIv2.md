@@ -606,6 +606,83 @@ Response:
 The response mime type MUST be "application/x-proto-binary".
 The response MUST contain a single protobuf message of type AuthContainer where the AuthBody is a protobuf message of type [uuid.UuidResponse](./proto/uuid/uuid.proto). It must include UUID of the device, along with other fields such as device's registered name, Manufacturer, Model, Enterprise.
 
+### SCEP Proxy
+
+The SCEP Proxy API allows an Edge Device to perform SCEP (Simple Certificate Enrollment Protocol)
+operations through the Controller when the SCEP server is not directly reachable from
+the device’s current network (e.g., onboarding or unauthenticated VLAN).
+
+The Controller acts strictly as a transport-level HTTPS proxy.
+It does not decrypt, inspect, or modify SCEP PKI messages.
+
+#### Endpoint
+
+POST /api/v2/edgedevice/id/{uuid}/proxy/scep
+
+Return codes:
+
+* Success: 200
+* Unauthenticated or invalid credentials: `401`
+* Valid credentials without authorization: `403`
+* Unknown Device: `400`
+* Invalid or unauthorized SCEP server profile: `403`
+* Missing or unprocessable body: `422`
+* Controller is unavailable (e.g., upgrade in progress): `503`
+
+#### Request
+
+* The request MUST use the Device certificate to sign the `protectedPayload` in the `AuthContainer`.
+* The `senderCerthash` MUST be set to the hash of the Device certificate.
+* The request MUST be of mime type `application/x-proto-binary`.
+* The request body MUST be a protobuf message of type `AuthContainer` where the `AuthBody`
+  is a protobuf message of type [proxy.SCEPProxyRequest](./proto/proxy/scep.proto),
+  wrapping the PKI request message and the SCEP request attributes.
+
+#### Processing rules
+
+* The SCEP PKI message MUST be constructed entirely by the Edge Device.
+* The Device MUST sign the PKI request using the private key generated for SCEP enrollment.
+* The Device MUST encrypt the PKI request using the CA certificate (or challenge password,
+  if applicable), per SCEP requirements.
+* The Controller MUST NOT unwrap, decrypt, inspect, or modify the PKCS#7 payload.
+* The Controller MUST verify that the referenced SCEP profile exists and is enabled
+  for use by the requesting Edge Device.
+* Requests referencing unauthorized or unknown SCEP profiles MUST be rejected.
+
+#### Response
+
+* The response mime type MUST be `application/x-proto-binary`.
+* The response MUST contain a single protobuf message of type `AuthContainer` where
+  the `AuthBody` is a protobuf message of type [proxy.SCEPProxyResponse](./proto/proxy/scep.proto),
+  wrapping the PKI response message and the SCEP response attributes.
+
+#### Post-processing on the Edge Device
+
+Upon receiving a successful response:
+
+* the Device MUST verify the Controller’s signature on the AuthContainer.
+* The Device MUST unwrap the SCEP response.
+* For PKI_MESSAGE responses:
+  * The response payload MUST be decrypted using the Device’s SCEP private key.
+  * The SCEP CA signature on the response MUST be validated against the trusted CA
+    certificate chain configured in the SCEP profile (i.e., `SCEPProfile.ca_cert_pem`),
+  * The Device MUST handle both:
+    * Issued certificate responses
+    * PENDING responses, retrying enrollment as specified by SCEP
+* The enrolled certificate MUST be stored and reported via device certificate info APIs.
+
+#### Security Properties
+
+* The Device private key used for SCEP enrollment never leaves the Edge Device.
+  If a TPM is available, the private key is generated inside the TPM and remains
+  protected within it.
+* All SCEP cryptographic operations (signing and decryption) are performed locally
+  on the Device.
+* The Controller provides device authentication, SCEP profile authorization, and transport
+  proxying only.
+* End-to-end SCEP message confidentiality and integrity are preserved between the Device
+  and the SCEP server.
+
 ## HTTP MetaData
 
 Edge Devices may send some MetaData in HTTP header to the controller. This will help

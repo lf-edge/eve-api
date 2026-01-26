@@ -15,6 +15,8 @@ import "info/patch_envelope.proto";
 import "info/ntpsources.proto";
 import "info/edge_node_cluster.proto";
 import "info/hardware.proto";
+import "info/pnac.proto";
+import "info/cert.proto";
 
 message SmartAttr {
   uint32 id = 1;
@@ -684,6 +686,10 @@ message ZInfoDevice {
   string enterprise_id = 56;
   string project_name = 57;
   string project_id = 58;
+
+  // Device-reported information about certificates currently enrolled
+  // on the device, typically via network enrollment protocols such as SCEP.
+  repeated CertInfo enrolled_certs = 60;
 }
 
 // OptionalCapabilities indicates any additional capabilities device wants
@@ -838,6 +844,9 @@ message DevicePort {
 
   // Identifies the source of this network port configuration.
   org.lfedge.eve.common.PortConfigSource config_source = 40;
+
+  // Device-reported 802.1X (PNAC) runtime status for this port.
+  PNACStatus pnac_status = 50;
 }
 
 message ProxyStatus {

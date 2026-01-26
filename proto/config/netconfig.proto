@@ -217,3 +217,38 @@ message WifiConfig {
 
   org.lfedge.eve.common.CipherBlock cipherData = 30; // contains encrypted credential information
 }
+
+// Configuration for Port-based Network Access Control (PNAC).
+message PNAC {
+  // Logical name of the associated physical Ethernet interface (PhysicalIO.logicallabel)
+  string logicallabel = 1;
+
+  // EAP identity (optional).
+  // Note that even when a certificate is used for authentication (e.g., EAP-TLS),
+  // an EAP identity may still be configured and does not need to match
+  // the certificate’s DN or SAN attributes.
+  string eap_identity = 2;
+
+  // EAP method to use for authentication.
+  // Currently, only EAP-TLS is supported; additional methods may be added in the future.
+  EAPMethod eap_method = 3;
+
+  // Certificate enrollment profile to use for authentication.
+  // Relevant only when the selected EAP method requires a certificate (e.g., EAP-TLS).
+  //
+  // This field references the profile_name of a certificate enrollment profile
+  // defined in EdgeDevConfig (currently SCEP profiles only, see scep_profiles).
+  // While SCEP is the only supported enrollment protocol today, this field is
+  // intended to reference any supported enrollment profile in the future.
+  string cert_enrollment_profile_name = 10;
+}
+
+// Supported EAP methods
+enum EAPMethod {
+  EAP_METHOD_UNSPECIFIED = 0;
+  EAP_METHOD_TLS = 1;
+  // Future support for other EAP methods:
+  // EAP_METHOD_TTLS = 2;
+  // EAP_METHOD_PEAP = 3;
+  // EAP_METHOD_FAST = 4;
+}

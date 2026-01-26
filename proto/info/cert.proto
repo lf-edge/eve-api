@@ -1,0 +1,69 @@
+// Copyright(c) 2025 Zededa, Inc.
+// All rights reserved.
+
+syntax = "proto3";
+
+package org.lfedge.eve.info;
+
+option go_package = "github.com/lf-edge/eve-api/go/info";
+option java_package = "org.lfedge.eve.info";
+
+import "google/protobuf/timestamp.proto";
+
+// Device-reported information about an enrolled X.509 certificate.
+// This message reflects the current state of the certificate on the device
+// and is derived from the certificate issued via the referenced enrollment profile.
+message CertInfo {
+  // Certificate enrollment profile used to obtain this certificate.
+  string cert_enrollment_profile_name = 1;
+
+  // Subject distinguished name (DN) of the certificate, identifying the
+  // entity to which the certificate was issued.
+  CertDistinguishedName subject = 2;
+
+  // Issuer distinguished name (DN) of the certificate, identifying the
+  // certificate authority (CA) that issued and signed the certificate.
+  CertDistinguishedName issuer = 3;
+
+  // X.509 Subject Alternative Name (SAN) attributes.
+  repeated string san_dns = 4;       // DNS names
+  repeated string san_ip = 5;        // IP addresses
+  repeated string san_uri = 6;       // URIs
+  repeated string san_email = 7;     // Email addresses
+
+  // Certificate validity period.
+  google.protobuf.Timestamp issue_timestamp = 8;      // notBefore
+  google.protobuf.Timestamp expiration_timestamp = 9; // notAfter
+
+  // SHA-256 fingerprint of the certificate (hex-encoded).
+  string sha256_fingerprint = 10;
+
+  // Current status of the certificate as observed by the device.
+  CertStatus status = 11;
+}
+
+// CertDistinguishedName represents an X.509 distinguished name.
+// This only includes the common elements of a DN.
+message CertDistinguishedName {
+  string common_name = 1;                     // CN
+  string serial_number = 2;                   // SERIALNUMBER
+  repeated string organization = 3;           // O
+  repeated string organizational_unit = 4;    // OU
+  repeated string country = 5;                // C
+  repeated string state_or_province = 6;      // ST
+  repeated string locality = 7;               // L
+}
+
+// Certificate lifecycle and availability status as reported by the device.
+enum CertStatus {
+  CERT_STATUS_UNSPECIFIED = 0;
+  // Certificate is present, valid, and usable for authentication.
+  CERT_STATUS_AVAILABLE = 1;
+  // Certificate enrollment or renewal is in progress and not yet complete.
+  CERT_STATUS_PENDING = 2;
+  // Certificate has expired (current time is past notAfter).
+  CERT_STATUS_EXPIRED = 3;
+  // Certificate has been revoked or is otherwise considered invalid.
+  CERT_STATUS_REVOKED = 4;
+}
+
