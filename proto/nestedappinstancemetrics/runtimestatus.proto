@@ -1,0 +1,29 @@
+// Copyright(c) 2025 Zededa, Inc.
+// SPDX-License-Identifier: Apache-2.0
+
+syntax = "proto3";
+
+import "info/info.proto";
+import "google/protobuf/timestamp.proto";
+
+package org.lfedge.eve.nestedappinstancemetrics;
+option go_package  = "github.com/lf-edge/eve-api/go/nestedappinstancemetrics";
+
+// Errors in response to the application of configuration
+message RuntimeErrorInfo {
+  string description = 1;
+  google.protobuf.Timestamp timestamp = 2;      // Timestamp at which error had occurred
+}
+
+// RuntimeStatus represents the status of a runtime on EVE-OS
+// which may reside in an AppInstance.
+// A single RuntimeStatus in protobuf form will be returned from
+// GET /api/v1/runtime/status for every AppInstance where
+// AppInstanceConfig.runtime_type!=APP_RUNTIME_TYPE_UNSPECIFIED
+message RuntimeStatus {
+  // Id is the uuid of the runtime app instance
+  string id = 1;
+
+  // Errors reported by a runtime when applying config eg. cloud-init
+  RuntimeErrorInfo err = 2;
+}
