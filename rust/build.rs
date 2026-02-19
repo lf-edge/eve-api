@@ -39,7 +39,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .status()
                 .expect("failed to run curl — install curl or use the devcontainer");
             if !status.success() {
-                panic!("failed to download validate.proto (exit {})", status);
+                panic!("failed to download validate.proto (exit {status})");
             }
         }
         local
@@ -120,14 +120,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "nestedappinstancemetrics/nestedappinstancemetrics.proto",
     ]
     .iter()
-    .map(|f| format!("{}/{}", proto_dir_str, f))
+    .map(|f| format!("{proto_dir_str}/{f}"))
     .collect();
 
     config.compile_protos(&proto_files, &[proto_dir_str, &proto_deps_str])?;
 
     // Rerun if any proto file changes
-    println!("cargo:rerun-if-changed={}", proto_dir_str);
-    println!("cargo:rerun-if-changed={}", proto_deps_str);
+    println!("cargo:rerun-if-changed={proto_dir_str}");
+    println!("cargo:rerun-if-changed={proto_deps_str}");
     println!("cargo:rerun-if-env-changed=PROTO_DEPS_DIR");
     println!("cargo:rerun-if-changed=build.rs");
 
