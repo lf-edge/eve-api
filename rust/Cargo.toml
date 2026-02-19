@@ -1,0 +1,24 @@
+[package]
+name = "eve-api"
+version = "0.1.0"
+edition = "2021"
+description = "Rust protobuf bindings for the EVE Device API"
+repository = "https://github.com/lf-edge/eve-api"
+license = "Apache-2.0"
+keywords = ["eve", "api", "protobuf", "iot", "edge"]
+categories = ["api-bindings"]
+
+[dependencies]
+prost = "0.13"
+prost-types = "0.13"
+bytes = "1"
+
+[build-dependencies]
+prost-build = "0.13"
+
+[lints.clippy]
+# Allow warnings from generated protobuf code
+empty_docs = "allow"
+doc_lazy_continuation = "allow"
+doc_overindented_list_items = "allow"
+large_enum_variant = "allow"

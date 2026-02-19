@@ -11,6 +11,10 @@ help:
 	@echo "  proto             Build protobuf files (default target)"
 	@echo "  proto-validate-go Generate Go validation rules for protos (should be run after proto)."
 	@echo "  swagger           Generate Swagger/OpenAPI documentation"
+	@echo "  rust              Build Rust protobuf bindings"
+	@echo "  rust-test         Run Rust tests"
+	@echo "  rust-check        Run Rust clippy, fmt check"
+	@echo "  rust-clean        Clean Rust build artifacts"
 
 proto-container:
 	docker build -f .devcontainer/Dockerfile --build-arg PROTO_DEPS_DIR=$(PROTO_DEPS_DIR) -t eve-api-builder .
@@ -21,7 +25,7 @@ proto-diagram:
 	dot ./images/devconfig.dot -Tsvg -o ./images/devconfig.svg
 	echo generated ./images/devconfig.*
 
-.PHONY: proto-api-% proto proto-container proto-local swagger swagger-local
+.PHONY: proto-api-% proto proto-container proto-local swagger swagger-local rust rust-test rust-clean rust-check
 
 proto: proto-container
 	docker run --rm --env HOME=/tmp -v $(PWD):/src -w /src -u $$(id -u) eve-api-builder make proto-local
@@ -29,9 +33,9 @@ proto: proto-container
 proto-validate-go: proto-container
 	docker run --rm --env HOME=/tmp -v $(PWD):/src -w /src -u $$(id -u) eve-api-builder make proto-validate-go-local
 
-proto-local: go go-vet python proto-diagram
+proto-local: go go-vet python rust proto-diagram
 	@echo Done building protobuf, you may want to vendor it into your packages, e.g. pkg/pillar.
-	@echo See ./go/README.md for more information.
+	@echo See ./go/README.md and ./rust/README.md for more information.
 
 go: PROTOC_OUT_OPTS=paths=source_relative:
 go: proto-api-go
@@ -40,6 +44,22 @@ go-vet:
 	go vet -C go ./...
 
 python: proto-api-python
+
+rust:
+	cd rust && cargo build --release
+	@echo Rust bindings built successfully
+
+rust-test:
+	cd rust && cargo test
+	cd rust && cargo test --examples
+
+rust-clean:
+	cd rust && cargo clean
+
+rust-check:
+	cd rust && cargo check
+	cd rust && cargo clippy -- -D warnings
+	cd rust && cargo fmt --check
 
 proto-api-%:
 	rm -rf $*/*/; mkdir -p $* # building $@
