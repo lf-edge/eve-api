@@ -1,3 +1,4 @@
 .cache/
 swagger/
 rust/target/
+rust/proto-deps/

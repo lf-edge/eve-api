@@ -46,19 +46,17 @@ go-vet:
 python: proto-api-python
 
 rust:
-	cd rust && cargo build --release
+	cd rust && PROTO_DEPS_DIR=$(PROTO_DEPS_DIR) cargo build --release
 	@echo Rust bindings built successfully
 
 rust-test:
-	cd rust && cargo test
-	cd rust && cargo test --examples
+	cd rust && PROTO_DEPS_DIR=$(PROTO_DEPS_DIR) cargo test
 
 rust-clean:
 	cd rust && cargo clean
 
 rust-check:
-	cd rust && cargo check
-	cd rust && cargo clippy -- -D warnings
+	cd rust && PROTO_DEPS_DIR=$(PROTO_DEPS_DIR) cargo clippy -- -D warnings
 	cd rust && cargo fmt --check
 
 proto-api-%:

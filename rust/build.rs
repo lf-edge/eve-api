@@ -1,5 +1,6 @@
 use prost_build::Config;
 use std::path::Path;
+use std::process::Command;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let proto_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../proto");
@@ -13,6 +14,37 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     let proto_dir_str = proto_dir.to_str().unwrap();
+
+    // Extra include path for third-party proto deps (e.g., validate/validate.proto
+    // from protoc-gen-validate, imported by register.proto).
+    //
+    // Resolution order:
+    // 1. PROTO_DEPS_DIR env var (set inside devcontainer → /proto/.proto_deps)
+    // 2. Local proto-deps/ directory (auto-fetched for local dev)
+    let proto_deps_dir = if let Ok(d) = std::env::var("PROTO_DEPS_DIR") {
+        Path::new(&d).join("protoc-gen-validate").to_path_buf()
+    } else {
+        let local = Path::new(env!("CARGO_MANIFEST_DIR")).join("proto-deps");
+        let validate = local.join("validate").join("validate.proto");
+        if !validate.exists() {
+            eprintln!("Fetching validate.proto for local build...");
+            std::fs::create_dir_all(local.join("validate")).expect("create proto-deps/validate/");
+            let status = Command::new("curl")
+                .args([
+                    "-sSfL",
+                    "-o",
+                    validate.to_str().unwrap(),
+                    "https://raw.githubusercontent.com/bufbuild/protoc-gen-validate/v1.2.1/validate/validate.proto",
+                ])
+                .status()
+                .expect("failed to run curl — install curl or use the devcontainer");
+            if !status.success() {
+                panic!("failed to download validate.proto (exit {})", status);
+            }
+        }
+        local
+    };
+    let proto_deps_str = proto_deps_dir.to_str().unwrap().to_owned();
 
     let mut config = Config::new();
 
@@ -91,10 +123,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     .map(|f| format!("{}/{}", proto_dir_str, f))
     .collect();
 
-    config.compile_protos(&proto_files, &[proto_dir_str])?;
+    config.compile_protos(&proto_files, &[proto_dir_str, &proto_deps_str])?;
 
     // Rerun if any proto file changes
     println!("cargo:rerun-if-changed={}", proto_dir_str);
+    println!("cargo:rerun-if-changed={}", proto_deps_str);
+    println!("cargo:rerun-if-env-changed=PROTO_DEPS_DIR");
     println!("cargo:rerun-if-changed=build.rs");
 
     Ok(())
