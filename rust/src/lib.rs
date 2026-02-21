@@ -53,6 +53,13 @@
 //! assert_eq!(decoded.serial, "DEVICE-001");
 //! ```
 
+// ── crypto ─────────────────────────────────────────────────────────────
+/// Cryptographic protocol traits for OBJECT-SIGNING.
+///
+/// Defines [`CryptoError`] and (future) `Signer`, `CertStore`,
+/// `CryptoProvider`, and `Authenticatable` traits.
+pub mod crypto;
+
 // ── evecommon ──────────────────────────────────────────────────────────
 /// Common types shared across EVE API packages.
 ///
@@ -163,6 +170,7 @@ pub mod nestedappinstancemetrics {
 pub use auth::{AuthBody, AuthContainer};
 pub use common::{CipherBlock, CipherContext, HashAlgorithm};
 pub use config::EdgeDevConfig;
+pub use crypto::CryptoError;
 pub use register::ZRegisterMsg;
 
 /// API version implemented by this crate.

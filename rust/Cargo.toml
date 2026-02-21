@@ -12,6 +12,8 @@ categories = ["api-bindings"]
 prost = "0.13"
 prost-types = "0.13"
 bytes = "1"
+thiserror = "2"
+base64 = "0.22"
 
 [build-dependencies]
 prost-build = "0.13"
