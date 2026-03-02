@@ -73,22 +73,25 @@ enum CertStatus {
   CERT_STATUS_UNSPECIFIED = 0;
   // Certificate is present, valid, and usable for authentication.
   CERT_STATUS_AVAILABLE = 1;
-  // Certificate enrollment or renewal is in progress and not yet complete.
+  // Certificate enrollment is in progress and not yet complete.
   CERT_STATUS_PENDING = 2;
+  // Certificate is present and still valid, but a renewal request
+  // is in progress and not yet completed.
+  CERT_STATUS_RENEWAL_PENDING = 3;
   // Certificate has expired (the current time is past notAfter).
   // Renewal may have failed; see CertInfo.err for related errors.
-  CERT_STATUS_EXPIRED = 3;
+  CERT_STATUS_EXPIRED = 4;
   // Certificate has been revoked or is otherwise considered invalid.
-  CERT_STATUS_REVOKED = 4;
+  CERT_STATUS_REVOKED = 5;
   // Certificate enrollment failed and no valid certificate is available
   // on the device. See CertInfo.err for details.
-  CERT_STATUS_ENROLLMENT_FAILED = 5;
+  CERT_STATUS_ENROLLMENT_FAILED = 6;
   // A certificate is currently present and not yet expired, but the most
   // recent renewal attempt failed. The existing certificate may still
   // be usable. See CertInfo.err for details.
-  CERT_STATUS_RENEWAL_FAILED = 6;
+  CERT_STATUS_RENEWAL_FAILED = 7;
   // Certificate configuration is invalid or malformed, preventing
   // enrollment or renewal. See CertInfo.err for details.
-  CERT_STATUS_INVALID_CONFIG = 7;
+  CERT_STATUS_INVALID_CONFIG = 8;
 }
 
