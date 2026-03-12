@@ -11,9 +11,33 @@ import "evecommon/acipherinfo.proto";
 
 enum ClusterType {
   CLUSTER_TYPE_UNSPECIFIED = 0;
+
+  // cluster with only native kubernetes orchestration for user applications
   CLUSTER_TYPE_K3S_BASE = 1;
+
+  // cluster with orchestration by EVE APIs for user applications
   CLUSTER_TYPE_REPLICATED_STORAGE = 2;
-  CLUSTER_TYPE_HA = 3;
+
+  // deprecated
+  CLUSTER_TYPE_HA = 3 [deprecated = true];
+}
+
+enum HAScheme {
+  HA_SCHEME_UNSPECIFIED = 0;
+
+  // k3s embedded ETCD/raft HA scheme with 3, 5, etc control plane nodes
+  HA_SCHEME_K3S_EMBEDDED = 1;
+}
+
+// LoadBalancer Service
+
+message LoadBalancerInterface {
+  string interface_name = 1;
+  repeated string address_cidrs = 2;
+}
+
+message LoadBalancerService {
+  repeated LoadBalancerInterface interfaces = 1;
 }
 
 message EdgeNodeCluster {
@@ -48,4 +72,10 @@ message EdgeNodeCluster {
   // kubernetes objects to direct pod scheduling away from a
   // specific node due to node limitations.
   string tie_breaker_node_id = 9;
+
+  // High-availability scheme used by the cluster control plane.
+  HAScheme ha_scheme = 11;
+
+  // Optional load balancer service configuration.
+  LoadBalancerService load_balancer_service = 12;
 }
