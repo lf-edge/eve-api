@@ -12,7 +12,7 @@ ARG PROTO_GEN_VALIDATE_VERSION=7b06248484ceeaa947e93ca2747eccf336a88ecc # v1.2.1
 ARG GOOGLEAPIS_VERSION=376467058c288ad34dd7aafa892a95883e4acd0c # master
 ARG PROTO_DEPS_DIR=/proto/.proto_deps
 
-RUN apk add --no-cache bash curl git make graphviz ttf-freefont
+RUN apk add --no-cache bash curl git make graphviz ttf-freefont gcc musl-dev
 
 
 RUN arch="$(uname -m)" && \
@@ -70,3 +70,7 @@ RUN mkdir -p $(go env GOPATH)
 RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@v${PROTOC_GEN_GO_VERSION} && mv /root/go/bin/protoc-gen-go /usr/local/bin/protoc-gen-go
 RUN go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@${OPENAPI_VERSION} && mv /root/go/bin/protoc-gen-openapiv2 /usr/local/bin/protoc-gen-openapiv2
 RUN go install github.com/envoyproxy/protoc-gen-validate@${PROTO_GEN_VALIDATE_VERSION} && mv /root/go/bin/protoc-gen-validate /usr/local/bin/protoc-gen-validate
+
+# Install Rust toolchain (for prost-build based protobuf bindings)
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --profile minimal --component clippy,rustfmt
+ENV PATH="/root/.cargo/bin:${PATH}"
