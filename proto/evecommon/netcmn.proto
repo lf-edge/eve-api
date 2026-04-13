@@ -254,6 +254,55 @@ enum CellularAuthProtocol {
   CELLULAR_AUTH_PROTOCOL_PAP_AND_CHAP = 3;
 }
 
+// A bonding mode specifies the policy indicating how bonding slaves are used
+// during network transmission.
+enum BondMode {
+  // BOND_MODE_UNSPECIFIED : if bonding mode is not explicitly specified,
+  // then by default Round-Robin policy is applied (BOND_MODE_BALANCE_RR).
+  BOND_MODE_UNSPECIFIED = 0;
+  // BOND_MODE_BALANCE_RR : transmit packets in sequential order from the first
+  // available slave through the last. This mode provides load balancing
+  // and fault tolerance.
+  // This is the default bonding mode.
+  BOND_MODE_BALANCE_RR = 1;
+  // BOND_MODE_ACTIVE_BACKUP : only one slave in the bond is active.
+  // A different slave becomes active if, and only if, the active slave fails.
+  // The bond's MAC address is externally visible on only one port to avoid
+  // confusing the switch.
+  // This mode provides fault tolerance.
+  BOND_MODE_ACTIVE_BACKUP = 2;
+  // BOND_MODE_BALANCE_XOR : packet source and destination MAC addresses are
+  // used to calculate hash and select the output slave interface accordingly.
+  // This mode provides load balancing and fault tolerance.
+  BOND_MODE_BALANCE_XOR = 3;
+  // BOND_MODE_BROADCAST: transmits everything on all slave interfaces.
+  // This mode provides fault tolerance.
+  BOND_MODE_BROADCAST = 4;
+  // BOND_MODE_802_3AD : IEEE 802.3ad Dynamic link aggregation.
+  // Creates aggregation groups that share the same speed and duplex settings.
+  // Requires that upstream network equipment supports IEEE 802.3ad.
+  BOND_MODE_802_3AD = 5;
+  // BOND_MODE_BALANCE_TLB : adaptive transmit load balancing.
+  // Does not require special switch support.
+  // This mode provides (TX) load balancing and fault tolerance.
+  BOND_MODE_BALANCE_TLB = 6;
+  // BOND_MODE_BALANCE_ALB : adaptive load balancing.
+  // Includes BOND_MODE_BALANCE_TLB plus receive load balancing (RLB).
+  // This mode provides load balancing and fault tolerance.
+  BOND_MODE_BALANCE_ALB = 7;
+}
+
+// Option specifying the rate in which EVE will ask LACP link partners
+// to transmit LACPDU packets in 802.3ad mode.
+enum LacpRate {
+  // Default LACP rate is Slow.
+  LACP_RATE_UNSPECIFIED = 0;
+  // Request LACP partner to transmit LACPDUs every 30 seconds.
+  LACP_RATE_SLOW = 1;
+  // Request LACP partner to transmit LACPDUs every 1 second.
+  LACP_RATE_FAST = 2;
+}
+
 // NetworkConfigOrigin enumerates all possible origins of a network port configuration.
 enum NetworkConfigOrigin {
   // Unknown or unset origin.

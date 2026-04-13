@@ -300,6 +300,9 @@ message deviceMetric {
 
   // 802.1X per-port metrics
   repeated PNACMetrics pnac_metrics = 30;
+
+  // Bond adapter metrics
+  repeated BondMetrics bond_metrics = 31;
 }
 
 message AclMetric {
@@ -795,4 +798,30 @@ message PNACMetrics {
   uint64 invalid_eapol_frames_rx = 9;
   // Number of received EAPOL frames with incorrect length or truncated payload.
   uint64 eap_length_error_frames_rx = 10;
+}
+
+// BondMetrics contains metrics for a single bond adapter.
+message BondMetrics {
+  // Logical label identifying the bond adapter.
+  string logicallabel = 1;
+  // Per-member metrics.
+  repeated BondMemberMetrics members = 2;
+}
+
+// BondMemberMetrics contains metrics for a single member interface within a bond.
+message BondMemberMetrics {
+  // Logical label of the bond member port.
+  string logicallabel = 1;
+  // Number of times the link has been detected as failed.
+  uint64 link_failure_count = 2;
+  // LACP-specific metrics, set only when the bond is in 802.3ad mode.
+  BondMemberLACPMetrics lacp = 3;
+}
+
+// BondMemberLACPMetric contains LACP (802.3ad) counters for a single bond member.
+message BondMemberLACPMetrics {
+  // Number of times the actor detected churn on this member.
+  uint64 actor_churned_count = 1;
+  // Number of times the partner detected churn on this member.
+  uint64 partner_churned_count = 2;
 }
