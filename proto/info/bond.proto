@@ -1,0 +1,112 @@
+// Copyright(c) 2026 Zededa, Inc.
+// SPDX-License-Identifier: Apache-2.0
+
+syntax = "proto3";
+
+package org.lfedge.eve.info;
+option go_package  = "github.com/lf-edge/eve-api/go/info";
+option java_package = "org.lfedge.eve.info";
+
+import "evecommon/netcmn.proto";
+
+// Runtime status of the bond interface, including bond-level information as well as
+// per-member details for adapters that are part of the bond.
+message BondStatus {
+  // The bonding mode currently applied.
+  org.lfedge.eve.common.BondMode mode = 1;
+
+  // Logical label of the currently active member interface.
+  // Applicable for active-backup, balance-tlb and balance-alb modes.
+  // Empty if there is no active member (e.g. all members are down).
+  string active_member = 2;
+
+  // MII link monitoring parameters, set when MII monitoring is used.
+  BondMIIMonitorStatus mii_monitor = 3;
+  // ARP-based link monitoring parameters, set when ARP monitoring is used.
+  BondArpMonitorStatus arp_monitor = 4;
+
+  // LACP status, published only when the bond is in 802.3ad mode.
+  BondLACPStatus lacp = 5;
+
+  // Runtime status of each member interface in the bond.
+  // Published for all bond modes.
+  repeated BondMemberStatus members = 6;
+}
+
+// BondMemberStatus reports the runtime status of a single member interface
+// within a bond. Published for all bond modes.
+message BondMemberStatus {
+  // Logical label of the member port.
+  string logicallabel = 1;
+  // Whether the member's MII link is up.
+  // Reported regardless of the monitoring method in use.
+  bool mii_up = 2;
+  // LACP-specific status, set only when the bond is in 802.3ad mode.
+  BondMemberLACPStatus lacp = 3;
+}
+
+// BondMIIMonitorStatus reports the MII link monitoring parameters
+// as currently applied by the bond driver.
+message BondMIIMonitorStatus {
+  // Whether MII link monitoring is enabled.
+  bool enabled = 1;
+  // MII polling interval in milliseconds.
+  uint32 polling_interval = 2;
+  // Time in milliseconds to wait before enabling a member after link recovery.
+  uint32 updelay = 3;
+  // Time in milliseconds to wait before disabling a member after link failure.
+  uint32 downdelay = 4;
+}
+
+// BondArpMonitorStatus reports the ARP-based link monitoring parameters
+// as currently applied by the bond driver.
+message BondArpMonitorStatus {
+  // Whether ARP-based link monitoring is enabled.
+  bool enabled = 1;
+  // ARP polling interval in milliseconds.
+  uint32 polling_interval = 2;
+  // IPv4 addresses used as ARP monitoring targets.
+  repeated string ip_targets = 3;
+  // Number of missed ARP replies allowed before the link is considered down.
+  uint32 missed_max = 4;
+}
+
+// BondLACPStatus reports the 802.3ad (LACP) status for a bond.
+// Published only when the bond is operating in BOND_MODE_802_3AD.
+message BondLACPStatus {
+  // LACP transmission rate currently applied.
+  org.lfedge.eve.common.LacpRate lacp_rate = 1;
+  // Aggregator ID of the active aggregator.
+  uint32 active_aggregator_id = 2;
+  // MAC address of the LACP partner (typically the switch).
+  string partner_mac = 3;
+  // Actor (local) operational key for the active aggregator.
+  // Derived from link speed and duplex of the aggregated ports.
+  uint32 actor_key = 4;
+  // Partner operational key received from the LACP partner.
+  // Should match actor_key when negotiation succeeds.
+  uint32 partner_key = 5;
+}
+
+// BondMemberLACPStatus reports per-member 802.3ad (LACP) status.
+message BondMemberLACPStatus {
+  // Aggregator ID to which this member is assigned.
+  // All members should share the same aggregator ID when properly negotiated.
+  // Different IDs indicate split aggregation (a potential problem).
+  uint32 aggregator_id = 1;
+  // Actor churn state for this member.
+  BondLACPChurnState actor_churn_state = 2;
+  // Partner churn state for this member.
+  BondLACPChurnState partner_churn_state = 3;
+}
+
+// BondLACPChurnState represents the LACP churn detection state.
+enum BondLACPChurnState {
+  BOND_LACP_CHURN_STATE_UNSPECIFIED = 0;
+  // No churn detected — LACP negotiation is stable.
+  BOND_LACP_CHURN_STATE_NONE = 1;
+  // Monitoring for churn — waiting to confirm stability.
+  BOND_LACP_CHURN_STATE_MONITORING = 2;
+  // Churn detected — the partner is frequently changing its parameters.
+  BOND_LACP_CHURN_STATE_CHURNED = 3;
+}

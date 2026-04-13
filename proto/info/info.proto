@@ -15,6 +15,7 @@ import "info/patch_envelope.proto";
 import "info/ntpsources.proto";
 import "info/edge_node_cluster.proto";
 import "info/hardware.proto";
+import "info/bond.proto";
 import "info/pnac.proto";
 import "info/cert.proto";
 import "info/common.proto";
@@ -798,6 +799,10 @@ message DevicePort {
 
   // Device-reported 802.1X (PNAC) runtime status for this port.
   PNACStatus pnac_status = 50;
+
+  // Runtime status of the bond interface, including bond-level information as well as
+  // per-member details for adapters that are part of the bond.
+  BondStatus bond_status = 60;
 }
 
 message ProxyStatus {
