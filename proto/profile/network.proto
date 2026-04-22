@@ -236,6 +236,17 @@ message NetworkPortConfig {
   // using the requested configuration despite any issues.
   // Inside `LocalNetworkConfig.ports`, received by EVE from LPS, this field is ignored.
   string error_message = 19;
+
+  // Indicates whether this port is permitted to have its configuration modified
+  // locally via LPS. Mirrors the controller-provisioned
+  // `SystemAdapter.allow_local_modifications` (see config/devmodel.proto) and
+  // is reported by EVE to LPS so that the operator UI can distinguish ports
+  // that accept local configuration from those managed exclusively by the
+  // controller. Attempts to locally configure a port with this flag set to
+  // false are rejected by EVE, with an error reported in
+  // `NetworkPortConfig.error_message`.
+  // Inside `LocalNetworkConfig.ports`, received by EVE from LPS, this field is ignored.
+  bool local_modifications_allowed = 20;
 }
 
 // Enum representing the type of wireless device associated with the network port.
