@@ -542,6 +542,115 @@ Behavior:
 * When local configuration fails validation or application, EVE reports errors
   back in `NetworkInfo.local_config`.
 
+### Signal
+
+A long-lived, server-streaming endpoint used by EVE to learn about pending
+configuration changes without waiting for the next periodic poll.
+Whenever LPS has one or more configuration updates ready for EVE, it emits
+a [Signal](./proto/profile/signal.proto) message listing the affected
+endpoints. Upon receiving a signal, EVE immediately polls each listed
+endpoint, bypassing its normal periodic cadence.
+
+Implementing this endpoint is OPTIONAL. The signal channel is strictly
+a latency optimization: periodic polling of the other LPS endpoints continues
+unchanged as the correctness guarantee. If LPS does not implement the signal
+endpoint, or if the signal stream is temporarily unavailable or broken, EVE
+transparently falls back to polling only and behavior is otherwise unchanged.
+Silent connection failures (e.g. due to a firewall or NAT timeout) are
+detected via TCP keepalive, which EVE enables on the signal connection.
+
+```http
+   GET /api/v1/signal
+```
+
+Return codes:
+
+* Success; streaming response body follows: `200`
+* Not implemented: `404`
+
+Request:
+
+The request MUST use HTTP for this request.
+The request MUST NOT contain any body content.
+
+Response:
+
+The response MIME type MUST be `application/x-ndjson`.
+The response body is a continuous stream of newline-delimited JSON objects,
+each encoding a [Signal](./proto/profile/signal.proto) message using the
+canonical protobuf JSON mapping. Each Signal MUST occupy exactly one line
+(no embedded newlines) and MUST be terminated by a single `\n`.
+The HTTP connection is kept open for the lifetime of the stream and the
+response is delivered using `Transfer-Encoding: chunked`.
+
+Example stream body (one Signal per line):
+
+```text
+{"pendingChanges":["CONFIG_ENDPOINT_RADIO"]}
+{"pendingChanges":["CONFIG_ENDPOINT_NETWORK","CONFIG_ENDPOINT_APP_INFO"]}
+```
+
+Unlike the other LPS endpoints, the response body carries no `server_token`.
+A `Signal` never conveys configuration itself; it only prompts EVE to poll
+the existing `server_token`-protected endpoints. As a result, authenticating
+the signal stream would not provide additional safety beyond what the referenced
+configuration endpoints already ensure.
+
+LPS behavior:
+
+* LPS MUST emit a `Signal` only when there is at least one endpoint with
+  a pending configuration change. `Signal.pending_changes` MUST NOT be empty.
+* On a newly established connection, if any configuration changes are
+  already pending at that moment, LPS MUST emit a `Signal` immediately
+  covering all such endpoints. If nothing is pending, LPS simply waits
+  until a change is produced before writing.
+* LPS MAY (and SHOULD, when practical) coalesce multiple pending endpoints
+  into a single `Signal` when changes are produced in close succession.
+  A given endpoint MAY appear across multiple `Signal` messages over time;
+  each occurrence is an independent trigger to poll.
+* LPS MUST flush the HTTP response after writing each `Signal` so that EVE
+  receives it promptly.
+* LPS MUST NOT emit application-level heartbeats or empty/placeholder
+  messages on this stream. Liveness detection is the client's
+  responsibility (see below).
+* When LPS needs to terminate the stream (e.g., shutdown), it MUST close
+  the response cleanly.
+
+EVE behavior:
+
+* EVE MUST enable TCP keepalive on the signal connection with an interval
+  suitable for timely detection of a dead peer (approximately 60 seconds
+  is recommended). This is the sole mechanism for detecting a silently
+  broken connection; there is no application-layer heartbeat.
+* On any read error, EOF, or connection loss, EVE MUST reconnect with
+  exponential backoff (recommended: initial 1s, doubling, capped at 30s).
+* If LPS returns `404`, EVE SHOULD throttle reconnection attempts
+  substantially (e.g., approximately once per hour) — the server has
+  indicated it does not implement the signal endpoint. This allows LPS
+  to begin supporting the endpoint later without requiring a device
+  reconfiguration.
+* Upon receiving a `Signal`, EVE MUST trigger an immediate poll of each
+  endpoint listed in `pending_changes`, in addition to its normal periodic
+  polling schedule.
+* Unknown values in `pending_changes` (enum entries introduced by a newer
+  API version than EVE recognizes) MUST be ignored.
+* EVE SHOULD apply rate limiting on the processing of incoming signals to
+  bound the cost of excessive signal traffic (whether caused by a buggy LPS
+  or a malicious peer on the local network). When the rate limit is
+  exceeded, EVE MAY drop signals; the periodic polling fallback still
+  guarantees that any pending configuration is eventually picked up.
+
+Relationship to other endpoints:
+
+* A `Signal` never carries configuration. LPS always responds to EVE's
+  subsequent poll of the referenced endpoint in the normal way, including
+  the usual `server_token`-protected response body. All validation,
+  authorization, and semantics of the existing endpoints are unchanged.
+* Because the signal endpoint only shifts the *timing* of polls, no
+  existing endpoint's semantics depend on its presence or absence.
+* The `/api/v1/location` endpoint is not covered by `Signal`, as it only
+  publishes information from EVE to LPS and never returns configuration.
+
 ## Security
 
 In addition to using a `server_token` it is recommended that ACLs/firewall rules

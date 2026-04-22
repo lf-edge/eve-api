@@ -1,0 +1,52 @@
+// Copyright(c) 2026 Zededa, Inc.
+// SPDX-License-Identifier: Apache-2.0
+
+syntax = "proto3";
+
+package org.lfedge.eve.profile;
+
+option go_package  = "github.com/lf-edge/eve-api/go/profile";
+option java_package = "org.lfedge.eve.profile";
+
+// Signal is published by the Local Profile Server to EVE over a long-lived
+// GET /api/v1/signal stream whenever one or more configuration changes are
+// pending for the existing LPS endpoints. Upon receiving a Signal, EVE
+// immediately polls each endpoint listed in `pending_changes`, bypassing
+// the normal periodic polling cadence.
+//
+// The signal channel is strictly a latency optimization. Periodic polling
+// of the other LPS endpoints continues unchanged as the correctness
+// guarantee: if the signal stream is unavailable, broken, or not
+// implemented by LPS, EVE transparently falls back to polling only.
+//
+// Wire format: NDJSON (application/x-ndjson). Each Signal is encoded using
+// the canonical protobuf JSON mapping and terminated by a single '\n'.
+// See PROFILE.md for full endpoint semantics.
+message Signal {
+   // Endpoints with pending configuration changes that EVE should poll now.
+   // MUST contain at least one entry; empty Signals are not sent.
+   // The order of entries is not significant.
+   repeated ConfigEndpoint pending_changes = 1;
+}
+
+// ConfigEndpoint identifies an LPS endpoint that may carry configuration
+// changes from LPS to EVE and can therefore be referenced by a Signal.
+//
+// The /api/v1/location endpoint is intentionally not represented here
+// because it only carries information from EVE to LPS and never returns
+// configuration.
+enum ConfigEndpoint {
+   CONFIG_ENDPOINT_UNSPECIFIED   = 0;
+   // GET  /api/v1/local_profile
+   CONFIG_ENDPOINT_LOCAL_PROFILE = 1;
+   // POST /api/v1/radio
+   CONFIG_ENDPOINT_RADIO         = 2;
+   // POST /api/v1/appinfo
+   CONFIG_ENDPOINT_APP_INFO      = 3;
+   // POST /api/v1/appbootinfo
+   CONFIG_ENDPOINT_APP_BOOT_INFO = 4;
+   // POST /api/v1/devinfo
+   CONFIG_ENDPOINT_DEV_INFO      = 5;
+   // POST /api/v1/network
+   CONFIG_ENDPOINT_NETWORK       = 6;
+}
