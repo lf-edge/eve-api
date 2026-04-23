@@ -483,6 +483,10 @@ the `404` code.
 * Status of the local network configuration submitted previously
   by the Local Profile Server (LPS), indicating whether it was successfully
   applied or if errors occurred.
+* Per-port runtime status. This is the current kernel-observed state of each
+  network port (link up/down, MAC address, assigned IPs, effective DNS servers etc.)
+  Distinct from the `*_config` fields, which describe the intended configuration; this
+  describes what is currently in effect.
 
 Response:
 
