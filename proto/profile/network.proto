@@ -43,6 +43,13 @@ message NetworkInfo {
   // Ports not listed here are using either the latest controller config
   // or the fallback config, as indicated by `NetworkPortConfig.config_applied`.
   LocalNetworkConfigInfo local_config = 5;
+
+  // Per-port runtime status observed on the device (kernel interface,
+  // routing table, resolver state). Unlike the NetworkPortConfig variants
+  // above, which describe what *should* be configured, this field
+  // describes what is *currently* in effect, regardless of which config
+  // source (latest / fallback / local) produced it.
+  repeated NetworkPortStatus port_status = 6;
 }
 
 // Reports the current status of controller connectivity testing.
@@ -64,6 +71,49 @@ message NetworkConfigTestingStatus {
   // for waiting (e.g., interface not yet available, waiting for DHCP IP,
   // waiting for DNS configuration). Empty if testing is not in progress.
   string testing_phase = 5;
+}
+
+// NetworkPortStatus reports the current runtime state of a single
+// network port as observed on the device. This is distinct from
+// NetworkPortConfig, which describes what was declaratively configured:
+// NetworkPortStatus describes what is actually applied on the kernel
+// interface, routing table, and resolver at the time NetworkInfo is
+// published.
+message NetworkPortStatus {
+  // Logical label of the port as defined in the device model. Used to
+  // correlate this entry with the corresponding NetworkPortConfig.
+  string logical_label = 1;
+
+  // Interface name as seen by the Linux kernel (e.g. "eth0", "wlan0").
+  string interface_name = 2;
+
+  // True if the L2 link is currently up.
+  bool link_up = 3;
+
+  // MAC address of the interface, formatted with colon separators
+  // (e.g. "aa:bb:cc:dd:ee:ff"). Empty if not applicable.
+  string mac_address = 4;
+
+  // IP addresses currently assigned to the interface, in CIDR format
+  // (e.g. "192.168.1.10/24"). Includes both IPv4 and IPv6 addresses.
+  repeated string ip_addresses = 5;
+
+  // IP addresses of default routers (gateways) active on this port.
+  repeated string gateways = 6;
+
+  // DNS servers currently used for name resolution on this port,
+  // including DHCP-provided and statically configured entries.
+  repeated string dns_servers = 7;
+
+  // Effective DNS search domain, from DHCP or static configuration.
+  string dns_domain = 8;
+
+  // NTP servers currently used on this port (DHCP + static).
+  // Entries may be IP addresses or hostnames.
+  repeated string ntp_servers = 9;
+
+  // MTU currently applied to the interface, in bytes. 0 if unknown.
+  uint32 mtu = 10;
 }
 
 // LocalNetworkConfigInfo reports the current state of locally provided
