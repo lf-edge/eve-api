@@ -78,4 +78,12 @@ message EdgeNodeCluster {
 
   // Optional load balancer service configuration.
   LoadBalancerService load_balancer_service = 12;
+
+  // UUIDs of all designated master/control-plane nodes in the cluster,
+  // as known to the controller. The elected kube-stats leader among
+  // surviving EVE nodes uses this list to prune k8s Node objects (and
+  // thereby k3s embedded etcd members) for masters the controller has
+  // removed (e.g. after a "replace node" operation in the UI).
+  // Workers are not listed here.
+  repeated string master_node_uuids = 13;
 }
