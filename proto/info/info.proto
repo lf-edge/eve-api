@@ -913,6 +913,25 @@ message ZInfoStorage {
   string mountPath = 2;     // E.g., "/", or "/config"
   uint64 total = 3;         // in MBytes
   bool storageLocation = 4; // Storage location for app disks, images etc.
+
+  // GPT partition label (lsblk PARTLABEL), e.g. "EFI System", "CONFIG",
+  // "IMGA", "IMGB", "P3". Set only when this entry is a GPT partition;
+  // empty for whole-disk entries (e.g. "sda"), for partitions on
+  // non-GPT disks, and for directory entries (mountPath set, device
+  // empty).
+  string partitionLabel = 5;
+
+  // GPT partition type GUID (lsblk PARTTYPE), lowercase hyphenated,
+  // e.g. "c12a7328-f81f-11d2-ba4b-00a0c93ec93b" for an EFI System
+  // Partition. Identifies the partition's role per the GPT spec.
+  // Same emptiness rules as partitionLabel.
+  string partitionTypeGuid = 6;
+
+  // GPT partition UUID (lsblk PARTUUID), lowercase hyphenated. Unique
+  // per partition and stable across filesystem reformats. EVE's boot
+  // path resolves IMGA/IMGB/CONFIG by PARTUUID, so this is the durable
+  // identity for a partition. Same emptiness rules as partitionLabel.
+  string partitionUuid = 7;
 }
 
 // Type of the snapshot creation reason
