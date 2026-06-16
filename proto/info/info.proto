@@ -462,6 +462,30 @@ enum ZDeviceState {
     ZDEVICE_STATE_POWERING_OFF = 7;
     // device prepared power off - all app instances are shut down
     ZDEVICE_STATE_PREPARED_POWEROFF = 8;
+    // Device is converting its on-disk layout, e.g. repartitioning the boot
+    // disk during an EVE-kvm <-> EVE-k update. Reported separately from
+    // BASEOS_UPDATING because part of the work runs in early boot, before the
+    // base-OS A/B install, and may include resizing the persist filesystem.
+    ZDEVICE_STATE_CONVERTING = 9;
+}
+
+// Sub-state of ZDeviceState, reported in ZInfoDevice.sub_state. Currently it
+// enumerates the phases of the EVE-kvm <-> EVE-k boot-disk conversion reported
+// alongside ZDEVICE_STATE_CONVERTING. Because most of that work runs in early
+// boot with no controller connectivity, EVE reports the furthest-reached
+// sub-state once it can talk to the controller again. Only the phases EVE can
+// actually report are enumerated: the shrink/create/rename steps run in the
+// offline early-boot resizer with no controller link and so are never observed.
+// Sub-states for other device states can be added here later.
+enum ZDeviceSubState {
+    ZDEVICE_SUBSTATE_UNSPECIFIED = 0;
+    // Rebooting into the early-boot resizer to repartition the boot disk
+    // (and, on the shrink path, to free space by shrinking persist offline).
+    ZDEVICE_SUBSTATE_CONVERT_REBOOTING_TO_RESIZE = 1;
+    // Installing the EVE-k (or EVE-kvm) base image into the resized partitions.
+    ZDEVICE_SUBSTATE_CONVERT_INSTALLING = 2;
+    // Rebooting into the converted EVE flavor.
+    ZDEVICE_SUBSTATE_CONVERT_REBOOTING_TO_TARGET = 3;
 }
 
 enum StorageStatus {
@@ -606,6 +630,12 @@ message ZInfoDevice {
   // Device State
   ZDeviceState state = 44;
 
+  // Sub-state of the device state (UNSPECIFIED unless a state defines
+  // sub-states; e.g. progress through the on-disk conversion while state ==
+  // ZDEVICE_STATE_CONVERTING). Declared here next to state for readability;
+  // its tag (61) is out of sequence — see the note at the end of the message.
+  ZDeviceSubState sub_state = 61;
+
   // Is there a local_profile from a local_profile_server?
   // The global_profile from the controller is not echoed in this field.
   string local_profile = 45;
@@ -640,6 +670,9 @@ message ZInfoDevice {
   // Device-reported information about certificates currently enrolled
   // on the device, typically via network enrollment protocols such as SCEP.
   repeated CertInfo enrolled_certs = 60;
+
+  // NOTE: tag 61 is used by sub_state (ZDeviceSubState), declared above next to
+  // state for readability. Next free tag: 62.
 }
 
 // OptionalCapabilities indicates any additional capabilities device wants
