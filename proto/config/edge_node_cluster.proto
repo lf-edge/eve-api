@@ -12,7 +12,9 @@ import "evecommon/acipherinfo.proto";
 enum ClusterType {
   CLUSTER_TYPE_UNSPECIFIED = 0;
 
-  // cluster with only native kubernetes orchestration for user applications
+  // cluster with only native kubernetes orchestration for user applications.
+  // To be phased out; prefer CLUSTER_TYPE_REPLICATED_STORAGE with
+  // EdgeNodeCluster.enable_native_k8s_orchestration = true.
   CLUSTER_TYPE_K3S_BASE = 1;
 
   // cluster with orchestration by EVE APIs for user applications
@@ -86,4 +88,11 @@ message EdgeNodeCluster {
   // removed (e.g. after a "replace node" operation in the UI).
   // Workers are not listed here.
   repeated string master_node_uuids = 13;
+
+  // When true, EVE enables native Kubernetes orchestration for user
+  // workloads in addition to EVE-API-managed scheduling. This provides
+  // the same capability that CLUSTER_TYPE_K3S_BASE offered, but as an
+  // opt-in flag on a CLUSTER_TYPE_REPLICATED_STORAGE cluster.
+  // Requires cluster_type = CLUSTER_TYPE_REPLICATED_STORAGE.
+  bool enable_native_k8s_orchestration = 14;
 }
