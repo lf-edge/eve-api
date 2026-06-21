@@ -703,6 +703,11 @@ enum BootReason {
   BOOT_REASON_UNKNOWN = 12;
   BOOT_REASON_VAULT_FAILED = 13;
   BOOT_REASON_POWEROFF_CMD = 14; // From Local Profile Server poweroff
+  BOOT_REASON_KUBE_TRANSITION = 15; // Transition to/from kubernetes single/cluster modes
+  // Hardware watchdog reset the device (WDIOF_CARDRESET). Only set on
+  // platforms whose watchdog driver reports this flag; many do not (e.g.
+  // Intel iTCO always reports a zero boot status).
+  BOOT_REASON_HW_WATCHDOG = 16;
   BOOT_REASON_PARSE_FAIL = 255;
 }
 
