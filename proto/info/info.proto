@@ -1451,6 +1451,12 @@ message ZInfoKubeCluster {
 
   // Virtual Machines running on the cluster
   repeated KubeVMIInfo eve_vm_apps = 6;
+
+  // Witness (2-node HA 3rd etcd vote) status. Set only when a witness is
+  // configured for this cluster; absent otherwise. Like the rest of this
+  // message it is sent by the elected cluster-info reporter, which is not
+  // necessarily the device hosting the witness.
+  KubeWitnessInfo witness = 7;
 }
 
 // Information about the system that is sent once when the system boots

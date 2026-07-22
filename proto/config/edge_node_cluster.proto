@@ -42,6 +42,20 @@ message LoadBalancerService {
   repeated LoadBalancerInterface interfaces = 1;
 }
 
+// EdgeNodeClusterWitness configures a lightweight etcd-only 3rd voting
+// member ("witness") for a 2-physical-node cluster, contributing only an
+// etcd vote - no apiserver, no scheduler, no workloads, no Kubernetes Node
+// object. Presence of this message (non-empty witness_ip) enables witness
+// mode; there is no separate enable flag. The witness always co-locates
+// with whichever device currently owns join_server_ip (the seed) - there
+// is no separate placement field.
+message EdgeNodeClusterWitness {
+  // Virtual IP the witness's etcd binds to on cluster_interface. Must fall
+  // inside EdgeNodeCluster.cluster_ip_prefix's subnet and must not collide
+  // with any physical member's IP.
+  string witness_ip = 1;
+}
+
 message EdgeNodeCluster {
   // cluster name, in case it has multiple cluster on the same site
   string cluster_name = 1;
@@ -75,6 +89,9 @@ message EdgeNodeCluster {
   // specific node due to node limitations.
   string tie_breaker_node_id = 9;
 
+  // Never assigned, skipped accidentally.
+  reserved 10;
+
   // High-availability scheme used by the cluster control plane.
   HAScheme ha_scheme = 11;
 
@@ -86,7 +103,8 @@ message EdgeNodeCluster {
   // surviving EVE nodes uses this list to prune k8s Node objects (and
   // thereby k3s embedded etcd members) for masters the controller has
   // removed (e.g. after a "replace node" operation in the UI).
-  // Workers are not listed here.
+  // Workers are not listed here, and neither is the witness (see
+  // EdgeNodeClusterWitness): it is never a master node.
   repeated string master_node_uuids = 13;
 
   // When true, EVE enables native Kubernetes orchestration for user
@@ -95,4 +113,22 @@ message EdgeNodeCluster {
   // opt-in flag on a CLUSTER_TYPE_REPLICATED_STORAGE cluster.
   // Requires cluster_type = CLUSTER_TYPE_REPLICATED_STORAGE.
   bool enable_native_k8s_orchestration = 14;
+
+  // Witness (3rd etcd vote) configuration for a 2-physical-node cluster.
+  // Unset/empty witness_ip means no witness runs.
+  EdgeNodeClusterWitness witness = 15;
+
+  // Controller-declared quorum-loss recovery trigger. Incrementing this
+  // tells the device now named by join_server_ip to promote itself to
+  // sole bootstrap via a forced etcd quorum reset. Every other
+  // current/former member is not converged through this field at all:
+  // the controller removes its cluster config outright, and it rejoins
+  // fresh through the ordinary join workflow once reinstated. The
+  // promoted device tracks the last generation it converged to and
+  // takes no action when this value hasn't incremented from the last
+  // recorded generation. Initial cluster formation is generation 0.
+  // A device seeing this field for the first time (no locally-tracked
+  // generation yet, e.g. a fresh join) records it as its baseline without
+  // acting, the same way DeviceOpsCmd.counter is handled on first boot.
+  uint32 quorum_recovery_generation = 16;
 }

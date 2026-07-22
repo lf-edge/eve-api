@@ -9,6 +9,7 @@ option go_package = "github.com/lf-edge/eve-api/go/info";
 option java_package = "org.lfedge.eve.info";
 
 import "google/protobuf/timestamp.proto";
+import "info/common.proto";
 
 // KubeNodeStatus follows Kubernetes Node Conditions
 //   Refer here: https://pkg.go.dev/k8s.io/api/core/v1#NodeConditionType
@@ -72,6 +73,62 @@ message KubeNodeInfo {
 
   // Id of the eve node matching config.EdgeDevConfig.id
   string node_id = 9;
+
+  // Quorum-recovery convergence status for this node - see
+  // KubeQuorumRecoveryStatus.
+  KubeQuorumRecoveryStatus recovery = 10;
+}
+
+// KubeQuorumRecoveryStatus is the per-device convergence status for a
+// config.EdgeNodeCluster.quorum_recovery_generation change, reported by
+// KubeNodeInfo.recovery. Only the device promoted to sole bootstrap via
+// a forced etcd quorum reset ever converges to a new generation; every
+// other current/former member loses its cluster config outright and
+// rejoins through the ordinary join workflow instead.
+message KubeQuorumRecoveryStatus {
+  // Last config.EdgeNodeCluster.quorum_recovery_generation this device
+  // has fully converged to.
+  uint32 applied_generation = 1;
+
+  // True while this device is actively promoting itself to sole
+  // bootstrap for a newer generation than applied_generation.
+  bool converging = 2;
+
+  // Set if the most recent convergence attempt failed. applied_generation
+  // stays at the last generation that succeeded.
+  ErrorInfo error = 3;
+
+  google.protobuf.Timestamp last_transition_at = 4;
+}
+
+// WitnessEtcdState is the witness's own view of its etcd membership,
+// reported by whichever physical device is currently hosting it.
+enum WitnessEtcdState {
+  WITNESS_ETCD_STATE_UNSPECIFIED = 0;
+  // Not currently running etcd: no witness is configured for this
+  // cluster, or the witness has not yet started joining.
+  WITNESS_ETCD_STATE_IDLE = 1;
+  WITNESS_ETCD_STATE_JOINING = 2;
+  // Active etcd voter in the target cluster - the healthy steady state.
+  WITNESS_ETCD_STATE_JOINED = 3;
+  WITNESS_ETCD_STATE_ERROR = 4;
+}
+
+// KubeWitnessInfo is the status of the 2-node-HA witness (see
+// config.EdgeNodeClusterWitness). Originates on the device currently
+// hosting the witness, which publishes it into the cluster; it is then
+// reported by whichever device is the elected cluster-info reporter,
+// not necessarily the host itself.
+message KubeWitnessInfo {
+  // Echoes config.EdgeNodeClusterWitness.witness_ip.
+  string witness_ip = 1;
+
+  WitnessEtcdState state = 2;
+
+  // Set when state is WITNESS_ETCD_STATE_ERROR, describing why: a wrong
+  // token, an unreachable seed, a stale cluster ID, and the like - detail
+  // the state enum alone does not carry.
+  ErrorInfo error = 3;
 }
 
 // StorageHealthStatus is a higher level tracking status to show redundancy/failure-zone level
