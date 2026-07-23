@@ -326,6 +326,19 @@ message NetworkInstanceConfig {
   // When enabled, LLDP frames (EtherType 0x88cc) are not dropped or suppressed
   // by the forwarding plane.
   bool forward_lldp = 52;
+
+  // cluster_wide - Determines whether this network instance is device-specific
+  // or shared across an Edge Node Cluster (ENC).
+  // If false (default), the network instance configuration is only downloaded
+  // to and instantiated on this individual device.
+  // If true, the network instance configuration is downloaded to every device
+  // that is a member of the Edge Node Cluster, and the network instance is
+  // instantiated identically on each of them. This allows application
+  // instances running on any node of the cluster to attach to the same
+  // logical network instance, which is required e.g. for app instances that
+  // may be relocated between cluster nodes. This may be useful for native
+  // kubernetes applications using the network instance.
+  bool cluster_wide = 53;
 }
 
 // VLAN Access Port config applied to physical port(s) attached to a Switch Network Instance.
