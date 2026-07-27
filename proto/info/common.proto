@@ -16,6 +16,12 @@ message ErrorInfo {
   Severity severity = 3;               // Severity level of the error.
   repeated DeviceEntity entities = 4;  // Device entities referenced in the description or retry condition.
   string retry_condition = 5;          // Condition under which the operation may be retried.
+  // Machine-parseable, namespaced error token (e.g.
+  // "cpu.placement.insufficient"), stable across EVE releases, so the
+  // controller can react programmatically without parsing the free-text
+  // description. Namespaces form an open registry extended additively
+  // per domain; an empty value means no structured code is available.
+  string error_code = 6;
 }
 
 // Severity tells the severity type

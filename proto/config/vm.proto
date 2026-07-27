@@ -23,6 +23,84 @@ enum VmMode {
   LEGACY = 5; // HVM, but with fully emulated legacy I/O (IDE disks and e1000 net)
 }
 
+// CpuPolicy selects how a workload's vCPUs are placed on host CPUs.
+// Vocabulary follows the Kubernetes CPUManager model so the same intent
+// translates to both the eve-kvm and eve-k (KubeVirt) variants.
+enum CpuPolicy {
+  // Not set: legacy behavior. If pin_cpu is true the workload is treated
+  // as CPU_POLICY_DEDICATED with default allocation; otherwise shared.
+  CPU_POLICY_UNSPECIFIED = 0;
+  // Best-effort placement in the shared pool (no pinning).
+  CPU_POLICY_SHARED = 1;
+  // The workload gets host CPUs of its own; no other workload runs on
+  // them. Details are refined by full_pcpus_only / threads_per_core.
+  CPU_POLICY_DEDICATED = 2;
+}
+
+// NumaPolicy expresses how strictly a dedicated workload's CPUs (and
+// memory) must be confined to a single NUMA node. Mirrors the Kubernetes
+// TopologyManager policies.
+enum NumaPolicy {
+  // Defaults to NUMA_POLICY_BEST_EFFORT.
+  NUMA_POLICY_UNSPECIFIED = 0;
+  // No NUMA preference.
+  NUMA_POLICY_NONE = 1;
+  // Prefer a single NUMA node; span nodes only if it does not fit.
+  NUMA_POLICY_BEST_EFFORT = 2;
+  // Restricted placement: minimize the nodes spanned; fail-closed only
+  // if no placement exists at all.
+  NUMA_POLICY_RESTRICTED = 3;
+  // Must fit in one NUMA node; the workload does not start otherwise.
+  NUMA_POLICY_SINGLE_NUMA_NODE = 4;
+}
+
+// IoPlacement selects where the hypervisor's non-vCPU threads (emulator,
+// IO) of a dedicated workload run.
+enum IoPlacement {
+  // Defaults to IO_PLACEMENT_DEDICATED.
+  IO_PLACEMENT_UNSPECIFIED = 0;
+  // Emulator/IO threads stay within the workload's dedicated CPU set.
+  IO_PLACEMENT_DEDICATED = 1;
+  // Emulator/IO threads are pinned off the dedicated cores onto the
+  // node's housekeeping set, so device emulation cannot steal cycles
+  // from busy (e.g. poll-mode) vCPUs.
+  IO_PLACEMENT_HOUSEKEEPING = 2;
+}
+
+// IsolationTier expresses how strongly a workload's CPUs must be shielded
+// from interference. It is workload intent: the device derives whether the
+// requested tier is achievable for this workload type from the node's
+// granular capability report (info NodeCapabilities) and fails closed with
+// a structured error if it is not.
+enum IsolationTier {
+  // Defaults: ISOLATION_TIER_NONE for shared workloads,
+  // ISOLATION_TIER_SOFT for dedicated (pinned) workloads.
+  ISOLATION_TIER_UNSPECIFIED = 0;
+  // No isolation beyond best-effort shared scheduling.
+  ISOLATION_TIER_NONE = 1;
+  // cpuset pinning + SMT/NUMA-aware placement; no other workload runs on
+  // the workload's cores. Applied at runtime, no reboot required.
+  ISOLATION_TIER_SOFT = 2;
+  // Kernel-level isolation (isolcpus/nohz_full/rcu_nocbs) on top of soft
+  // isolation; sheds kernel housekeeping from the cores. Requires a kernel
+  // command-line change and therefore a node reboot to apply.
+  ISOLATION_TIER_HARD = 3;
+}
+
+// DisruptionPolicy guards a running workload against collateral
+// node-level disruptive actions (reboot/shutdown).
+enum DisruptionPolicy {
+  // Defaults to DISRUPTION_POLICY_ALLOW.
+  DISRUPTION_POLICY_UNSPECIFIED = 0;
+  // Node-level disruptive actions proceed normally.
+  DISRUPTION_POLICY_ALLOW = 1;
+  // A node-level disruptive action that would take this running workload
+  // down is deferred and reported; the controller must re-issue the
+  // action with an explicit acknowledge to proceed. A targeted per-app
+  // restart is not deferred — it is itself the explicit decision.
+  DISRUPTION_POLICY_PROTECT = 2;
+}
+
 // Boot mechanisms supported by the BIOS of the Virtual Machine
 enum VmBootMode {
   VM_BOOT_MODE_UNSPECIFIED = 0; // Boot mode not specified, use default
@@ -47,11 +125,17 @@ message VmConfig {
   string rootdev = 7;
   string extraargs = 8;
   string bootloader = 9;
-  // Currently is not handled by EVE.
+  // Currently is not handled by EVE, and superseded — do not build on it.
   // CPU mask of the CPUs assigned to the VM. Represented in the form
   // "d[[,-]d]*". E.g. "0-2" or "0-2,5,6". CPUs start with 0. For example, the
   // mask "0,3" would mean that only physical CPUs 0 and 3 are available for
   // the VM.
+  //
+  // EVE has never parsed this field, and it is not planned to: naming concrete
+  // host CPUs is the device's responsibility, not the controller's. A workload
+  // expresses *what it needs* through the CPU placement policy below
+  // (cpu_policy and friends) and the device selects cores that satisfy it,
+  // topology-aware. Use cpu_policy instead.
   string cpus = 10;
   string devicetree = 11;
   repeated string dtdev = 12;
@@ -72,6 +156,12 @@ message VmConfig {
   // for running QEMU threads are picked automatically by Pillar: it just takes
   // that amount of available physical CPUs that is defined with the 'vcpus'
   // parameter defined above.
+  //
+  // Superseded by cpu_policy below, which expresses HOW to pin (whole cores vs
+  // threads, NUMA strictness, where emulator/IO threads go, isolation) instead
+  // of only WHETHER to pin. Retained for backward compatibility: pin_cpu=true
+  // with cpu_policy unset is treated as CPU_POLICY_DEDICATED with default
+  // allocation; when cpu_policy is set it takes precedence over pin_cpu.
   bool pin_cpu = 20;
   // Maximum amount of memory in kbytes allowed for VM monitor to occupy,
   // aka "overhead". E.g. for the qemu-kvm hypervisor the memory limit
@@ -115,4 +205,58 @@ message VmConfig {
   // The setting is passed to OVMF via fw_cfg "opt/eve.bootorder" when the VM starts.
   // Changes take effect on the next VM restart.
   org.lfedge.eve.common.BootOrder boot_order = 27;
+
+  // ------------------------------------------------------------------
+  // CPU placement policy (topology-aware pinning & isolation).
+  //
+  // The controller expresses intent; the device picks the concrete host
+  // CPUs. A workload with no policy (cpu_policy unset, pin_cpu false)
+  // behaves exactly as before — best-effort shared placement.
+  //
+  // Back-compat: cpu_policy unset with legacy pin_cpu=true (field 20) is
+  // treated as CPU_POLICY_DEDICATED with default allocation. When
+  // cpu_policy is set, it takes precedence over pin_cpu.
+  //
+  // Capability gating — the controller MUST consult two independent channels
+  // before offering or sending these fields, because they fail differently:
+  //  1. EVE software: check "ZInfoDevice.api_capability" >=
+  //     "API_CAPABILITY_CPU_PLACEMENT_POLICY", otherwise an older EVE will
+  //     silently ignore the fields (fixable by updating EVE). For abilities
+  //     that are not a linear API progression, e.g. whether EVE can manage the
+  //     CPU-isolation kernel command line itself, see
+  //     "ZInfoDevice.optional_capabilities".
+  //  2. Hardware/kernel: check the node's reported topology and facts in info
+  //     HardwareInventory (CPUInfo.cpus topology coordinates, CPUInfo.caches,
+  //     CPUInfo.capabilities for RDT, node_capabilities for kernel isolation),
+  //     otherwise the node cannot satisfy the request at all (not fixable on
+  //     that node).
+  // A request that the node cannot satisfy fails closed with a structured
+  // error_code (see info ErrorInfo.error_code), it is never silently degraded.
+  // ------------------------------------------------------------------
+
+  // Pin or not; see enum. CPU_POLICY_DEDICATED activates the fields below.
+  CpuPolicy cpu_policy = 28;
+  // Require whole physical cores: no other workload runs on any SMT
+  // sibling of the workload's cores. Without it, allocation is at
+  // SMT-thread granularity and a physical core may be shared.
+  // Mirrors the Kubernetes CPUManager "full-pcpus-only" option.
+  bool full_pcpus_only = 29;
+  // With full_pcpus_only, how many SMT siblings of each core become
+  // vCPUs: 2 = whole-core-SMT (both siblings are vCPUs, guest sees
+  // threads=2; requires an even vcpus count), 1 = one-per-core (sibling
+  // parked idle, guest sees threads=1). 0/unset defaults to 2 on SMT
+  // hardware. The guest is shown a truthful sockets/cores/threads
+  // topology and vCPUs are pinned 1:1, so guest sibling pairs correspond
+  // to real host sibling pairs.
+  uint32 threads_per_core = 30;
+  // NUMA confinement for the dedicated CPUs; default best-effort.
+  NumaPolicy numa_policy = 31;
+  // Placement of hypervisor emulator/IO threads; default dedicated.
+  IoPlacement io_placement = 32;
+  // Requested isolation tier; default soft for dedicated workloads.
+  // Requesting a tier this node/workload-type cannot satisfy fails closed
+  // with a structured error.
+  IsolationTier isolation_tier = 33;
+  // Protection against collateral node-level disruption; default allow.
+  DisruptionPolicy disruption_policy = 34;
 }
