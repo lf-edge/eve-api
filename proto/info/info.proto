@@ -681,6 +681,7 @@ enum APICapability {
   API_CAPABILITY_LOC_REBOOT_COLLECT_INFO = 19; // Support for rebooting and collect-info from LOC
   API_CAPABILITY_SMART_REPORT = 20; // Support for S.M.A.R.T. info on physical storage devices
   API_CAPABILITY_REPORT_TPM_EVENTLOG = 21; // Support for reporting TPM Event Log "as is" without parsing and selectively reporting events
+  API_CAPABILITY_APP_INSTANCE_NET_INTERFACE_CHANGE = 22; // Support for adding and removing network interfaces without purge, but restart or the edge app
   // Add new values as new EdgeDevConfig API features are implemented
 }
 
