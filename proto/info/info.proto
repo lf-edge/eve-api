@@ -650,7 +650,7 @@ message ZInfoDevice {
   // state of attestation process of eve
   AttestationInfo attestation_info = 50;
 
-  // Capability indicating which new EdgeDevConfig fields which are supported
+  // Level of API support; see APICapability
   APICapability api_capability = 51;
 
   // Reports the remote access status
@@ -677,27 +677,34 @@ message ZInfoDevice {
 
 // OptionalCapabilities indicates any additional capabilities device wants
 // to publish to controller. For example Kubevirt hypervisor is not supported by
-// all eve flavors.
+// all eve flavors. Unlike APICapability these are independent booleans, each
+// tested separately; they vary by build flavor rather than by version.
 message OptionalCapabilities {
   // Virtualization type Kubevirt
   bool hv_type_kubevirt = 1;
+  // Device can report HardwareInventory in ZInfoHardware. When false, an empty
+  // inventory means the device cannot produce one, not that it found no hardware.
   bool hw_inventory_support = 2;
   // Device supports etcd snapshots (e.g. eve-k flavor)
   bool etcd_snapshot = 3;
 }
 
-// Capabilities indicates features in the EdgeDevConfig where there is
-// no easy way to otherwise determine whether or not they are parsed and
-// supported by EVE-OS
-// A larger number indicates all lower numbers are also supported thus
-// this works similar to a version field for the EdgeDevConfig support.
+// APICapability indicates API support a controller cannot otherwise detect:
+// both EdgeDevConfig fields EVE-OS parses, and messages EVE-OS sends - without
+// which a controller would wait indefinitely for e.g. the S.M.A.R.T.
+// information in ZHardwareHealth.
+// A larger number implies all lower numbers, so this works like a version
+// field and a controller must compare with >= rather than test for equality.
+// API_CAPABILITY_UNSPECIFIED also covers EVE-OS versions predating the field.
+// Contrast OptionalCapabilities: independent booleans, varying by build flavor.
+// CAPABILITIES.md lists what each value below covers.
 enum APICapability {
   API_CAPABILITY_UNSPECIFIED = 0;
   API_CAPABILITY_RETRY_UPDATE = 1; // BaseOs.retry_update counter supported
   API_CAPABILITY_SHUTDOWN = 2; // shutdown DevOpsCmd support
   API_CAPABILITY_START_DELAY_IN_SECONDS = 3; // start_delay_in_seconds supported
   API_CAPABILITY_EDGEVIEW = 4; // edgeview and edgeview.token supported
-  API_CAPABILITY_VOLUME_SNAPSHOTS = 5; // Volume snapshots supported
+  API_CAPABILITY_VOLUME_SNAPSHOTS = 5; // Volume snapshots on app instance update supported (SNAPSHOT_TYPE_APP_UPDATE)
   API_CAPABILITY_NETWORK_INSTANCE_ROUTING = 6; // routing config in NetworkInstanceConfig supported
   API_CAPABILITY_BOOT_MODE = 7; // Support different boot modes for Edge Applications (VMs)
   API_CAPABILITY_MTU = 8; // Allows to set MTU for network adapters and network instances
@@ -705,17 +712,18 @@ enum APICapability {
   API_CAPABILITY_ENFORCED_NET_INTERFACE_ORDER = 10; // EVE is able to enforce the user-defined order of application network interfaces
   API_CAPABILITY_NTPS_FQDN = 11; // Allow to set NTP server via FQDN instead of only IP and allow setting several NTP servers
   API_CAPABILITY_WIN_LIC_PASSTHROUGH = 12; // Support for passing through OEM Windows license from host's the ACPI tables to the VM
-  API_CAPABILITY_VOLUME_SNAPSHOTS_IMMEDIATE = 13; // Volume snapshots supported
+  API_CAPABILITY_VOLUME_SNAPSHOTS_IMMEDIATE = 13; // Volume snapshots on demand supported (SNAPSHOT_TYPE_IMMEDIATE); restarts the app to take one
   API_CAPABILITY_ENCRYPTED_PATCH_ENVELOPE = 14; // Support for Patch Envelope Encryption
   API_CAPABILITY_SINGLE_STACK_IP_NETWORK = 15; // Support for V4Only and V6Only NetworkType
   API_CAPABILITY_CELLULAR_ATTACH_CONFIG = 16; // Support cellular attach configuration
   API_CAPABILITY_EDGEVIEW_AUTHENTICATION = 17; // EdgeView authentication, see https://github.com/lf-edge/eve/blob/master/docs/EDGEVIEW-CONTAINER-API.md
-  API_CAPABILITY_DISABLE_VTPM = 18; // Support for disabling
+  API_CAPABILITY_DISABLE_VTPM = 18; // VmConfig.disable_vtpm supported
   API_CAPABILITY_LOC_REBOOT_COLLECT_INFO = 19; // Support for rebooting and collect-info from LOC
   API_CAPABILITY_SMART_REPORT = 20; // Support for S.M.A.R.T. info on physical storage devices
   API_CAPABILITY_REPORT_TPM_EVENTLOG = 21; // Support for reporting TPM Event Log "as is" without parsing and selectively reporting events
   API_CAPABILITY_APP_INSTANCE_NET_INTERFACE_CHANGE = 22; // Support for adding and removing network interfaces without purge, but restart or the edge app
-  // Add new values as new EdgeDevConfig API features are implemented
+  // Append new values as new API features are implemented; never insert or
+  // renumber, since a value asserts that all lower values are also supported.
 }
 
 // Different reasons for a boot/reboot
@@ -1324,7 +1332,8 @@ message ZInfoMsg {
   google.protobuf.Timestamp atTimeStamp = 6;
 }
 
-// Information about hardware capabilities of node
+// Information about hardware capabilities of node. Distinct from APICapability
+// (API support level) and OptionalCapabilities (per-flavor software support).
 message Capabilities {
   // VMX/SVM for amd64 or Arm virtualization extensions for arm64
   bool HWAssistedVirtualization = 2;

@@ -17,6 +17,7 @@ Documentation is in markdown files in this directory, specifically:
 * The protocol in [APIv2.md](./APIv2.md)
 * Local profile overrides in [PROFILE.md](./PROFILE.md)
 * Object signing in [OBJECT-SIGNING.md](./OBJECT-SIGNING.md)
+* Device capability reporting in [CAPABILITIES.md](./CAPABILITIES.md)
 
 ### Message definitions
 
