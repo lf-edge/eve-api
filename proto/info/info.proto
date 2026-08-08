@@ -523,6 +523,50 @@ message StorageInfo {
   string pool_status_msg = 12;  // pool status msg
 }
 
+// CPUPoolKind identifies one partition of the node's logical CPUs. The
+// pools are disjoint and together cover the online CPUs.
+enum CPUPoolKind {
+  CPU_POOL_KIND_UNSPECIFIED = 0;
+  // CPUs backing EVE's own housekeeping plus every workload that did not
+  // ask for dedicated placement. Never empty, so the device stays
+  // manageable.
+  CPU_POOL_KIND_HOUSEKEEPING = 1;
+  // CPUs handed out exclusively to workloads with a dedicated CPU policy
+  // (including SMT siblings parked idle by a one-thread-per-core request).
+  CPU_POOL_KIND_DEDICATED = 2;
+  // CPUs the running kernel isolates (isolcpus); a subset that dedicated
+  // workloads requesting the hard isolation tier can be placed into.
+  CPU_POOL_KIND_ISOLATED = 3;
+}
+
+// CPUPoolUtilization reports one CPU pool's extent and how much of it is
+// still available.
+//
+// Both the CPU *sets* and the summary counts are reported: the counts
+// answer "how much is left" directly, while the sets let a consumer
+// compute availability per request shape by grouping them into physical
+// cores via the (socket_id, core_id) coordinates in
+// HardwareInventory.CPUInfo. That distinction matters — free threads
+// sitting on partially-allocated cores cannot satisfy a request for whole
+// physical cores, so a single "free" number would answer the question
+// wrongly for one of the two request shapes.
+message CPUPoolUtilization {
+  CPUPoolKind kind = 1;
+  // Every logical CPU in this pool.
+  repeated uint32 cpu_ids = 2;
+  // The subset of cpu_ids not currently allocated to any workload.
+  repeated uint32 free_cpu_ids = 3;
+  // Summary counts, derived from the sets above.
+  uint32 total_threads = 4;
+  uint32 allocated_threads = 5;
+  uint32 free_threads = 6;
+  // Physical cores all of whose SMT siblings lie in this pool.
+  uint32 total_cores = 7;
+  // Physical cores all of whose SMT siblings are free — the number that
+  // actually bounds how many whole-core workloads still fit.
+  uint32 free_whole_cores = 8;
+}
+
 // Base device info, as discovered by Xen (or OS on bare metal)
 message ZInfoDevice {
   string machineArch = 4;
@@ -640,6 +684,13 @@ message ZInfoDevice {
   // Device-reported information about certificates currently enrolled
   // on the device, typically via network enrollment protocols such as SCEP.
   repeated CertInfo enrolled_certs = 60;
+
+  // Current CPU partitioning and utilization, one entry per pool. Dynamic
+  // state, deliberately reported here (change-driven and periodic) rather
+  // than on the cached hardware inventory. Lets a controller answer
+  // "will this workload fit?" before a deploy and explain an
+  // "cpu.placement.insufficient" failure after one.
+  repeated CPUPoolUtilization cpu_pools = 61;
 }
 
 // OptionalCapabilities indicates any additional capabilities device wants
