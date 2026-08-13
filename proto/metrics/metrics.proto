@@ -136,6 +136,20 @@ message urlcloudMetric {
   int64 recvByteCount = 7;
   int64 total_time_spent = 8; // Total time spent servicing requests that succeeded
   int64 sess_resume_count = 9;  // Total counts of the TLS session resumption
+
+  int64 retriableErrCount = 10; // Answered with a status which may not repeat, such as a server error or a rate limit; the message is kept and offered again
+  int64 rejectedErrCount = 11;  // Answered with a rejection of the request itself, so the message is given up on
+  int64 deliveredMsgCount = 12; // Answered with a success status, i.e. accepted; narrower than sentMsgCount, which counts any answer
+}
+
+// What the device is holding back or has given up on delivering to the controller
+message deferredQueueMetric {
+  uint32 undeliveredMsgCount = 1;                     // Messages waiting to be delivered
+  google.protobuf.Timestamp oldestUndeliveredMsg = 2; // When the oldest of them was produced; unset when there are none
+  uint64 droppedMsgCount = 3;                         // Messages given up on since boot, i.e. state the controller was never told
+  uint64 rejectedMsgCount = 4;                        // Of those, the ones the controller rejected
+  uint64 supersededMsgCount = 5;                      // Of those, the ones a later periodic publication supersedes
+  google.protobuf.Timestamp lastDroppedMsg = 6;       // When the most recent one was given up on
 }
 
 // Failures and successes for the object decryption
@@ -303,6 +317,9 @@ message deviceMetric {
 
   // Bond adapter metrics
   repeated BondMetrics bond_metrics = 31;
+
+  // Queue of messages waiting to reach the controller; per device, not per port
+  deferredQueueMetric deferred_queue = 32;
 }
 
 message AclMetric {

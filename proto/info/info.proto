@@ -722,6 +722,7 @@ enum APICapability {
   API_CAPABILITY_SMART_REPORT = 20; // Support for S.M.A.R.T. info on physical storage devices
   API_CAPABILITY_REPORT_TPM_EVENTLOG = 21; // Support for reporting TPM Event Log "as is" without parsing and selectively reporting events
   API_CAPABILITY_APP_INSTANCE_NET_INTERFACE_CHANGE = 22; // Support for adding and removing network interfaces without purge, but restart or the edge app
+  API_CAPABILITY_DEFERRED_QUEUE_METRICS = 23; // Reports deviceMetric.deferred_queue and the per-URL retriable, rejected and delivered counts
   // Append new values as new API features are implemented; never insert or
   // renumber, since a value asserts that all lower values are also supported.
 }

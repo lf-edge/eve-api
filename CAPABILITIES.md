@@ -65,6 +65,8 @@ introduced the value, not stated anywhere authoritative — corrections welcome.
 | `LOC_REBOOT_COLLECT_INFO` = 19 | cfg | LOC-initiated reboot and collect-info; `LOCConfig.datastore_collect_info_id` **(?)** |
 | `SMART_REPORT` = 20 | rpt | S.M.A.R.T. data in `ZHardwareHealth.disks`, superseding the deprecated `ZInfoHardware.disks` |
 | `REPORT_TPM_EVENTLOG` = 21 | rpt | `ZAttestQuote.tpm_binary_event_log`, superseding the deprecated `ZAttestQuote.event_log` |
+| `APP_INSTANCE_NET_INTERFACE_CHANGE` = 22 | cfg | adding or removing an `AppInstanceConfig.interfaces` entry needs only `restart`, not `purge`, so the app keeps its volumes; the `AppInstanceConfig` comment still describes the older purge requirement **(?)** |
+| `DEFERRED_QUEUE_METRICS` = 23 | rpt | `deviceMetric.deferred_queue`, and `urlcloudMetric.retriableErrCount`, `.rejectedErrCount`, `.deliveredMsgCount` |
 
 ### Adding a value
 
