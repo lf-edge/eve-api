@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x13info/hardware.proto\x12\x13org.lfedge.eve.info\"\'\n\nUSBAddress\x12\x0b\n\x03\x62us\x18\x01 \x01(\r\x12\x0c\n\x04port\x18\x02 \x01(\t\"\x9d\x01\n\tBusParent\x12\x38\n\npci_parent\x18\x01 \x01(\x0b\x32\x1f.org.lfedge.eve.info.PCIAddressH\x00\x88\x01\x01\x12\x38\n\nusb_parent\x18\x02 \x01(\x0b\x32\x1f.org.lfedge.eve.info.USBAddressH\x01\x88\x01\x01\x42\r\n\x0b_pci_parentB\r\n\x0b_usb_parent\"\xea\x01\n\tUSBDevice\x12\x33\n\x06parent\x18\x01 \x01(\x0b\x32\x1e.org.lfedge.eve.info.BusParentH\x00\x88\x01\x01\x12\x11\n\tvendor_id\x18\x02 \x01(\r\x12\x12\n\nproduct_id\x18\x03 \x01(\r\x12\x31\n\x08\x62us_port\x18\x04 \x01(\x0b\x32\x1f.org.lfedge.eve.info.USBAddress\x12\x0e\n\x06\x64river\x18\x05 \x01(\t\x12\x10\n\x08\x63lass_id\x18\x06 \x01(\r\x12\x1b\n\x13suggested_assigngrp\x18\x07 \x01(\tB\t\n\x07_parentJ\x04\x08\x08\x10\t\"K\n\nPCIAddress\x12\x0e\n\x06\x64omain\x18\x01 \x01(\r\x12\x0b\n\x03\x62us\x18\x02 \x01(\r\x12\x0e\n\x06\x64\x65vice\x18\x03 \x01(\r\x12\x10\n\x08\x66unction\x18\x04 \x01(\r\"\xbe\x02\n\tPCIDevice\x12G\n\x19parent_pci_device_address\x18\x01 \x01(\x0b\x32\x1f.org.lfedge.eve.info.PCIAddressH\x00\x88\x01\x01\x12\x0e\n\x06\x64river\x18\x02 \x01(\t\x12\x30\n\x07\x61\x64\x64ress\x18\x03 \x01(\x0b\x32\x1f.org.lfedge.eve.info.PCIAddress\x12\x11\n\tvendor_id\x18\x04 \x01(\r\x12\x11\n\tdevice_id\x18\x05 \x01(\r\x12\x10\n\x08revision\x18\x06 \x01(\r\x12\x14\n\x0csubsystem_id\x18\x07 \x01(\r\x12\x10\n\x08\x63lass_id\x18\x08 \x01(\r\x12\x13\n\x0bsubclass_id\x18\t \x01(\x04\x12\x13\n\x0biommu_group\x18\n \x01(\tB\x1c\n\x1a_parent_pci_device_address\"\x80\x01\n\nSerialPort\x12\x33\n\x06parent\x18\x01 \x01(\x0b\x32\x1e.org.lfedge.eve.info.BusParentH\x00\x88\x01\x01\x12\x14\n\x0cioport_range\x18\x02 \x01(\t\x12\x0b\n\x03irq\x18\x03 \x01(\x04\x12\x0f\n\x07\x64\x65vpath\x18\x04 \x01(\tB\t\n\x07_parent\"[\n\tCANDevice\x12\x33\n\x06parent\x18\x01 \x01(\x0b\x32\x1e.org.lfedge.eve.info.BusParentH\x00\x88\x01\x01\x12\x0e\n\x06ifname\x18\x02 \x01(\tB\t\n\x07_parent\"\xbe\x01\n\rNetworkDevice\x12\x33\n\x06parent\x18\x01 \x01(\x0b\x32\x1e.org.lfedge.eve.info.BusParentH\x00\x88\x01\x01\x12\x0e\n\x06ifname\x18\x02 \x01(\t\x12\x34\n\x04type\x18\x03 \x01(\x0e\x32&.org.lfedge.eve.info.NetworkDeviceType\x12\x13\n\x0bmac_address\x18\x04 \x01(\t\x12\x12\n\nspeed_mbps\x18\x05 \x01(\rB\t\n\x07_parent\"\x9a\x01\n\x04\x42IOS\x12\x0e\n\x06vendor\x18\x01 \x01(\t\x12\x0f\n\x07version\x18\x02 \x01(\t\x12>\n\nattributes\x18\xe8\x07 \x03(\x0b\x32).org.lfedge.eve.info.BIOS.AttributesEntry\x1a\x31\n\x0f\x41ttributesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\">\n\x03\x43PU\x12\r\n\x05model\x18\x01 \x01(\t\x12\x0e\n\x06vendor\x18\x02 \x01(\t\x12\n\n\x02id\x18\x03 \x01(\r\x12\x0c\n\x04\x66req\x18\x04 \x01(\x04\"1\n\x07\x43PUInfo\x12&\n\x04\x63pus\x18\x01 \x03(\x0b\x32\x18.org.lfedge.eve.info.CPU\"\\\n\x03TPM\x12\x0f\n\x07present\x18\x01 \x01(\x08\x12\x14\n\x0cmanufacturer\x18\x02 \x01(\t\x12\x18\n\x10\x66irmware_version\x18\x03 \x01(\t\x12\x14\n\x0cspec_version\x18\x04 \x01(\t\"\x8b\x05\n\x11HardwareInventory\x12\x33\n\x0bpci_devices\x18\x03 \x03(\x0b\x32\x1e.org.lfedge.eve.info.PCIDevice\x12\x33\n\x0busb_devices\x18\x04 \x03(\x0b\x32\x1e.org.lfedge.eve.info.USBDevice\x12\x37\n\x0eserial_devices\x18\x05 \x03(\x0b\x32\x1f.org.lfedge.eve.info.SerialPort\x12;\n\x0fnetwork_devices\x18\x06 \x03(\x0b\x32\".org.lfedge.eve.info.NetworkDevice\x12\x33\n\x0b\x63\x61n_devices\x18\x07 \x03(\x0b\x32\x1e.org.lfedge.eve.info.CANDevice\x12\'\n\x04\x62ios\x18\x08 \x01(\x0b\x32\x19.org.lfedge.eve.info.BIOS\x12.\n\x08\x63pu_info\x18\t \x01(\x0b\x32\x1c.org.lfedge.eve.info.CPUInfo\x12\x1a\n\x12total_memory_bytes\x18\n \x01(\x04\x12\x1b\n\x13total_storage_bytes\x18\x0b \x01(\x04\x12\x18\n\x10watchdog_present\x18\r \x01(\x08\x12%\n\x03tpm\x18\x0e \x01(\x0b\x32\x18.org.lfedge.eve.info.TPM\x12\x1a\n\x12status_led_present\x18\x0f \x01(\x08\x12?\n\x04misc\x18\xe8\x07 \x03(\x0b\x32\x30.org.lfedge.eve.info.HardwareInventory.MiscEntry\x1a+\n\tMiscEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01J\x04\x08\x0c\x10\r*\xd2\x01\n\x11NetworkDeviceType\x12\x1f\n\x1bNETWORK_DEVICE_TYPE_UNKNOWN\x10\x00\x12 \n\x1cNETWORK_DEVICE_TYPE_ETHERNET\x10\x01\x12\x1c\n\x18NETWORK_DEVICE_TYPE_WIFI\x10\x05\x12\x1c\n\x18NETWORK_DEVICE_TYPE_WWAN\x10\x06\x12\x1e\n\x1aNETWORK_DEVICE_TYPE_ETH_PF\x10\x0b\x12\x1e\n\x1aNETWORK_DEVICE_TYPE_ETH_VF\x10\x0c\x42\x39\n\x13org.lfedge.eve.infoZ\"github.com/lf-edge/eve-api/go/infob\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x13info/hardware.proto\x12\x13org.lfedge.eve.info\"\'\n\nUSBAddress\x12\x0b\n\x03\x62us\x18\x01 \x01(\r\x12\x0c\n\x04port\x18\x02 \x01(\t\"\x9d\x01\n\tBusParent\x12\x38\n\npci_parent\x18\x01 \x01(\x0b\x32\x1f.org.lfedge.eve.info.PCIAddressH\x00\x88\x01\x01\x12\x38\n\nusb_parent\x18\x02 \x01(\x0b\x32\x1f.org.lfedge.eve.info.USBAddressH\x01\x88\x01\x01\x42\r\n\x0b_pci_parentB\r\n\x0b_usb_parent\"\xea\x01\n\tUSBDevice\x12\x33\n\x06parent\x18\x01 \x01(\x0b\x32\x1e.org.lfedge.eve.info.BusParentH\x00\x88\x01\x01\x12\x11\n\tvendor_id\x18\x02 \x01(\r\x12\x12\n\nproduct_id\x18\x03 \x01(\r\x12\x31\n\x08\x62us_port\x18\x04 \x01(\x0b\x32\x1f.org.lfedge.eve.info.USBAddress\x12\x0e\n\x06\x64river\x18\x05 \x01(\t\x12\x10\n\x08\x63lass_id\x18\x06 \x01(\r\x12\x1b\n\x13suggested_assigngrp\x18\x07 \x01(\tB\t\n\x07_parentJ\x04\x08\x08\x10\t\"K\n\nPCIAddress\x12\x0e\n\x06\x64omain\x18\x01 \x01(\r\x12\x0b\n\x03\x62us\x18\x02 \x01(\r\x12\x0e\n\x06\x64\x65vice\x18\x03 \x01(\r\x12\x10\n\x08\x66unction\x18\x04 \x01(\r\"\xfb\x02\n\tPCIDevice\x12G\n\x19parent_pci_device_address\x18\x01 \x01(\x0b\x32\x1f.org.lfedge.eve.info.PCIAddressH\x00\x88\x01\x01\x12\x0e\n\x06\x64river\x18\x02 \x01(\t\x12\x30\n\x07\x61\x64\x64ress\x18\x03 \x01(\x0b\x32\x1f.org.lfedge.eve.info.PCIAddress\x12\x11\n\tvendor_id\x18\x04 \x01(\r\x12\x11\n\tdevice_id\x18\x05 \x01(\r\x12\x10\n\x08revision\x18\x06 \x01(\r\x12\x14\n\x0csubsystem_id\x18\x07 \x01(\r\x12\x10\n\x08\x63lass_id\x18\x08 \x01(\r\x12\x13\n\x0bsubclass_id\x18\t \x01(\x04\x12\x13\n\x0biommu_group\x18\n \x01(\t\x12\x16\n\tnuma_node\x18\x0b \x01(\x05H\x01\x88\x01\x01\x12\x15\n\rlocal_cpu_ids\x18\x0c \x03(\rB\x1c\n\x1a_parent_pci_device_addressB\x0c\n\n_numa_node\"\x80\x01\n\nSerialPort\x12\x33\n\x06parent\x18\x01 \x01(\x0b\x32\x1e.org.lfedge.eve.info.BusParentH\x00\x88\x01\x01\x12\x14\n\x0cioport_range\x18\x02 \x01(\t\x12\x0b\n\x03irq\x18\x03 \x01(\x04\x12\x0f\n\x07\x64\x65vpath\x18\x04 \x01(\tB\t\n\x07_parent\"[\n\tCANDevice\x12\x33\n\x06parent\x18\x01 \x01(\x0b\x32\x1e.org.lfedge.eve.info.BusParentH\x00\x88\x01\x01\x12\x0e\n\x06ifname\x18\x02 \x01(\tB\t\n\x07_parent\"\xbe\x01\n\rNetworkDevice\x12\x33\n\x06parent\x18\x01 \x01(\x0b\x32\x1e.org.lfedge.eve.info.BusParentH\x00\x88\x01\x01\x12\x0e\n\x06ifname\x18\x02 \x01(\t\x12\x34\n\x04type\x18\x03 \x01(\x0e\x32&.org.lfedge.eve.info.NetworkDeviceType\x12\x13\n\x0bmac_address\x18\x04 \x01(\t\x12\x12\n\nspeed_mbps\x18\x05 \x01(\rB\t\n\x07_parent\"\x9a\x01\n\x04\x42IOS\x12\x0e\n\x06vendor\x18\x01 \x01(\t\x12\x0f\n\x07version\x18\x02 \x01(\t\x12>\n\nattributes\x18\xe8\x07 \x03(\x0b\x32).org.lfedge.eve.info.BIOS.AttributesEntry\x1a\x31\n\x0f\x41ttributesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\xf4\x01\n\x03\x43PU\x12\r\n\x05model\x18\x01 \x01(\t\x12\x0e\n\x06vendor\x18\x02 \x01(\t\x12\n\n\x02id\x18\x03 \x01(\r\x12\x0c\n\x04\x66req\x18\x04 \x01(\x04\x12\x11\n\tsocket_id\x18\x05 \x01(\r\x12\x0f\n\x07\x63ore_id\x18\x06 \x01(\r\x12\x11\n\tnuma_node\x18\x07 \x01(\r\x12\r\n\x05l2_id\x18\x08 \x01(\r\x12\r\n\x05l3_id\x18\t \x01(\r\x12\x32\n\ncore_class\x18\n \x01(\x0e\x32\x1e.org.lfedge.eve.info.CoreClass\x12\x15\n\rbase_freq_khz\x18\x0b \x01(\x04\x12\x14\n\x0cmax_freq_khz\x18\x0c \x01(\x04\"n\n\x0b\x43\x61\x63heDomain\x12.\n\x05level\x18\x01 \x01(\x0e\x32\x1f.org.lfedge.eve.info.CacheLevel\x12\x12\n\nsize_bytes\x18\x02 \x01(\x04\x12\x0f\n\x07\x63pu_ids\x18\x03 \x03(\r\x12\n\n\x02id\x18\x04 \x01(\r\"H\n\x0f\x43PUCapabilities\x12\x12\n\nrdt_l3_cat\x18\x01 \x01(\x08\x12\x0f\n\x07rdt_mba\x18\x02 \x01(\x08\x12\x10\n\x08num_clos\x18\x03 \x01(\r\"\x9f\x01\n\x07\x43PUInfo\x12&\n\x04\x63pus\x18\x01 \x03(\x0b\x32\x18.org.lfedge.eve.info.CPU\x12\x30\n\x06\x63\x61\x63hes\x18\x02 \x03(\x0b\x32 .org.lfedge.eve.info.CacheDomain\x12:\n\x0c\x63\x61pabilities\x18\x03 \x01(\x0b\x32$.org.lfedge.eve.info.CPUCapabilities\"b\n\x10NodeCapabilities\x12\x18\n\x10isolated_cpu_ids\x18\x01 \x03(\r\x12\x19\n\x11nohz_full_cpu_ids\x18\x02 \x03(\r\x12\x19\n\x11rcu_nocbs_cpu_ids\x18\x03 \x03(\r\"\\\n\x03TPM\x12\x0f\n\x07present\x18\x01 \x01(\x08\x12\x14\n\x0cmanufacturer\x18\x02 \x01(\t\x12\x18\n\x10\x66irmware_version\x18\x03 \x01(\t\x12\x14\n\x0cspec_version\x18\x04 \x01(\t\"\xcd\x05\n\x11HardwareInventory\x12\x33\n\x0bpci_devices\x18\x03 \x03(\x0b\x32\x1e.org.lfedge.eve.info.PCIDevice\x12\x33\n\x0busb_devices\x18\x04 \x03(\x0b\x32\x1e.org.lfedge.eve.info.USBDevice\x12\x37\n\x0eserial_devices\x18\x05 \x03(\x0b\x32\x1f.org.lfedge.eve.info.SerialPort\x12;\n\x0fnetwork_devices\x18\x06 \x03(\x0b\x32\".org.lfedge.eve.info.NetworkDevice\x12\x33\n\x0b\x63\x61n_devices\x18\x07 \x03(\x0b\x32\x1e.org.lfedge.eve.info.CANDevice\x12\'\n\x04\x62ios\x18\x08 \x01(\x0b\x32\x19.org.lfedge.eve.info.BIOS\x12.\n\x08\x63pu_info\x18\t \x01(\x0b\x32\x1c.org.lfedge.eve.info.CPUInfo\x12\x1a\n\x12total_memory_bytes\x18\n \x01(\x04\x12\x1b\n\x13total_storage_bytes\x18\x0b \x01(\x04\x12\x18\n\x10watchdog_present\x18\r \x01(\x08\x12%\n\x03tpm\x18\x0e \x01(\x0b\x32\x18.org.lfedge.eve.info.TPM\x12\x1a\n\x12status_led_present\x18\x0f \x01(\x08\x12@\n\x11node_capabilities\x18\x10 \x01(\x0b\x32%.org.lfedge.eve.info.NodeCapabilities\x12?\n\x04misc\x18\xe8\x07 \x03(\x0b\x32\x30.org.lfedge.eve.info.HardwareInventory.MiscEntry\x1a+\n\tMiscEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01J\x04\x08\x0c\x10\r*\xd2\x01\n\x11NetworkDeviceType\x12\x1f\n\x1bNETWORK_DEVICE_TYPE_UNKNOWN\x10\x00\x12 \n\x1cNETWORK_DEVICE_TYPE_ETHERNET\x10\x01\x12\x1c\n\x18NETWORK_DEVICE_TYPE_WIFI\x10\x05\x12\x1c\n\x18NETWORK_DEVICE_TYPE_WWAN\x10\x06\x12\x1e\n\x1aNETWORK_DEVICE_TYPE_ETH_PF\x10\x0b\x12\x1e\n\x1aNETWORK_DEVICE_TYPE_ETH_VF\x10\x0c*x\n\tCoreClass\x12\x1a\n\x16\x43ORE_CLASS_UNSPECIFIED\x10\x00\x12\x1a\n\x16\x43ORE_CLASS_PERFORMANCE\x10\x01\x12\x19\n\x15\x43ORE_CLASS_EFFICIENCY\x10\x02\x12\x18\n\x14\x43ORE_CLASS_LOW_POWER\x10\x03*{\n\nCacheLevel\x12\x1b\n\x17\x43\x41\x43HE_LEVEL_UNSPECIFIED\x10\x00\x12\x13\n\x0f\x43\x41\x43HE_LEVEL_L1D\x10\x01\x12\x13\n\x0f\x43\x41\x43HE_LEVEL_L1I\x10\x02\x12\x12\n\x0e\x43\x41\x43HE_LEVEL_L2\x10\x03\x12\x12\n\x0e\x43\x41\x43HE_LEVEL_L3\x10\x04\x42\x39\n\x13org.lfedge.eve.infoZ\"github.com/lf-edge/eve-api/go/infob\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -26,8 +26,12 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _BIOS_ATTRIBUTESENTRY._serialized_options = b'8\001'
   _HARDWAREINVENTORY_MISCENTRY._options = None
   _HARDWAREINVENTORY_MISCENTRY._serialized_options = b'8\001'
-  _globals['_NETWORKDEVICETYPE']._serialized_start=2318
-  _globals['_NETWORKDEVICETYPE']._serialized_end=2528
+  _globals['_NETWORKDEVICETYPE']._serialized_start=3025
+  _globals['_NETWORKDEVICETYPE']._serialized_end=3235
+  _globals['_CORECLASS']._serialized_start=3237
+  _globals['_CORECLASS']._serialized_end=3357
+  _globals['_CACHELEVEL']._serialized_start=3359
+  _globals['_CACHELEVEL']._serialized_end=3482
   _globals['_USBADDRESS']._serialized_start=44
   _globals['_USBADDRESS']._serialized_end=83
   _globals['_BUSPARENT']._serialized_start=86
@@ -37,25 +41,31 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _globals['_PCIADDRESS']._serialized_start=482
   _globals['_PCIADDRESS']._serialized_end=557
   _globals['_PCIDEVICE']._serialized_start=560
-  _globals['_PCIDEVICE']._serialized_end=878
-  _globals['_SERIALPORT']._serialized_start=881
-  _globals['_SERIALPORT']._serialized_end=1009
-  _globals['_CANDEVICE']._serialized_start=1011
-  _globals['_CANDEVICE']._serialized_end=1102
-  _globals['_NETWORKDEVICE']._serialized_start=1105
-  _globals['_NETWORKDEVICE']._serialized_end=1295
-  _globals['_BIOS']._serialized_start=1298
-  _globals['_BIOS']._serialized_end=1452
-  _globals['_BIOS_ATTRIBUTESENTRY']._serialized_start=1403
-  _globals['_BIOS_ATTRIBUTESENTRY']._serialized_end=1452
-  _globals['_CPU']._serialized_start=1454
-  _globals['_CPU']._serialized_end=1516
-  _globals['_CPUINFO']._serialized_start=1518
-  _globals['_CPUINFO']._serialized_end=1567
-  _globals['_TPM']._serialized_start=1569
-  _globals['_TPM']._serialized_end=1661
-  _globals['_HARDWAREINVENTORY']._serialized_start=1664
-  _globals['_HARDWAREINVENTORY']._serialized_end=2315
-  _globals['_HARDWAREINVENTORY_MISCENTRY']._serialized_start=2266
-  _globals['_HARDWAREINVENTORY_MISCENTRY']._serialized_end=2309
+  _globals['_PCIDEVICE']._serialized_end=939
+  _globals['_SERIALPORT']._serialized_start=942
+  _globals['_SERIALPORT']._serialized_end=1070
+  _globals['_CANDEVICE']._serialized_start=1072
+  _globals['_CANDEVICE']._serialized_end=1163
+  _globals['_NETWORKDEVICE']._serialized_start=1166
+  _globals['_NETWORKDEVICE']._serialized_end=1356
+  _globals['_BIOS']._serialized_start=1359
+  _globals['_BIOS']._serialized_end=1513
+  _globals['_BIOS_ATTRIBUTESENTRY']._serialized_start=1464
+  _globals['_BIOS_ATTRIBUTESENTRY']._serialized_end=1513
+  _globals['_CPU']._serialized_start=1516
+  _globals['_CPU']._serialized_end=1760
+  _globals['_CACHEDOMAIN']._serialized_start=1762
+  _globals['_CACHEDOMAIN']._serialized_end=1872
+  _globals['_CPUCAPABILITIES']._serialized_start=1874
+  _globals['_CPUCAPABILITIES']._serialized_end=1946
+  _globals['_CPUINFO']._serialized_start=1949
+  _globals['_CPUINFO']._serialized_end=2108
+  _globals['_NODECAPABILITIES']._serialized_start=2110
+  _globals['_NODECAPABILITIES']._serialized_end=2208
+  _globals['_TPM']._serialized_start=2210
+  _globals['_TPM']._serialized_end=2302
+  _globals['_HARDWAREINVENTORY']._serialized_start=2305
+  _globals['_HARDWAREINVENTORY']._serialized_end=3022
+  _globals['_HARDWAREINVENTORY_MISCENTRY']._serialized_start=2973
+  _globals['_HARDWAREINVENTORY_MISCENTRY']._serialized_end=3016
 # @@protoc_insertion_point(module_scope)
