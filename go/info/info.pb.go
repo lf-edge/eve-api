@@ -941,11 +941,15 @@ func (StorageTypeInfo) EnumDescriptor() ([]byte, []int) {
 	return file_info_info_proto_rawDescGZIP(), []int{13}
 }
 
-// Capabilities indicates features in the EdgeDevConfig where there is
-// no easy way to otherwise determine whether or not they are parsed and
-// supported by EVE-OS
-// A larger number indicates all lower numbers are also supported thus
-// this works similar to a version field for the EdgeDevConfig support.
+// APICapability indicates API support a controller cannot otherwise detect:
+// both EdgeDevConfig fields EVE-OS parses, and messages EVE-OS sends - without
+// which a controller would wait indefinitely for e.g. the S.M.A.R.T.
+// information in ZHardwareHealth.
+// A larger number implies all lower numbers, so this works like a version
+// field and a controller must compare with >= rather than test for equality.
+// API_CAPABILITY_UNSPECIFIED also covers EVE-OS versions predating the field.
+// Contrast OptionalCapabilities: independent booleans, varying by build flavor.
+// CAPABILITIES.md lists what each value below covers.
 type APICapability int32
 
 const (
@@ -954,7 +958,7 @@ const (
 	APICapability_API_CAPABILITY_SHUTDOWN                          APICapability = 2  // shutdown DevOpsCmd support
 	APICapability_API_CAPABILITY_START_DELAY_IN_SECONDS            APICapability = 3  // start_delay_in_seconds supported
 	APICapability_API_CAPABILITY_EDGEVIEW                          APICapability = 4  // edgeview and edgeview.token supported
-	APICapability_API_CAPABILITY_VOLUME_SNAPSHOTS                  APICapability = 5  // Volume snapshots supported
+	APICapability_API_CAPABILITY_VOLUME_SNAPSHOTS                  APICapability = 5  // Volume snapshots on app instance update supported (SNAPSHOT_TYPE_APP_UPDATE)
 	APICapability_API_CAPABILITY_NETWORK_INSTANCE_ROUTING          APICapability = 6  // routing config in NetworkInstanceConfig supported
 	APICapability_API_CAPABILITY_BOOT_MODE                         APICapability = 7  // Support different boot modes for Edge Applications (VMs)
 	APICapability_API_CAPABILITY_MTU                               APICapability = 8  // Allows to set MTU for network adapters and network instances
@@ -962,12 +966,12 @@ const (
 	APICapability_API_CAPABILITY_ENFORCED_NET_INTERFACE_ORDER      APICapability = 10 // EVE is able to enforce the user-defined order of application network interfaces
 	APICapability_API_CAPABILITY_NTPS_FQDN                         APICapability = 11 // Allow to set NTP server via FQDN instead of only IP and allow setting several NTP servers
 	APICapability_API_CAPABILITY_WIN_LIC_PASSTHROUGH               APICapability = 12 // Support for passing through OEM Windows license from host's the ACPI tables to the VM
-	APICapability_API_CAPABILITY_VOLUME_SNAPSHOTS_IMMEDIATE        APICapability = 13 // Volume snapshots supported
+	APICapability_API_CAPABILITY_VOLUME_SNAPSHOTS_IMMEDIATE        APICapability = 13 // Volume snapshots on demand supported (SNAPSHOT_TYPE_IMMEDIATE); restarts the app to take one
 	APICapability_API_CAPABILITY_ENCRYPTED_PATCH_ENVELOPE          APICapability = 14 // Support for Patch Envelope Encryption
 	APICapability_API_CAPABILITY_SINGLE_STACK_IP_NETWORK           APICapability = 15 // Support for V4Only and V6Only NetworkType
 	APICapability_API_CAPABILITY_CELLULAR_ATTACH_CONFIG            APICapability = 16 // Support cellular attach configuration
 	APICapability_API_CAPABILITY_EDGEVIEW_AUTHENTICATION           APICapability = 17 // EdgeView authentication, see https://github.com/lf-edge/eve/blob/master/docs/EDGEVIEW-CONTAINER-API.md
-	APICapability_API_CAPABILITY_DISABLE_VTPM                      APICapability = 18 // Support for disabling
+	APICapability_API_CAPABILITY_DISABLE_VTPM                      APICapability = 18 // VmConfig.disable_vtpm supported
 	APICapability_API_CAPABILITY_LOC_REBOOT_COLLECT_INFO           APICapability = 19 // Support for rebooting and collect-info from LOC
 	APICapability_API_CAPABILITY_SMART_REPORT                      APICapability = 20 // Support for S.M.A.R.T. info on physical storage devices
 	APICapability_API_CAPABILITY_REPORT_TPM_EVENTLOG               APICapability = 21 // Support for reporting TPM Event Log "as is" without parsing and selectively reporting events
@@ -4266,7 +4270,7 @@ type ZInfoDevice struct {
 	ShutdownConfigCounter uint32 `protobuf:"varint,49,opt,name=shutdown_config_counter,json=shutdownConfigCounter,proto3" json:"shutdown_config_counter,omitempty"`
 	// state of attestation process of eve
 	AttestationInfo *AttestationInfo `protobuf:"bytes,50,opt,name=attestation_info,json=attestationInfo,proto3" json:"attestation_info,omitempty"`
-	// Capability indicating which new EdgeDevConfig fields which are supported
+	// Level of API support; see APICapability
 	ApiCapability APICapability `protobuf:"varint,51,opt,name=api_capability,json=apiCapability,proto3,enum=org.lfedge.eve.info.APICapability" json:"api_capability,omitempty"`
 	// Reports the remote access status
 	RemoteAccessDisabled bool `protobuf:"varint,52,opt,name=remote_access_disabled,json=remoteAccessDisabled,proto3" json:"remote_access_disabled,omitempty"`
@@ -4705,14 +4709,17 @@ func (x *ZInfoDevice) GetEnrolledCerts() []*CertInfo {
 
 // OptionalCapabilities indicates any additional capabilities device wants
 // to publish to controller. For example Kubevirt hypervisor is not supported by
-// all eve flavors.
+// all eve flavors. Unlike APICapability these are independent booleans, each
+// tested separately; they vary by build flavor rather than by version.
 type OptionalCapabilities struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
 	// Virtualization type Kubevirt
-	HvTypeKubevirt     bool `protobuf:"varint,1,opt,name=hv_type_kubevirt,json=hvTypeKubevirt,proto3" json:"hv_type_kubevirt,omitempty"`
+	HvTypeKubevirt bool `protobuf:"varint,1,opt,name=hv_type_kubevirt,json=hvTypeKubevirt,proto3" json:"hv_type_kubevirt,omitempty"`
+	// Device can report HardwareInventory in ZInfoHardware. When false, an empty
+	// inventory means the device cannot produce one, not that it found no hardware.
 	HwInventorySupport bool `protobuf:"varint,2,opt,name=hw_inventory_support,json=hwInventorySupport,proto3" json:"hw_inventory_support,omitempty"`
 	// Device supports etcd snapshots (e.g. eve-k flavor)
 	EtcdSnapshot bool `protobuf:"varint,3,opt,name=etcd_snapshot,json=etcdSnapshot,proto3" json:"etcd_snapshot,omitempty"`
@@ -7776,7 +7783,8 @@ func (*ZInfoMsg_ClusterInfo) isZInfoMsg_InfoContent() {}
 
 func (*ZInfoMsg_ClusterUpdateInfo) isZInfoMsg_InfoContent() {}
 
-// Information about hardware capabilities of node
+// Information about hardware capabilities of node. Distinct from APICapability
+// (API support level) and OptionalCapabilities (per-flavor software support).
 type Capabilities struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
