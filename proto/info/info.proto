@@ -283,11 +283,37 @@ enum PCRStatus {
   PCR_DISABLED = 2; // Disabled PCR
 }
 
+// How a vault was unlocked on the current boot. DataSecAtRestStatus cannot
+// express this: a clean local unseal, a recovery that needed the controller's
+// escrowed key, and a wipe-and-recreate that lost the vault's prior contents
+// all end up reported as enabled.
+// Must match the values in pkg/pillar/types.VaultUnlockMethod.
+enum VaultUnlockMethod {
+  VAULT_UNLOCK_METHOD_UNSPECIFIED = 0;      // Not reported, or not yet unlocked
+  VAULT_UNLOCK_METHOD_TPM_LOCAL_SEALED = 1; // Sealed key unsealed against the current PCRs
+  VAULT_UNLOCK_METHOD_CONTROLLER_KEY = 2;   // Local unseal failed; the escrowed key was used
+  VAULT_UNLOCK_METHOD_NO_TPM = 3;           // Platform has no TPM; the key is not sealed
+  VAULT_UNLOCK_METHOD_RECREATED = 4;        // Nothing unlocked it; wiped and recreated empty
+}
+
+// How a vault's key is derived. A vault created before EVE 7.10.0 keeps
+// deriving its key by merging the TPM key with a fixed constant, so only half
+// of the 32 bytes comes from the TPM. The mode is decided once, the first time
+// a TPM-enabled device runs a release that records it, and never revisited.
+// Devices without a TPM derive no vault key and leave this unspecified.
+enum VaultKeyDerivation {
+  VAULT_KEY_DERIVATION_UNSPECIFIED = 0;      // Not reported, or no TPM
+  VAULT_KEY_DERIVATION_TPM_ONLY = 1;         // TPM key alone
+  VAULT_KEY_DERIVATION_TPM_AND_CONSTANT = 2; // TPM key merged with a fixed constant
+}
+
 message VaultInfo {
   string name = 1;                //Name of the vault
   DataSecAtRestStatus status = 2; //Status of the vault
   ErrorInfo vaultErr = 3;         //Additional info in case of failure
   PCRStatus pcrStatus = 4;        //Status of the PCR
+  VaultUnlockMethod unlock_method = 5;   //How the vault was unlocked this boot
+  VaultKeyDerivation key_derivation = 6; //How the vault key is derived
 }
 
 message DataSecAtRest {
