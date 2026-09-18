@@ -1057,6 +1057,23 @@ message ZInfoClusterNode {
   ZInfoClusterNodeStatus node_status = 1;
 }
 
+// PendingChangeAction is the least disruptive operation that applies a
+// pending config change; any more disruptive operation applies it too
+// (a purge also applies restart-level changes).
+enum PendingChangeAction {
+  PENDING_CHANGE_ACTION_UNSPECIFIED = 0;
+  // Applied when the app instance is restarted (domain re-created).
+  PENDING_CHANGE_ACTION_RESTART = 1;
+  // Applied only by a purge (volumes re-created).
+  PENDING_CHANGE_ACTION_PURGE = 2;
+}
+
+message ZInfoAppPendingChange {
+  // Human-readable, e.g. "I/O adapter list changed: eth3 added"
+  string description = 1;
+  PendingChangeAction action_needed = 2;
+}
+
 message ZInfoApp {
   reserved 9 to 11, 19; // deprecated
 
@@ -1080,6 +1097,7 @@ message ZInfoApp {
   // Deployed app is scheduled, or rescheduled and launched on this node,
   // it has the Pod Spec-name of this node, the app can be in any operating state.
   bool cluster_app_running = 20;
+  repeated ZInfoAppPendingChange pending_changes = 21;
 }
 
 // ipSec state information

@@ -1731,6 +1731,60 @@ func (ZInfoClusterNodeStatus) EnumDescriptor() ([]byte, []int) {
 	return file_info_info_proto_rawDescGZIP(), []int{25}
 }
 
+// PendingChangeAction is the least disruptive operation that applies a
+// pending config change; any more disruptive operation applies it too
+// (a purge also applies restart-level changes).
+type PendingChangeAction int32
+
+const (
+	PendingChangeAction_PENDING_CHANGE_ACTION_UNSPECIFIED PendingChangeAction = 0
+	// Applied when the app instance is restarted (domain re-created).
+	PendingChangeAction_PENDING_CHANGE_ACTION_RESTART PendingChangeAction = 1
+	// Applied only by a purge (volumes re-created).
+	PendingChangeAction_PENDING_CHANGE_ACTION_PURGE PendingChangeAction = 2
+)
+
+// Enum value maps for PendingChangeAction.
+var (
+	PendingChangeAction_name = map[int32]string{
+		0: "PENDING_CHANGE_ACTION_UNSPECIFIED",
+		1: "PENDING_CHANGE_ACTION_RESTART",
+		2: "PENDING_CHANGE_ACTION_PURGE",
+	}
+	PendingChangeAction_value = map[string]int32{
+		"PENDING_CHANGE_ACTION_UNSPECIFIED": 0,
+		"PENDING_CHANGE_ACTION_RESTART":     1,
+		"PENDING_CHANGE_ACTION_PURGE":       2,
+	}
+)
+
+func (x PendingChangeAction) Enum() *PendingChangeAction {
+	p := new(PendingChangeAction)
+	*p = x
+	return p
+}
+
+func (x PendingChangeAction) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (PendingChangeAction) Descriptor() protoreflect.EnumDescriptor {
+	return file_info_info_proto_enumTypes[26].Descriptor()
+}
+
+func (PendingChangeAction) Type() protoreflect.EnumType {
+	return &file_info_info_proto_enumTypes[26]
+}
+
+func (x PendingChangeAction) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use PendingChangeAction.Descriptor instead.
+func (PendingChangeAction) EnumDescriptor() ([]byte, []int) {
+	return file_info_info_proto_rawDescGZIP(), []int{26}
+}
+
 // ipSec state information
 type ZInfoVpnState int32
 
@@ -1777,11 +1831,11 @@ func (x ZInfoVpnState) String() string {
 }
 
 func (ZInfoVpnState) Descriptor() protoreflect.EnumDescriptor {
-	return file_info_info_proto_enumTypes[26].Descriptor()
+	return file_info_info_proto_enumTypes[27].Descriptor()
 }
 
 func (ZInfoVpnState) Type() protoreflect.EnumType {
-	return &file_info_info_proto_enumTypes[26]
+	return &file_info_info_proto_enumTypes[27]
 }
 
 func (x ZInfoVpnState) Number() protoreflect.EnumNumber {
@@ -1790,7 +1844,7 @@ func (x ZInfoVpnState) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use ZInfoVpnState.Descriptor instead.
 func (ZInfoVpnState) EnumDescriptor() ([]byte, []int) {
-	return file_info_info_proto_rawDescGZIP(), []int{26}
+	return file_info_info_proto_rawDescGZIP(), []int{27}
 }
 
 type ZNetworkInstanceState int32
@@ -1831,11 +1885,11 @@ func (x ZNetworkInstanceState) String() string {
 }
 
 func (ZNetworkInstanceState) Descriptor() protoreflect.EnumDescriptor {
-	return file_info_info_proto_enumTypes[27].Descriptor()
+	return file_info_info_proto_enumTypes[28].Descriptor()
 }
 
 func (ZNetworkInstanceState) Type() protoreflect.EnumType {
-	return &file_info_info_proto_enumTypes[27]
+	return &file_info_info_proto_enumTypes[28]
 }
 
 func (x ZNetworkInstanceState) Number() protoreflect.EnumNumber {
@@ -1844,7 +1898,7 @@ func (x ZNetworkInstanceState) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use ZNetworkInstanceState.Descriptor instead.
 func (ZNetworkInstanceState) EnumDescriptor() ([]byte, []int) {
-	return file_info_info_proto_rawDescGZIP(), []int{27}
+	return file_info_info_proto_rawDescGZIP(), []int{28}
 }
 
 // LocReliability - reliability of location information.
@@ -1887,11 +1941,11 @@ func (x LocReliability) String() string {
 }
 
 func (LocReliability) Descriptor() protoreflect.EnumDescriptor {
-	return file_info_info_proto_enumTypes[28].Descriptor()
+	return file_info_info_proto_enumTypes[29].Descriptor()
 }
 
 func (LocReliability) Type() protoreflect.EnumType {
-	return &file_info_info_proto_enumTypes[28]
+	return &file_info_info_proto_enumTypes[29]
 }
 
 func (x LocReliability) Number() protoreflect.EnumNumber {
@@ -1900,7 +1954,7 @@ func (x LocReliability) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use LocReliability.Descriptor instead.
 func (LocReliability) EnumDescriptor() ([]byte, []int) {
-	return file_info_info_proto_rawDescGZIP(), []int{28}
+	return file_info_info_proto_rawDescGZIP(), []int{29}
 }
 
 type SmartAttr struct {
@@ -6143,6 +6197,62 @@ func (x *ZInfoClusterNode) GetNodeStatus() ZInfoClusterNodeStatus {
 	return ZInfoClusterNodeStatus_Z_INFO_CLUSTER_NODE_STATUS_UNSPECIFIED
 }
 
+type ZInfoAppPendingChange struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Human-readable, e.g. "I/O adapter list changed: eth3 added"
+	Description  string              `protobuf:"bytes,1,opt,name=description,proto3" json:"description,omitempty"`
+	ActionNeeded PendingChangeAction `protobuf:"varint,2,opt,name=action_needed,json=actionNeeded,proto3,enum=org.lfedge.eve.info.PendingChangeAction" json:"action_needed,omitempty"`
+}
+
+func (x *ZInfoAppPendingChange) Reset() {
+	*x = ZInfoAppPendingChange{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_info_info_proto_msgTypes[42]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ZInfoAppPendingChange) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ZInfoAppPendingChange) ProtoMessage() {}
+
+func (x *ZInfoAppPendingChange) ProtoReflect() protoreflect.Message {
+	mi := &file_info_info_proto_msgTypes[42]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ZInfoAppPendingChange.ProtoReflect.Descriptor instead.
+func (*ZInfoAppPendingChange) Descriptor() ([]byte, []int) {
+	return file_info_info_proto_rawDescGZIP(), []int{42}
+}
+
+func (x *ZInfoAppPendingChange) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *ZInfoAppPendingChange) GetActionNeeded() PendingChangeAction {
+	if x != nil {
+		return x.ActionNeeded
+	}
+	return PendingChangeAction_PENDING_CHANGE_ACTION_UNSPECIFIED
+}
+
 type ZInfoApp struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -6163,13 +6273,14 @@ type ZInfoApp struct {
 	Snapshots        []*ZInfoSnapshot       `protobuf:"bytes,18,rep,name=snapshots,proto3" json:"snapshots,omitempty"`   // optional field, used to send list of snapshots on device
 	// Deployed app is scheduled, or rescheduled and launched on this node,
 	// it has the Pod Spec-name of this node, the app can be in any operating state.
-	ClusterAppRunning bool `protobuf:"varint,20,opt,name=cluster_app_running,json=clusterAppRunning,proto3" json:"cluster_app_running,omitempty"`
+	ClusterAppRunning bool                     `protobuf:"varint,20,opt,name=cluster_app_running,json=clusterAppRunning,proto3" json:"cluster_app_running,omitempty"`
+	PendingChanges    []*ZInfoAppPendingChange `protobuf:"bytes,21,rep,name=pending_changes,json=pendingChanges,proto3" json:"pending_changes,omitempty"`
 }
 
 func (x *ZInfoApp) Reset() {
 	*x = ZInfoApp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_info_info_proto_msgTypes[42]
+		mi := &file_info_info_proto_msgTypes[43]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -6182,7 +6293,7 @@ func (x *ZInfoApp) String() string {
 func (*ZInfoApp) ProtoMessage() {}
 
 func (x *ZInfoApp) ProtoReflect() protoreflect.Message {
-	mi := &file_info_info_proto_msgTypes[42]
+	mi := &file_info_info_proto_msgTypes[43]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6195,7 +6306,7 @@ func (x *ZInfoApp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ZInfoApp.ProtoReflect.Descriptor instead.
 func (*ZInfoApp) Descriptor() ([]byte, []int) {
-	return file_info_info_proto_rawDescGZIP(), []int{42}
+	return file_info_info_proto_rawDescGZIP(), []int{43}
 }
 
 func (x *ZInfoApp) GetAppID() string {
@@ -6289,6 +6400,13 @@ func (x *ZInfoApp) GetClusterAppRunning() bool {
 	return false
 }
 
+func (x *ZInfoApp) GetPendingChanges() []*ZInfoAppPendingChange {
+	if x != nil {
+		return x.PendingChanges
+	}
+	return nil
+}
+
 // tunnel link details
 type ZInfoVpnLinkInfo struct {
 	state         protoimpl.MessageState
@@ -6303,7 +6421,7 @@ type ZInfoVpnLinkInfo struct {
 func (x *ZInfoVpnLinkInfo) Reset() {
 	*x = ZInfoVpnLinkInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_info_info_proto_msgTypes[43]
+		mi := &file_info_info_proto_msgTypes[44]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -6316,7 +6434,7 @@ func (x *ZInfoVpnLinkInfo) String() string {
 func (*ZInfoVpnLinkInfo) ProtoMessage() {}
 
 func (x *ZInfoVpnLinkInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_info_info_proto_msgTypes[43]
+	mi := &file_info_info_proto_msgTypes[44]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6329,7 +6447,7 @@ func (x *ZInfoVpnLinkInfo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ZInfoVpnLinkInfo.ProtoReflect.Descriptor instead.
 func (*ZInfoVpnLinkInfo) Descriptor() ([]byte, []int) {
-	return file_info_info_proto_rawDescGZIP(), []int{43}
+	return file_info_info_proto_rawDescGZIP(), []int{44}
 }
 
 func (x *ZInfoVpnLinkInfo) GetSpiId() string {
@@ -6372,7 +6490,7 @@ type ZInfoVpnLink struct {
 func (x *ZInfoVpnLink) Reset() {
 	*x = ZInfoVpnLink{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_info_info_proto_msgTypes[44]
+		mi := &file_info_info_proto_msgTypes[45]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -6385,7 +6503,7 @@ func (x *ZInfoVpnLink) String() string {
 func (*ZInfoVpnLink) ProtoMessage() {}
 
 func (x *ZInfoVpnLink) ProtoReflect() protoreflect.Message {
-	mi := &file_info_info_proto_msgTypes[44]
+	mi := &file_info_info_proto_msgTypes[45]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6398,7 +6516,7 @@ func (x *ZInfoVpnLink) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ZInfoVpnLink.ProtoReflect.Descriptor instead.
 func (*ZInfoVpnLink) Descriptor() ([]byte, []int) {
-	return file_info_info_proto_rawDescGZIP(), []int{44}
+	return file_info_info_proto_rawDescGZIP(), []int{45}
 }
 
 func (x *ZInfoVpnLink) GetId() string {
@@ -6471,7 +6589,7 @@ type ZInfoVpnEndPoint struct {
 func (x *ZInfoVpnEndPoint) Reset() {
 	*x = ZInfoVpnEndPoint{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_info_info_proto_msgTypes[45]
+		mi := &file_info_info_proto_msgTypes[46]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -6484,7 +6602,7 @@ func (x *ZInfoVpnEndPoint) String() string {
 func (*ZInfoVpnEndPoint) ProtoMessage() {}
 
 func (x *ZInfoVpnEndPoint) ProtoReflect() protoreflect.Message {
-	mi := &file_info_info_proto_msgTypes[45]
+	mi := &file_info_info_proto_msgTypes[46]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6497,7 +6615,7 @@ func (x *ZInfoVpnEndPoint) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ZInfoVpnEndPoint.ProtoReflect.Descriptor instead.
 func (*ZInfoVpnEndPoint) Descriptor() ([]byte, []int) {
-	return file_info_info_proto_rawDescGZIP(), []int{45}
+	return file_info_info_proto_rawDescGZIP(), []int{46}
 }
 
 func (x *ZInfoVpnEndPoint) GetId() string {
@@ -6541,7 +6659,7 @@ type ZInfoVpnConn struct {
 func (x *ZInfoVpnConn) Reset() {
 	*x = ZInfoVpnConn{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_info_info_proto_msgTypes[46]
+		mi := &file_info_info_proto_msgTypes[47]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -6554,7 +6672,7 @@ func (x *ZInfoVpnConn) String() string {
 func (*ZInfoVpnConn) ProtoMessage() {}
 
 func (x *ZInfoVpnConn) ProtoReflect() protoreflect.Message {
-	mi := &file_info_info_proto_msgTypes[46]
+	mi := &file_info_info_proto_msgTypes[47]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6567,7 +6685,7 @@ func (x *ZInfoVpnConn) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ZInfoVpnConn.ProtoReflect.Descriptor instead.
 func (*ZInfoVpnConn) Descriptor() ([]byte, []int) {
-	return file_info_info_proto_rawDescGZIP(), []int{46}
+	return file_info_info_proto_rawDescGZIP(), []int{47}
 }
 
 func (x *ZInfoVpnConn) GetId() string {
@@ -6648,7 +6766,7 @@ type ZInfoVpn struct {
 func (x *ZInfoVpn) Reset() {
 	*x = ZInfoVpn{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_info_info_proto_msgTypes[47]
+		mi := &file_info_info_proto_msgTypes[48]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -6661,7 +6779,7 @@ func (x *ZInfoVpn) String() string {
 func (*ZInfoVpn) ProtoMessage() {}
 
 func (x *ZInfoVpn) ProtoReflect() protoreflect.Message {
-	mi := &file_info_info_proto_msgTypes[47]
+	mi := &file_info_info_proto_msgTypes[48]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6674,7 +6792,7 @@ func (x *ZInfoVpn) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ZInfoVpn.ProtoReflect.Descriptor instead.
 func (*ZInfoVpn) Descriptor() ([]byte, []int) {
-	return file_info_info_proto_rawDescGZIP(), []int{47}
+	return file_info_info_proto_rawDescGZIP(), []int{48}
 }
 
 func (x *ZInfoVpn) GetUpTime() uint64 {
@@ -6775,7 +6893,7 @@ type ZInfoNetworkInstance struct {
 func (x *ZInfoNetworkInstance) Reset() {
 	*x = ZInfoNetworkInstance{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_info_info_proto_msgTypes[48]
+		mi := &file_info_info_proto_msgTypes[49]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -6788,7 +6906,7 @@ func (x *ZInfoNetworkInstance) String() string {
 func (*ZInfoNetworkInstance) ProtoMessage() {}
 
 func (x *ZInfoNetworkInstance) ProtoReflect() protoreflect.Message {
-	mi := &file_info_info_proto_msgTypes[48]
+	mi := &file_info_info_proto_msgTypes[49]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6801,7 +6919,7 @@ func (x *ZInfoNetworkInstance) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ZInfoNetworkInstance.ProtoReflect.Descriptor instead.
 func (*ZInfoNetworkInstance) Descriptor() ([]byte, []int) {
-	return file_info_info_proto_rawDescGZIP(), []int{48}
+	return file_info_info_proto_rawDescGZIP(), []int{49}
 }
 
 func (x *ZInfoNetworkInstance) GetNetworkID() string {
@@ -7008,7 +7126,7 @@ type IPRoute struct {
 func (x *IPRoute) Reset() {
 	*x = IPRoute{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_info_info_proto_msgTypes[49]
+		mi := &file_info_info_proto_msgTypes[50]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -7021,7 +7139,7 @@ func (x *IPRoute) String() string {
 func (*IPRoute) ProtoMessage() {}
 
 func (x *IPRoute) ProtoReflect() protoreflect.Message {
-	mi := &file_info_info_proto_msgTypes[49]
+	mi := &file_info_info_proto_msgTypes[50]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7034,7 +7152,7 @@ func (x *IPRoute) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use IPRoute.ProtoReflect.Descriptor instead.
 func (*IPRoute) Descriptor() ([]byte, []int) {
-	return file_info_info_proto_rawDescGZIP(), []int{49}
+	return file_info_info_proto_rawDescGZIP(), []int{50}
 }
 
 func (x *IPRoute) GetDestinationNetwork() string {
@@ -7078,7 +7196,7 @@ type UsageInfo struct {
 func (x *UsageInfo) Reset() {
 	*x = UsageInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_info_info_proto_msgTypes[50]
+		mi := &file_info_info_proto_msgTypes[51]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -7091,7 +7209,7 @@ func (x *UsageInfo) String() string {
 func (*UsageInfo) ProtoMessage() {}
 
 func (x *UsageInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_info_info_proto_msgTypes[50]
+	mi := &file_info_info_proto_msgTypes[51]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7104,7 +7222,7 @@ func (x *UsageInfo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UsageInfo.ProtoReflect.Descriptor instead.
 func (*UsageInfo) Descriptor() ([]byte, []int) {
-	return file_info_info_proto_rawDescGZIP(), []int{50}
+	return file_info_info_proto_rawDescGZIP(), []int{51}
 }
 
 func (x *UsageInfo) GetCreateTime() *timestamppb.Timestamp {
@@ -7140,7 +7258,7 @@ type VolumeResources struct {
 func (x *VolumeResources) Reset() {
 	*x = VolumeResources{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_info_info_proto_msgTypes[51]
+		mi := &file_info_info_proto_msgTypes[52]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -7153,7 +7271,7 @@ func (x *VolumeResources) String() string {
 func (*VolumeResources) ProtoMessage() {}
 
 func (x *VolumeResources) ProtoReflect() protoreflect.Message {
-	mi := &file_info_info_proto_msgTypes[51]
+	mi := &file_info_info_proto_msgTypes[52]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7166,7 +7284,7 @@ func (x *VolumeResources) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use VolumeResources.ProtoReflect.Descriptor instead.
 func (*VolumeResources) Descriptor() ([]byte, []int) {
-	return file_info_info_proto_rawDescGZIP(), []int{51}
+	return file_info_info_proto_rawDescGZIP(), []int{52}
 }
 
 func (x *VolumeResources) GetMaxSizeBytes() uint64 {
@@ -7211,7 +7329,7 @@ type ZInfoVolume struct {
 func (x *ZInfoVolume) Reset() {
 	*x = ZInfoVolume{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_info_info_proto_msgTypes[52]
+		mi := &file_info_info_proto_msgTypes[53]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -7224,7 +7342,7 @@ func (x *ZInfoVolume) String() string {
 func (*ZInfoVolume) ProtoMessage() {}
 
 func (x *ZInfoVolume) ProtoReflect() protoreflect.Message {
-	mi := &file_info_info_proto_msgTypes[52]
+	mi := &file_info_info_proto_msgTypes[53]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7237,7 +7355,7 @@ func (x *ZInfoVolume) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ZInfoVolume.ProtoReflect.Descriptor instead.
 func (*ZInfoVolume) Descriptor() ([]byte, []int) {
-	return file_info_info_proto_rawDescGZIP(), []int{52}
+	return file_info_info_proto_rawDescGZIP(), []int{53}
 }
 
 func (x *ZInfoVolume) GetUuid() string {
@@ -7307,7 +7425,7 @@ type ContentResources struct {
 func (x *ContentResources) Reset() {
 	*x = ContentResources{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_info_info_proto_msgTypes[53]
+		mi := &file_info_info_proto_msgTypes[54]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -7320,7 +7438,7 @@ func (x *ContentResources) String() string {
 func (*ContentResources) ProtoMessage() {}
 
 func (x *ContentResources) ProtoReflect() protoreflect.Message {
-	mi := &file_info_info_proto_msgTypes[53]
+	mi := &file_info_info_proto_msgTypes[54]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7333,7 +7451,7 @@ func (x *ContentResources) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ContentResources.ProtoReflect.Descriptor instead.
 func (*ContentResources) Descriptor() ([]byte, []int) {
-	return file_info_info_proto_rawDescGZIP(), []int{53}
+	return file_info_info_proto_rawDescGZIP(), []int{54}
 }
 
 func (x *ContentResources) GetCurSizeBytes() uint64 {
@@ -7376,7 +7494,7 @@ type ZInfoContentTree struct {
 func (x *ZInfoContentTree) Reset() {
 	*x = ZInfoContentTree{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_info_info_proto_msgTypes[54]
+		mi := &file_info_info_proto_msgTypes[55]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -7389,7 +7507,7 @@ func (x *ZInfoContentTree) String() string {
 func (*ZInfoContentTree) ProtoMessage() {}
 
 func (x *ZInfoContentTree) ProtoReflect() protoreflect.Message {
-	mi := &file_info_info_proto_msgTypes[54]
+	mi := &file_info_info_proto_msgTypes[55]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7402,7 +7520,7 @@ func (x *ZInfoContentTree) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ZInfoContentTree.ProtoReflect.Descriptor instead.
 func (*ZInfoContentTree) Descriptor() ([]byte, []int) {
-	return file_info_info_proto_rawDescGZIP(), []int{54}
+	return file_info_info_proto_rawDescGZIP(), []int{55}
 }
 
 func (x *ZInfoContentTree) GetUuid() string {
@@ -7500,7 +7618,7 @@ type ZInfoBlob struct {
 func (x *ZInfoBlob) Reset() {
 	*x = ZInfoBlob{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_info_info_proto_msgTypes[55]
+		mi := &file_info_info_proto_msgTypes[56]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -7513,7 +7631,7 @@ func (x *ZInfoBlob) String() string {
 func (*ZInfoBlob) ProtoMessage() {}
 
 func (x *ZInfoBlob) ProtoReflect() protoreflect.Message {
-	mi := &file_info_info_proto_msgTypes[55]
+	mi := &file_info_info_proto_msgTypes[56]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7526,7 +7644,7 @@ func (x *ZInfoBlob) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ZInfoBlob.ProtoReflect.Descriptor instead.
 func (*ZInfoBlob) Descriptor() ([]byte, []int) {
-	return file_info_info_proto_rawDescGZIP(), []int{55}
+	return file_info_info_proto_rawDescGZIP(), []int{56}
 }
 
 func (x *ZInfoBlob) GetSha256() string {
@@ -7583,7 +7701,7 @@ type ZInfoBlobList struct {
 func (x *ZInfoBlobList) Reset() {
 	*x = ZInfoBlobList{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_info_info_proto_msgTypes[56]
+		mi := &file_info_info_proto_msgTypes[57]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -7596,7 +7714,7 @@ func (x *ZInfoBlobList) String() string {
 func (*ZInfoBlobList) ProtoMessage() {}
 
 func (x *ZInfoBlobList) ProtoReflect() protoreflect.Message {
-	mi := &file_info_info_proto_msgTypes[56]
+	mi := &file_info_info_proto_msgTypes[57]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7609,7 +7727,7 @@ func (x *ZInfoBlobList) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ZInfoBlobList.ProtoReflect.Descriptor instead.
 func (*ZInfoBlobList) Descriptor() ([]byte, []int) {
-	return file_info_info_proto_rawDescGZIP(), []int{56}
+	return file_info_info_proto_rawDescGZIP(), []int{57}
 }
 
 func (x *ZInfoBlobList) GetBlob() []*ZInfoBlob {
@@ -7656,7 +7774,7 @@ type ZInfoMsg struct {
 func (x *ZInfoMsg) Reset() {
 	*x = ZInfoMsg{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_info_info_proto_msgTypes[57]
+		mi := &file_info_info_proto_msgTypes[58]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -7669,7 +7787,7 @@ func (x *ZInfoMsg) String() string {
 func (*ZInfoMsg) ProtoMessage() {}
 
 func (x *ZInfoMsg) ProtoReflect() protoreflect.Message {
-	mi := &file_info_info_proto_msgTypes[57]
+	mi := &file_info_info_proto_msgTypes[58]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7682,7 +7800,7 @@ func (x *ZInfoMsg) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ZInfoMsg.ProtoReflect.Descriptor instead.
 func (*ZInfoMsg) Descriptor() ([]byte, []int) {
-	return file_info_info_proto_rawDescGZIP(), []int{57}
+	return file_info_info_proto_rawDescGZIP(), []int{58}
 }
 
 func (x *ZInfoMsg) GetZtype() ZInfoTypes {
@@ -7932,7 +8050,7 @@ type Capabilities struct {
 func (x *Capabilities) Reset() {
 	*x = Capabilities{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_info_info_proto_msgTypes[58]
+		mi := &file_info_info_proto_msgTypes[59]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -7945,7 +8063,7 @@ func (x *Capabilities) String() string {
 func (*Capabilities) ProtoMessage() {}
 
 func (x *Capabilities) ProtoReflect() protoreflect.Message {
-	mi := &file_info_info_proto_msgTypes[58]
+	mi := &file_info_info_proto_msgTypes[59]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7958,7 +8076,7 @@ func (x *Capabilities) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Capabilities.ProtoReflect.Descriptor instead.
 func (*Capabilities) Descriptor() ([]byte, []int) {
-	return file_info_info_proto_rawDescGZIP(), []int{58}
+	return file_info_info_proto_rawDescGZIP(), []int{59}
 }
 
 func (x *Capabilities) GetHWAssistedVirtualization() bool {
@@ -7991,7 +8109,7 @@ type ZInfoAppInstMetaData struct {
 func (x *ZInfoAppInstMetaData) Reset() {
 	*x = ZInfoAppInstMetaData{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_info_info_proto_msgTypes[59]
+		mi := &file_info_info_proto_msgTypes[60]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -8004,7 +8122,7 @@ func (x *ZInfoAppInstMetaData) String() string {
 func (*ZInfoAppInstMetaData) ProtoMessage() {}
 
 func (x *ZInfoAppInstMetaData) ProtoReflect() protoreflect.Message {
-	mi := &file_info_info_proto_msgTypes[59]
+	mi := &file_info_info_proto_msgTypes[60]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8017,7 +8135,7 @@ func (x *ZInfoAppInstMetaData) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ZInfoAppInstMetaData.ProtoReflect.Descriptor instead.
 func (*ZInfoAppInstMetaData) Descriptor() ([]byte, []int) {
-	return file_info_info_proto_rawDescGZIP(), []int{59}
+	return file_info_info_proto_rawDescGZIP(), []int{60}
 }
 
 func (x *ZInfoAppInstMetaData) GetUuid() string {
@@ -8062,7 +8180,7 @@ type ZInfoEdgeview struct {
 func (x *ZInfoEdgeview) Reset() {
 	*x = ZInfoEdgeview{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_info_info_proto_msgTypes[60]
+		mi := &file_info_info_proto_msgTypes[61]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -8075,7 +8193,7 @@ func (x *ZInfoEdgeview) String() string {
 func (*ZInfoEdgeview) ProtoMessage() {}
 
 func (x *ZInfoEdgeview) ProtoReflect() protoreflect.Message {
-	mi := &file_info_info_proto_msgTypes[60]
+	mi := &file_info_info_proto_msgTypes[61]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8088,7 +8206,7 @@ func (x *ZInfoEdgeview) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ZInfoEdgeview.ProtoReflect.Descriptor instead.
 func (*ZInfoEdgeview) Descriptor() ([]byte, []int) {
-	return file_info_info_proto_rawDescGZIP(), []int{60}
+	return file_info_info_proto_rawDescGZIP(), []int{61}
 }
 
 func (x *ZInfoEdgeview) GetExpireTime() *timestamppb.Timestamp {
@@ -8172,7 +8290,7 @@ type ZInfoLocation struct {
 func (x *ZInfoLocation) Reset() {
 	*x = ZInfoLocation{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_info_info_proto_msgTypes[61]
+		mi := &file_info_info_proto_msgTypes[62]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -8185,7 +8303,7 @@ func (x *ZInfoLocation) String() string {
 func (*ZInfoLocation) ProtoMessage() {}
 
 func (x *ZInfoLocation) ProtoReflect() protoreflect.Message {
-	mi := &file_info_info_proto_msgTypes[61]
+	mi := &file_info_info_proto_msgTypes[62]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8198,7 +8316,7 @@ func (x *ZInfoLocation) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ZInfoLocation.ProtoReflect.Descriptor instead.
 func (*ZInfoLocation) Descriptor() ([]byte, []int) {
-	return file_info_info_proto_rawDescGZIP(), []int{61}
+	return file_info_info_proto_rawDescGZIP(), []int{62}
 }
 
 func (x *ZInfoLocation) GetLatitude() float64 {
@@ -8288,7 +8406,7 @@ type ZInfoKubeClusterUpdateStatus struct {
 func (x *ZInfoKubeClusterUpdateStatus) Reset() {
 	*x = ZInfoKubeClusterUpdateStatus{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_info_info_proto_msgTypes[62]
+		mi := &file_info_info_proto_msgTypes[63]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -8301,7 +8419,7 @@ func (x *ZInfoKubeClusterUpdateStatus) String() string {
 func (*ZInfoKubeClusterUpdateStatus) ProtoMessage() {}
 
 func (x *ZInfoKubeClusterUpdateStatus) ProtoReflect() protoreflect.Message {
-	mi := &file_info_info_proto_msgTypes[62]
+	mi := &file_info_info_proto_msgTypes[63]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8314,7 +8432,7 @@ func (x *ZInfoKubeClusterUpdateStatus) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ZInfoKubeClusterUpdateStatus.ProtoReflect.Descriptor instead.
 func (*ZInfoKubeClusterUpdateStatus) Descriptor() ([]byte, []int) {
-	return file_info_info_proto_rawDescGZIP(), []int{62}
+	return file_info_info_proto_rawDescGZIP(), []int{63}
 }
 
 func (x *ZInfoKubeClusterUpdateStatus) GetCurrentNode() string {
@@ -8381,7 +8499,7 @@ type ZInfoKubeCluster struct {
 func (x *ZInfoKubeCluster) Reset() {
 	*x = ZInfoKubeCluster{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_info_info_proto_msgTypes[63]
+		mi := &file_info_info_proto_msgTypes[64]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -8394,7 +8512,7 @@ func (x *ZInfoKubeCluster) String() string {
 func (*ZInfoKubeCluster) ProtoMessage() {}
 
 func (x *ZInfoKubeCluster) ProtoReflect() protoreflect.Message {
-	mi := &file_info_info_proto_msgTypes[63]
+	mi := &file_info_info_proto_msgTypes[64]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8407,7 +8525,7 @@ func (x *ZInfoKubeCluster) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ZInfoKubeCluster.ProtoReflect.Descriptor instead.
 func (*ZInfoKubeCluster) Descriptor() ([]byte, []int) {
-	return file_info_info_proto_rawDescGZIP(), []int{63}
+	return file_info_info_proto_rawDescGZIP(), []int{64}
 }
 
 func (x *ZInfoKubeCluster) GetNodes() []*KubeNodeInfo {
@@ -8483,7 +8601,7 @@ type ZInfoHardware struct {
 func (x *ZInfoHardware) Reset() {
 	*x = ZInfoHardware{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_info_info_proto_msgTypes[64]
+		mi := &file_info_info_proto_msgTypes[65]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -8496,7 +8614,7 @@ func (x *ZInfoHardware) String() string {
 func (*ZInfoHardware) ProtoMessage() {}
 
 func (x *ZInfoHardware) ProtoReflect() protoreflect.Message {
-	mi := &file_info_info_proto_msgTypes[64]
+	mi := &file_info_info_proto_msgTypes[65]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8509,7 +8627,7 @@ func (x *ZInfoHardware) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ZInfoHardware.ProtoReflect.Descriptor instead.
 func (*ZInfoHardware) Descriptor() ([]byte, []int) {
-	return file_info_info_proto_rawDescGZIP(), []int{64}
+	return file_info_info_proto_rawDescGZIP(), []int{65}
 }
 
 // Deprecated: Marked as deprecated in info/info.proto.
@@ -9456,46 +9574,60 @@ var file_info_info_proto_rawDesc = []byte{
 	0x6c, 0x66, 0x65, 0x64, 0x67, 0x65, 0x2e, 0x65, 0x76, 0x65, 0x2e, 0x69, 0x6e, 0x66, 0x6f, 0x2e,
 	0x5a, 0x49, 0x6e, 0x66, 0x6f, 0x43, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x4e, 0x6f, 0x64, 0x65,
 	0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x52, 0x0a, 0x6e, 0x6f, 0x64, 0x65, 0x53, 0x74, 0x61, 0x74,
-	0x75, 0x73, 0x22, 0x86, 0x05, 0x0a, 0x08, 0x5a, 0x49, 0x6e, 0x66, 0x6f, 0x41, 0x70, 0x70, 0x12,
-	0x14, 0x0a, 0x05, 0x41, 0x70, 0x70, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05,
-	0x41, 0x70, 0x70, 0x49, 0x44, 0x12, 0x1e, 0x0a, 0x0a, 0x61, 0x70, 0x70, 0x56, 0x65, 0x72, 0x73,
-	0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x61, 0x70, 0x70, 0x56, 0x65,
-	0x72, 0x73, 0x69, 0x6f, 0x6e, 0x12, 0x1c, 0x0a, 0x09, 0x73, 0x79, 0x73, 0x74, 0x65, 0x6d, 0x41,
-	0x70, 0x70, 0x18, 0x06, 0x20, 0x01, 0x28, 0x08, 0x52, 0x09, 0x73, 0x79, 0x73, 0x74, 0x65, 0x6d,
-	0x41, 0x70, 0x70, 0x12, 0x18, 0x0a, 0x07, 0x41, 0x70, 0x70, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x07,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x41, 0x70, 0x70, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x40, 0x0a,
-	0x0c, 0x73, 0x6f, 0x66, 0x74, 0x77, 0x61, 0x72, 0x65, 0x4c, 0x69, 0x73, 0x74, 0x18, 0x08, 0x20,
-	0x03, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x6f, 0x72, 0x67, 0x2e, 0x6c, 0x66, 0x65, 0x64, 0x67, 0x65,
-	0x2e, 0x65, 0x76, 0x65, 0x2e, 0x69, 0x6e, 0x66, 0x6f, 0x2e, 0x5a, 0x49, 0x6e, 0x66, 0x6f, 0x53,
-	0x57, 0x52, 0x0c, 0x73, 0x6f, 0x66, 0x74, 0x77, 0x61, 0x72, 0x65, 0x4c, 0x69, 0x73, 0x74, 0x12,
-	0x36, 0x0a, 0x08, 0x62, 0x6f, 0x6f, 0x74, 0x54, 0x69, 0x6d, 0x65, 0x18, 0x0c, 0x20, 0x01, 0x28,
-	0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x62, 0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x52, 0x08, 0x62,
-	0x6f, 0x6f, 0x74, 0x54, 0x69, 0x6d, 0x65, 0x12, 0x4a, 0x0a, 0x10, 0x61, 0x73, 0x73, 0x69, 0x67,
-	0x6e, 0x65, 0x64, 0x41, 0x64, 0x61, 0x70, 0x74, 0x65, 0x72, 0x73, 0x18, 0x0d, 0x20, 0x03, 0x28,
-	0x0b, 0x32, 0x1e, 0x2e, 0x6f, 0x72, 0x67, 0x2e, 0x6c, 0x66, 0x65, 0x64, 0x67, 0x65, 0x2e, 0x65,
-	0x76, 0x65, 0x2e, 0x69, 0x6e, 0x66, 0x6f, 0x2e, 0x5a, 0x69, 0x6f, 0x42, 0x75, 0x6e, 0x64, 0x6c,
-	0x65, 0x52, 0x10, 0x61, 0x73, 0x73, 0x69, 0x67, 0x6e, 0x65, 0x64, 0x41, 0x64, 0x61, 0x70, 0x74,
-	0x65, 0x72, 0x73, 0x12, 0x36, 0x0a, 0x06, 0x61, 0x70, 0x70, 0x45, 0x72, 0x72, 0x18, 0x0e, 0x20,
-	0x03, 0x28, 0x0b, 0x32, 0x1e, 0x2e, 0x6f, 0x72, 0x67, 0x2e, 0x6c, 0x66, 0x65, 0x64, 0x67, 0x65,
-	0x2e, 0x65, 0x76, 0x65, 0x2e, 0x69, 0x6e, 0x66, 0x6f, 0x2e, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x49,
-	0x6e, 0x66, 0x6f, 0x52, 0x06, 0x61, 0x70, 0x70, 0x45, 0x72, 0x72, 0x12, 0x33, 0x0a, 0x05, 0x73,
-	0x74, 0x61, 0x74, 0x65, 0x18, 0x0f, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x1d, 0x2e, 0x6f, 0x72, 0x67,
-	0x2e, 0x6c, 0x66, 0x65, 0x64, 0x67, 0x65, 0x2e, 0x65, 0x76, 0x65, 0x2e, 0x69, 0x6e, 0x66, 0x6f,
-	0x2e, 0x5a, 0x53, 0x77, 0x53, 0x74, 0x61, 0x74, 0x65, 0x52, 0x05, 0x73, 0x74, 0x61, 0x74, 0x65,
-	0x12, 0x3b, 0x0a, 0x07, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x18, 0x10, 0x20, 0x03, 0x28,
-	0x0b, 0x32, 0x21, 0x2e, 0x6f, 0x72, 0x67, 0x2e, 0x6c, 0x66, 0x65, 0x64, 0x67, 0x65, 0x2e, 0x65,
-	0x76, 0x65, 0x2e, 0x69, 0x6e, 0x66, 0x6f, 0x2e, 0x5a, 0x49, 0x6e, 0x66, 0x6f, 0x4e, 0x65, 0x74,
-	0x77, 0x6f, 0x72, 0x6b, 0x52, 0x07, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x12, 0x1e, 0x0a,
-	0x0a, 0x76, 0x6f, 0x6c, 0x75, 0x6d, 0x65, 0x52, 0x65, 0x66, 0x73, 0x18, 0x11, 0x20, 0x03, 0x28,
-	0x09, 0x52, 0x0a, 0x76, 0x6f, 0x6c, 0x75, 0x6d, 0x65, 0x52, 0x65, 0x66, 0x73, 0x12, 0x40, 0x0a,
-	0x09, 0x73, 0x6e, 0x61, 0x70, 0x73, 0x68, 0x6f, 0x74, 0x73, 0x18, 0x12, 0x20, 0x03, 0x28, 0x0b,
-	0x32, 0x22, 0x2e, 0x6f, 0x72, 0x67, 0x2e, 0x6c, 0x66, 0x65, 0x64, 0x67, 0x65, 0x2e, 0x65, 0x76,
-	0x65, 0x2e, 0x69, 0x6e, 0x66, 0x6f, 0x2e, 0x5a, 0x49, 0x6e, 0x66, 0x6f, 0x53, 0x6e, 0x61, 0x70,
-	0x73, 0x68, 0x6f, 0x74, 0x52, 0x09, 0x73, 0x6e, 0x61, 0x70, 0x73, 0x68, 0x6f, 0x74, 0x73, 0x12,
-	0x2e, 0x0a, 0x13, 0x63, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x5f, 0x61, 0x70, 0x70, 0x5f, 0x72,
-	0x75, 0x6e, 0x6e, 0x69, 0x6e, 0x67, 0x18, 0x14, 0x20, 0x01, 0x28, 0x08, 0x52, 0x11, 0x63, 0x6c,
-	0x75, 0x73, 0x74, 0x65, 0x72, 0x41, 0x70, 0x70, 0x52, 0x75, 0x6e, 0x6e, 0x69, 0x6e, 0x67, 0x4a,
+	0x75, 0x73, 0x22, 0x88, 0x01, 0x0a, 0x15, 0x5a, 0x49, 0x6e, 0x66, 0x6f, 0x41, 0x70, 0x70, 0x50,
+	0x65, 0x6e, 0x64, 0x69, 0x6e, 0x67, 0x43, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x12, 0x20, 0x0a, 0x0b,
+	0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x4d,
+	0x0a, 0x0d, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x6e, 0x65, 0x65, 0x64, 0x65, 0x64, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x28, 0x2e, 0x6f, 0x72, 0x67, 0x2e, 0x6c, 0x66, 0x65, 0x64,
+	0x67, 0x65, 0x2e, 0x65, 0x76, 0x65, 0x2e, 0x69, 0x6e, 0x66, 0x6f, 0x2e, 0x50, 0x65, 0x6e, 0x64,
+	0x69, 0x6e, 0x67, 0x43, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x52,
+	0x0c, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x4e, 0x65, 0x65, 0x64, 0x65, 0x64, 0x22, 0xdb, 0x05,
+	0x0a, 0x08, 0x5a, 0x49, 0x6e, 0x66, 0x6f, 0x41, 0x70, 0x70, 0x12, 0x14, 0x0a, 0x05, 0x41, 0x70,
+	0x70, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x41, 0x70, 0x70, 0x49, 0x44,
+	0x12, 0x1e, 0x0a, 0x0a, 0x61, 0x70, 0x70, 0x56, 0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x61, 0x70, 0x70, 0x56, 0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e,
+	0x12, 0x1c, 0x0a, 0x09, 0x73, 0x79, 0x73, 0x74, 0x65, 0x6d, 0x41, 0x70, 0x70, 0x18, 0x06, 0x20,
+	0x01, 0x28, 0x08, 0x52, 0x09, 0x73, 0x79, 0x73, 0x74, 0x65, 0x6d, 0x41, 0x70, 0x70, 0x12, 0x18,
+	0x0a, 0x07, 0x41, 0x70, 0x70, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x07, 0x41, 0x70, 0x70, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x40, 0x0a, 0x0c, 0x73, 0x6f, 0x66, 0x74,
+	0x77, 0x61, 0x72, 0x65, 0x4c, 0x69, 0x73, 0x74, 0x18, 0x08, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1c,
+	0x2e, 0x6f, 0x72, 0x67, 0x2e, 0x6c, 0x66, 0x65, 0x64, 0x67, 0x65, 0x2e, 0x65, 0x76, 0x65, 0x2e,
+	0x69, 0x6e, 0x66, 0x6f, 0x2e, 0x5a, 0x49, 0x6e, 0x66, 0x6f, 0x53, 0x57, 0x52, 0x0c, 0x73, 0x6f,
+	0x66, 0x74, 0x77, 0x61, 0x72, 0x65, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x36, 0x0a, 0x08, 0x62, 0x6f,
+	0x6f, 0x74, 0x54, 0x69, 0x6d, 0x65, 0x18, 0x0c, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67,
+	0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54,
+	0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x52, 0x08, 0x62, 0x6f, 0x6f, 0x74, 0x54, 0x69,
+	0x6d, 0x65, 0x12, 0x4a, 0x0a, 0x10, 0x61, 0x73, 0x73, 0x69, 0x67, 0x6e, 0x65, 0x64, 0x41, 0x64,
+	0x61, 0x70, 0x74, 0x65, 0x72, 0x73, 0x18, 0x0d, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1e, 0x2e, 0x6f,
+	0x72, 0x67, 0x2e, 0x6c, 0x66, 0x65, 0x64, 0x67, 0x65, 0x2e, 0x65, 0x76, 0x65, 0x2e, 0x69, 0x6e,
+	0x66, 0x6f, 0x2e, 0x5a, 0x69, 0x6f, 0x42, 0x75, 0x6e, 0x64, 0x6c, 0x65, 0x52, 0x10, 0x61, 0x73,
+	0x73, 0x69, 0x67, 0x6e, 0x65, 0x64, 0x41, 0x64, 0x61, 0x70, 0x74, 0x65, 0x72, 0x73, 0x12, 0x36,
+	0x0a, 0x06, 0x61, 0x70, 0x70, 0x45, 0x72, 0x72, 0x18, 0x0e, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1e,
+	0x2e, 0x6f, 0x72, 0x67, 0x2e, 0x6c, 0x66, 0x65, 0x64, 0x67, 0x65, 0x2e, 0x65, 0x76, 0x65, 0x2e,
+	0x69, 0x6e, 0x66, 0x6f, 0x2e, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x06,
+	0x61, 0x70, 0x70, 0x45, 0x72, 0x72, 0x12, 0x33, 0x0a, 0x05, 0x73, 0x74, 0x61, 0x74, 0x65, 0x18,
+	0x0f, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x1d, 0x2e, 0x6f, 0x72, 0x67, 0x2e, 0x6c, 0x66, 0x65, 0x64,
+	0x67, 0x65, 0x2e, 0x65, 0x76, 0x65, 0x2e, 0x69, 0x6e, 0x66, 0x6f, 0x2e, 0x5a, 0x53, 0x77, 0x53,
+	0x74, 0x61, 0x74, 0x65, 0x52, 0x05, 0x73, 0x74, 0x61, 0x74, 0x65, 0x12, 0x3b, 0x0a, 0x07, 0x6e,
+	0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x18, 0x10, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x21, 0x2e, 0x6f,
+	0x72, 0x67, 0x2e, 0x6c, 0x66, 0x65, 0x64, 0x67, 0x65, 0x2e, 0x65, 0x76, 0x65, 0x2e, 0x69, 0x6e,
+	0x66, 0x6f, 0x2e, 0x5a, 0x49, 0x6e, 0x66, 0x6f, 0x4e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x52,
+	0x07, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x12, 0x1e, 0x0a, 0x0a, 0x76, 0x6f, 0x6c, 0x75,
+	0x6d, 0x65, 0x52, 0x65, 0x66, 0x73, 0x18, 0x11, 0x20, 0x03, 0x28, 0x09, 0x52, 0x0a, 0x76, 0x6f,
+	0x6c, 0x75, 0x6d, 0x65, 0x52, 0x65, 0x66, 0x73, 0x12, 0x40, 0x0a, 0x09, 0x73, 0x6e, 0x61, 0x70,
+	0x73, 0x68, 0x6f, 0x74, 0x73, 0x18, 0x12, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x22, 0x2e, 0x6f, 0x72,
+	0x67, 0x2e, 0x6c, 0x66, 0x65, 0x64, 0x67, 0x65, 0x2e, 0x65, 0x76, 0x65, 0x2e, 0x69, 0x6e, 0x66,
+	0x6f, 0x2e, 0x5a, 0x49, 0x6e, 0x66, 0x6f, 0x53, 0x6e, 0x61, 0x70, 0x73, 0x68, 0x6f, 0x74, 0x52,
+	0x09, 0x73, 0x6e, 0x61, 0x70, 0x73, 0x68, 0x6f, 0x74, 0x73, 0x12, 0x2e, 0x0a, 0x13, 0x63, 0x6c,
+	0x75, 0x73, 0x74, 0x65, 0x72, 0x5f, 0x61, 0x70, 0x70, 0x5f, 0x72, 0x75, 0x6e, 0x6e, 0x69, 0x6e,
+	0x67, 0x18, 0x14, 0x20, 0x01, 0x28, 0x08, 0x52, 0x11, 0x63, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72,
+	0x41, 0x70, 0x70, 0x52, 0x75, 0x6e, 0x6e, 0x69, 0x6e, 0x67, 0x12, 0x53, 0x0a, 0x0f, 0x70, 0x65,
+	0x6e, 0x64, 0x69, 0x6e, 0x67, 0x5f, 0x63, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x73, 0x18, 0x15, 0x20,
+	0x03, 0x28, 0x0b, 0x32, 0x2a, 0x2e, 0x6f, 0x72, 0x67, 0x2e, 0x6c, 0x66, 0x65, 0x64, 0x67, 0x65,
+	0x2e, 0x65, 0x76, 0x65, 0x2e, 0x69, 0x6e, 0x66, 0x6f, 0x2e, 0x5a, 0x49, 0x6e, 0x66, 0x6f, 0x41,
+	0x70, 0x70, 0x50, 0x65, 0x6e, 0x64, 0x69, 0x6e, 0x67, 0x43, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x52,
+	0x0e, 0x70, 0x65, 0x6e, 0x64, 0x69, 0x6e, 0x67, 0x43, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x73, 0x4a,
 	0x04, 0x08, 0x09, 0x10, 0x0c, 0x4a, 0x04, 0x08, 0x13, 0x10, 0x14, 0x22, 0x5e, 0x0a, 0x10, 0x5a,
 	0x49, 0x6e, 0x66, 0x6f, 0x56, 0x70, 0x6e, 0x4c, 0x69, 0x6e, 0x6b, 0x49, 0x6e, 0x66, 0x6f, 0x12,
 	0x14, 0x0a, 0x05, 0x73, 0x70, 0x69, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05,
@@ -10316,39 +10448,47 @@ var file_info_info_proto_rawDesc = []byte{
 	0x41, 0x54, 0x55, 0x53, 0x5f, 0x4e, 0x4f, 0x54, 0x52, 0x45, 0x41, 0x44, 0x59, 0x10, 0x02, 0x12,
 	0x23, 0x0a, 0x1f, 0x5a, 0x5f, 0x49, 0x4e, 0x46, 0x4f, 0x5f, 0x43, 0x4c, 0x55, 0x53, 0x54, 0x45,
 	0x52, 0x5f, 0x4e, 0x4f, 0x44, 0x45, 0x5f, 0x53, 0x54, 0x41, 0x54, 0x55, 0x53, 0x5f, 0x44, 0x4f,
-	0x57, 0x4e, 0x10, 0x03, 0x2a, 0x8f, 0x01, 0x0a, 0x0d, 0x5a, 0x49, 0x6e, 0x66, 0x6f, 0x56, 0x70,
-	0x6e, 0x53, 0x74, 0x61, 0x74, 0x65, 0x12, 0x0f, 0x0a, 0x0b, 0x56, 0x50, 0x4e, 0x5f, 0x49, 0x4e,
-	0x56, 0x41, 0x4c, 0x49, 0x44, 0x10, 0x00, 0x12, 0x0f, 0x0a, 0x0b, 0x56, 0x50, 0x4e, 0x5f, 0x49,
-	0x4e, 0x49, 0x54, 0x49, 0x41, 0x4c, 0x10, 0x01, 0x12, 0x12, 0x0a, 0x0e, 0x56, 0x50, 0x4e, 0x5f,
-	0x43, 0x4f, 0x4e, 0x4e, 0x45, 0x43, 0x54, 0x49, 0x4e, 0x47, 0x10, 0x02, 0x12, 0x13, 0x0a, 0x0f,
-	0x56, 0x50, 0x4e, 0x5f, 0x45, 0x53, 0x54, 0x41, 0x42, 0x4c, 0x49, 0x53, 0x48, 0x45, 0x44, 0x10,
-	0x03, 0x12, 0x11, 0x0a, 0x0d, 0x56, 0x50, 0x4e, 0x5f, 0x49, 0x4e, 0x53, 0x54, 0x41, 0x4c, 0x4c,
-	0x45, 0x44, 0x10, 0x04, 0x12, 0x0f, 0x0a, 0x0b, 0x56, 0x50, 0x4e, 0x5f, 0x52, 0x45, 0x4b, 0x45,
-	0x59, 0x45, 0x44, 0x10, 0x05, 0x12, 0x0f, 0x0a, 0x0b, 0x56, 0x50, 0x4e, 0x5f, 0x44, 0x45, 0x4c,
-	0x45, 0x54, 0x45, 0x44, 0x10, 0x0a, 0x2a, 0x85, 0x01, 0x0a, 0x15, 0x5a, 0x4e, 0x65, 0x74, 0x77,
-	0x6f, 0x72, 0x6b, 0x49, 0x6e, 0x73, 0x74, 0x61, 0x6e, 0x63, 0x65, 0x53, 0x74, 0x61, 0x74, 0x65,
-	0x12, 0x1e, 0x0a, 0x1a, 0x5a, 0x4e, 0x45, 0x54, 0x49, 0x4e, 0x53, 0x54, 0x5f, 0x53, 0x54, 0x41,
-	0x54, 0x45, 0x5f, 0x55, 0x4e, 0x53, 0x50, 0x45, 0x43, 0x49, 0x46, 0x49, 0x45, 0x44, 0x10, 0x00,
-	0x12, 0x17, 0x0a, 0x13, 0x5a, 0x4e, 0x45, 0x54, 0x49, 0x4e, 0x53, 0x54, 0x5f, 0x53, 0x54, 0x41,
-	0x54, 0x45, 0x5f, 0x49, 0x4e, 0x49, 0x54, 0x10, 0x01, 0x12, 0x19, 0x0a, 0x15, 0x5a, 0x4e, 0x45,
-	0x54, 0x49, 0x4e, 0x53, 0x54, 0x5f, 0x53, 0x54, 0x41, 0x54, 0x45, 0x5f, 0x4f, 0x4e, 0x4c, 0x49,
-	0x4e, 0x45, 0x10, 0x02, 0x12, 0x18, 0x0a, 0x14, 0x5a, 0x4e, 0x45, 0x54, 0x49, 0x4e, 0x53, 0x54,
-	0x5f, 0x53, 0x54, 0x41, 0x54, 0x45, 0x5f, 0x45, 0x52, 0x52, 0x4f, 0x52, 0x10, 0x03, 0x2a, 0x9e,
-	0x01, 0x0a, 0x0e, 0x4c, 0x6f, 0x63, 0x52, 0x65, 0x6c, 0x69, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74,
-	0x79, 0x12, 0x1f, 0x0a, 0x1b, 0x4c, 0x4f, 0x43, 0x5f, 0x52, 0x45, 0x4c, 0x49, 0x41, 0x42, 0x49,
-	0x4c, 0x49, 0x54, 0x59, 0x5f, 0x55, 0x4e, 0x53, 0x50, 0x45, 0x43, 0x49, 0x46, 0x49, 0x45, 0x44,
-	0x10, 0x00, 0x12, 0x1c, 0x0a, 0x18, 0x4c, 0x4f, 0x43, 0x5f, 0x52, 0x45, 0x4c, 0x49, 0x41, 0x42,
-	0x49, 0x4c, 0x49, 0x54, 0x59, 0x5f, 0x56, 0x45, 0x52, 0x59, 0x5f, 0x4c, 0x4f, 0x57, 0x10, 0x01,
-	0x12, 0x17, 0x0a, 0x13, 0x4c, 0x4f, 0x43, 0x5f, 0x52, 0x45, 0x4c, 0x49, 0x41, 0x42, 0x49, 0x4c,
-	0x49, 0x54, 0x59, 0x5f, 0x4c, 0x4f, 0x57, 0x10, 0x02, 0x12, 0x1a, 0x0a, 0x16, 0x4c, 0x4f, 0x43,
-	0x5f, 0x52, 0x45, 0x4c, 0x49, 0x41, 0x42, 0x49, 0x4c, 0x49, 0x54, 0x59, 0x5f, 0x4d, 0x45, 0x44,
-	0x49, 0x55, 0x4d, 0x10, 0x03, 0x12, 0x18, 0x0a, 0x14, 0x4c, 0x4f, 0x43, 0x5f, 0x52, 0x45, 0x4c,
-	0x49, 0x41, 0x42, 0x49, 0x4c, 0x49, 0x54, 0x59, 0x5f, 0x48, 0x49, 0x47, 0x48, 0x10, 0x04, 0x42,
-	0x39, 0x0a, 0x13, 0x6f, 0x72, 0x67, 0x2e, 0x6c, 0x66, 0x65, 0x64, 0x67, 0x65, 0x2e, 0x65, 0x76,
-	0x65, 0x2e, 0x69, 0x6e, 0x66, 0x6f, 0x5a, 0x22, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63,
-	0x6f, 0x6d, 0x2f, 0x6c, 0x66, 0x2d, 0x65, 0x64, 0x67, 0x65, 0x2f, 0x65, 0x76, 0x65, 0x2d, 0x61,
-	0x70, 0x69, 0x2f, 0x67, 0x6f, 0x2f, 0x69, 0x6e, 0x66, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x33,
+	0x57, 0x4e, 0x10, 0x03, 0x2a, 0x80, 0x01, 0x0a, 0x13, 0x50, 0x65, 0x6e, 0x64, 0x69, 0x6e, 0x67,
+	0x43, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x41, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x25, 0x0a, 0x21,
+	0x50, 0x45, 0x4e, 0x44, 0x49, 0x4e, 0x47, 0x5f, 0x43, 0x48, 0x41, 0x4e, 0x47, 0x45, 0x5f, 0x41,
+	0x43, 0x54, 0x49, 0x4f, 0x4e, 0x5f, 0x55, 0x4e, 0x53, 0x50, 0x45, 0x43, 0x49, 0x46, 0x49, 0x45,
+	0x44, 0x10, 0x00, 0x12, 0x21, 0x0a, 0x1d, 0x50, 0x45, 0x4e, 0x44, 0x49, 0x4e, 0x47, 0x5f, 0x43,
+	0x48, 0x41, 0x4e, 0x47, 0x45, 0x5f, 0x41, 0x43, 0x54, 0x49, 0x4f, 0x4e, 0x5f, 0x52, 0x45, 0x53,
+	0x54, 0x41, 0x52, 0x54, 0x10, 0x01, 0x12, 0x1f, 0x0a, 0x1b, 0x50, 0x45, 0x4e, 0x44, 0x49, 0x4e,
+	0x47, 0x5f, 0x43, 0x48, 0x41, 0x4e, 0x47, 0x45, 0x5f, 0x41, 0x43, 0x54, 0x49, 0x4f, 0x4e, 0x5f,
+	0x50, 0x55, 0x52, 0x47, 0x45, 0x10, 0x02, 0x2a, 0x8f, 0x01, 0x0a, 0x0d, 0x5a, 0x49, 0x6e, 0x66,
+	0x6f, 0x56, 0x70, 0x6e, 0x53, 0x74, 0x61, 0x74, 0x65, 0x12, 0x0f, 0x0a, 0x0b, 0x56, 0x50, 0x4e,
+	0x5f, 0x49, 0x4e, 0x56, 0x41, 0x4c, 0x49, 0x44, 0x10, 0x00, 0x12, 0x0f, 0x0a, 0x0b, 0x56, 0x50,
+	0x4e, 0x5f, 0x49, 0x4e, 0x49, 0x54, 0x49, 0x41, 0x4c, 0x10, 0x01, 0x12, 0x12, 0x0a, 0x0e, 0x56,
+	0x50, 0x4e, 0x5f, 0x43, 0x4f, 0x4e, 0x4e, 0x45, 0x43, 0x54, 0x49, 0x4e, 0x47, 0x10, 0x02, 0x12,
+	0x13, 0x0a, 0x0f, 0x56, 0x50, 0x4e, 0x5f, 0x45, 0x53, 0x54, 0x41, 0x42, 0x4c, 0x49, 0x53, 0x48,
+	0x45, 0x44, 0x10, 0x03, 0x12, 0x11, 0x0a, 0x0d, 0x56, 0x50, 0x4e, 0x5f, 0x49, 0x4e, 0x53, 0x54,
+	0x41, 0x4c, 0x4c, 0x45, 0x44, 0x10, 0x04, 0x12, 0x0f, 0x0a, 0x0b, 0x56, 0x50, 0x4e, 0x5f, 0x52,
+	0x45, 0x4b, 0x45, 0x59, 0x45, 0x44, 0x10, 0x05, 0x12, 0x0f, 0x0a, 0x0b, 0x56, 0x50, 0x4e, 0x5f,
+	0x44, 0x45, 0x4c, 0x45, 0x54, 0x45, 0x44, 0x10, 0x0a, 0x2a, 0x85, 0x01, 0x0a, 0x15, 0x5a, 0x4e,
+	0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x49, 0x6e, 0x73, 0x74, 0x61, 0x6e, 0x63, 0x65, 0x53, 0x74,
+	0x61, 0x74, 0x65, 0x12, 0x1e, 0x0a, 0x1a, 0x5a, 0x4e, 0x45, 0x54, 0x49, 0x4e, 0x53, 0x54, 0x5f,
+	0x53, 0x54, 0x41, 0x54, 0x45, 0x5f, 0x55, 0x4e, 0x53, 0x50, 0x45, 0x43, 0x49, 0x46, 0x49, 0x45,
+	0x44, 0x10, 0x00, 0x12, 0x17, 0x0a, 0x13, 0x5a, 0x4e, 0x45, 0x54, 0x49, 0x4e, 0x53, 0x54, 0x5f,
+	0x53, 0x54, 0x41, 0x54, 0x45, 0x5f, 0x49, 0x4e, 0x49, 0x54, 0x10, 0x01, 0x12, 0x19, 0x0a, 0x15,
+	0x5a, 0x4e, 0x45, 0x54, 0x49, 0x4e, 0x53, 0x54, 0x5f, 0x53, 0x54, 0x41, 0x54, 0x45, 0x5f, 0x4f,
+	0x4e, 0x4c, 0x49, 0x4e, 0x45, 0x10, 0x02, 0x12, 0x18, 0x0a, 0x14, 0x5a, 0x4e, 0x45, 0x54, 0x49,
+	0x4e, 0x53, 0x54, 0x5f, 0x53, 0x54, 0x41, 0x54, 0x45, 0x5f, 0x45, 0x52, 0x52, 0x4f, 0x52, 0x10,
+	0x03, 0x2a, 0x9e, 0x01, 0x0a, 0x0e, 0x4c, 0x6f, 0x63, 0x52, 0x65, 0x6c, 0x69, 0x61, 0x62, 0x69,
+	0x6c, 0x69, 0x74, 0x79, 0x12, 0x1f, 0x0a, 0x1b, 0x4c, 0x4f, 0x43, 0x5f, 0x52, 0x45, 0x4c, 0x49,
+	0x41, 0x42, 0x49, 0x4c, 0x49, 0x54, 0x59, 0x5f, 0x55, 0x4e, 0x53, 0x50, 0x45, 0x43, 0x49, 0x46,
+	0x49, 0x45, 0x44, 0x10, 0x00, 0x12, 0x1c, 0x0a, 0x18, 0x4c, 0x4f, 0x43, 0x5f, 0x52, 0x45, 0x4c,
+	0x49, 0x41, 0x42, 0x49, 0x4c, 0x49, 0x54, 0x59, 0x5f, 0x56, 0x45, 0x52, 0x59, 0x5f, 0x4c, 0x4f,
+	0x57, 0x10, 0x01, 0x12, 0x17, 0x0a, 0x13, 0x4c, 0x4f, 0x43, 0x5f, 0x52, 0x45, 0x4c, 0x49, 0x41,
+	0x42, 0x49, 0x4c, 0x49, 0x54, 0x59, 0x5f, 0x4c, 0x4f, 0x57, 0x10, 0x02, 0x12, 0x1a, 0x0a, 0x16,
+	0x4c, 0x4f, 0x43, 0x5f, 0x52, 0x45, 0x4c, 0x49, 0x41, 0x42, 0x49, 0x4c, 0x49, 0x54, 0x59, 0x5f,
+	0x4d, 0x45, 0x44, 0x49, 0x55, 0x4d, 0x10, 0x03, 0x12, 0x18, 0x0a, 0x14, 0x4c, 0x4f, 0x43, 0x5f,
+	0x52, 0x45, 0x4c, 0x49, 0x41, 0x42, 0x49, 0x4c, 0x49, 0x54, 0x59, 0x5f, 0x48, 0x49, 0x47, 0x48,
+	0x10, 0x04, 0x42, 0x39, 0x0a, 0x13, 0x6f, 0x72, 0x67, 0x2e, 0x6c, 0x66, 0x65, 0x64, 0x67, 0x65,
+	0x2e, 0x65, 0x76, 0x65, 0x2e, 0x69, 0x6e, 0x66, 0x6f, 0x5a, 0x22, 0x67, 0x69, 0x74, 0x68, 0x75,
+	0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6c, 0x66, 0x2d, 0x65, 0x64, 0x67, 0x65, 0x2f, 0x65, 0x76,
+	0x65, 0x2d, 0x61, 0x70, 0x69, 0x2f, 0x67, 0x6f, 0x2f, 0x69, 0x6e, 0x66, 0x6f, 0x62, 0x06, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -10363,8 +10503,8 @@ func file_info_info_proto_rawDescGZIP() []byte {
 	return file_info_info_proto_rawDescData
 }
 
-var file_info_info_proto_enumTypes = make([]protoimpl.EnumInfo, 29)
-var file_info_info_proto_msgTypes = make([]protoimpl.MessageInfo, 67)
+var file_info_info_proto_enumTypes = make([]protoimpl.EnumInfo, 30)
+var file_info_info_proto_msgTypes = make([]protoimpl.MessageInfo, 68)
 var file_info_info_proto_goTypes = []interface{}{
 	(DepMetricItemType)(0),               // 0: org.lfedge.eve.info.DepMetricItemType
 	(ZInfoTypes)(0),                      // 1: org.lfedge.eve.info.ZInfoTypes
@@ -10392,281 +10532,285 @@ var file_info_info_proto_goTypes = []interface{}{
 	(BaseOsSubStatus)(0),                 // 23: org.lfedge.eve.info.BaseOsSubStatus
 	(SnapshotType)(0),                    // 24: org.lfedge.eve.info.SnapshotType
 	(ZInfoClusterNodeStatus)(0),          // 25: org.lfedge.eve.info.ZInfoClusterNodeStatus
-	(ZInfoVpnState)(0),                   // 26: org.lfedge.eve.info.ZInfoVpnState
-	(ZNetworkInstanceState)(0),           // 27: org.lfedge.eve.info.ZNetworkInstanceState
-	(LocReliability)(0),                  // 28: org.lfedge.eve.info.LocReliability
-	(*SmartAttr)(nil),                    // 29: org.lfedge.eve.info.SmartAttr
-	(*StorageDiskInfo)(nil),              // 30: org.lfedge.eve.info.StorageDiskInfo
-	(*DeprecatedMetricItem)(nil),         // 31: org.lfedge.eve.info.deprecatedMetricItem
-	(*ZmetIPAssignmentEntry)(nil),        // 32: org.lfedge.eve.info.ZmetIPAssignmentEntry
-	(*ZmetVifInfo)(nil),                  // 33: org.lfedge.eve.info.ZmetVifInfo
-	(*ZioBundle)(nil),                    // 34: org.lfedge.eve.info.ZioBundle
-	(*IoAddresses)(nil),                  // 35: org.lfedge.eve.info.IoAddresses
-	(*VfPublishedInfo)(nil),              // 36: org.lfedge.eve.info.VfPublishedInfo
-	(*ZInfoManufacturer)(nil),            // 37: org.lfedge.eve.info.ZInfoManufacturer
-	(*ZInfoNetwork)(nil),                 // 38: org.lfedge.eve.info.ZInfoNetwork
-	(*GeoLoc)(nil),                       // 39: org.lfedge.eve.info.GeoLoc
-	(*ZInfoDNS)(nil),                     // 40: org.lfedge.eve.info.ZInfoDNS
-	(*ZInfoSW)(nil),                      // 41: org.lfedge.eve.info.ZInfoSW
-	(*VaultInfo)(nil),                    // 42: org.lfedge.eve.info.VaultInfo
-	(*DataSecAtRest)(nil),                // 43: org.lfedge.eve.info.DataSecAtRest
-	(*SecurityInfo)(nil),                 // 44: org.lfedge.eve.info.SecurityInfo
-	(*ZInfoConfigItem)(nil),              // 45: org.lfedge.eve.info.ZInfoConfigItem
-	(*ZInfoConfigItemStatus)(nil),        // 46: org.lfedge.eve.info.ZInfoConfigItemStatus
-	(*ZInfoAppInstance)(nil),             // 47: org.lfedge.eve.info.ZInfoAppInstance
-	(*ZInfoDeviceTasks)(nil),             // 48: org.lfedge.eve.info.ZInfoDeviceTasks
-	(*ZSimcardInfo)(nil),                 // 49: org.lfedge.eve.info.ZSimcardInfo
-	(*ZCellularModuleInfo)(nil),          // 50: org.lfedge.eve.info.ZCellularModuleInfo
-	(*ZCellularProvider)(nil),            // 51: org.lfedge.eve.info.ZCellularProvider
-	(*CellularBearer)(nil),               // 52: org.lfedge.eve.info.CellularBearer
-	(*CellularProfile)(nil),              // 53: org.lfedge.eve.info.CellularProfile
-	(*StorageDiskState)(nil),             // 54: org.lfedge.eve.info.StorageDiskState
-	(*StorageChildren)(nil),              // 55: org.lfedge.eve.info.StorageChildren
-	(*StorageInfo)(nil),                  // 56: org.lfedge.eve.info.StorageInfo
-	(*ZInfoDevice)(nil),                  // 57: org.lfedge.eve.info.ZInfoDevice
-	(*OptionalCapabilities)(nil),         // 58: org.lfedge.eve.info.OptionalCapabilities
-	(*AttestationInfo)(nil),              // 59: org.lfedge.eve.info.AttestationInfo
-	(*SystemAdapterInfo)(nil),            // 60: org.lfedge.eve.info.SystemAdapterInfo
-	(*DevicePortStatus)(nil),             // 61: org.lfedge.eve.info.DevicePortStatus
-	(*DevicePort)(nil),                   // 62: org.lfedge.eve.info.DevicePort
-	(*ProxyStatus)(nil),                  // 63: org.lfedge.eve.info.ProxyStatus
-	(*ProxyEntry)(nil),                   // 64: org.lfedge.eve.info.ProxyEntry
-	(*WirelessStatus)(nil),               // 65: org.lfedge.eve.info.WirelessStatus
-	(*ZCellularStatus)(nil),              // 66: org.lfedge.eve.info.ZCellularStatus
-	(*ZInfoDevSW)(nil),                   // 67: org.lfedge.eve.info.ZInfoDevSW
-	(*ZInfoStorage)(nil),                 // 68: org.lfedge.eve.info.ZInfoStorage
-	(*ZInfoSnapshot)(nil),                // 69: org.lfedge.eve.info.ZInfoSnapshot
-	(*ZInfoClusterNode)(nil),             // 70: org.lfedge.eve.info.ZInfoClusterNode
-	(*ZInfoApp)(nil),                     // 71: org.lfedge.eve.info.ZInfoApp
-	(*ZInfoVpnLinkInfo)(nil),             // 72: org.lfedge.eve.info.ZInfoVpnLinkInfo
-	(*ZInfoVpnLink)(nil),                 // 73: org.lfedge.eve.info.ZInfoVpnLink
-	(*ZInfoVpnEndPoint)(nil),             // 74: org.lfedge.eve.info.ZInfoVpnEndPoint
-	(*ZInfoVpnConn)(nil),                 // 75: org.lfedge.eve.info.ZInfoVpnConn
-	(*ZInfoVpn)(nil),                     // 76: org.lfedge.eve.info.ZInfoVpn
-	(*ZInfoNetworkInstance)(nil),         // 77: org.lfedge.eve.info.ZInfoNetworkInstance
-	(*IPRoute)(nil),                      // 78: org.lfedge.eve.info.IPRoute
-	(*UsageInfo)(nil),                    // 79: org.lfedge.eve.info.UsageInfo
-	(*VolumeResources)(nil),              // 80: org.lfedge.eve.info.VolumeResources
-	(*ZInfoVolume)(nil),                  // 81: org.lfedge.eve.info.ZInfoVolume
-	(*ContentResources)(nil),             // 82: org.lfedge.eve.info.ContentResources
-	(*ZInfoContentTree)(nil),             // 83: org.lfedge.eve.info.ZInfoContentTree
-	(*ZInfoBlob)(nil),                    // 84: org.lfedge.eve.info.ZInfoBlob
-	(*ZInfoBlobList)(nil),                // 85: org.lfedge.eve.info.ZInfoBlobList
-	(*ZInfoMsg)(nil),                     // 86: org.lfedge.eve.info.ZInfoMsg
-	(*Capabilities)(nil),                 // 87: org.lfedge.eve.info.Capabilities
-	(*ZInfoAppInstMetaData)(nil),         // 88: org.lfedge.eve.info.ZInfoAppInstMetaData
-	(*ZInfoEdgeview)(nil),                // 89: org.lfedge.eve.info.ZInfoEdgeview
-	(*ZInfoLocation)(nil),                // 90: org.lfedge.eve.info.ZInfoLocation
-	(*ZInfoKubeClusterUpdateStatus)(nil), // 91: org.lfedge.eve.info.ZInfoKubeClusterUpdateStatus
-	(*ZInfoKubeCluster)(nil),             // 92: org.lfedge.eve.info.ZInfoKubeCluster
-	(*ZInfoHardware)(nil),                // 93: org.lfedge.eve.info.ZInfoHardware
-	nil,                                  // 94: org.lfedge.eve.info.ZInfoConfigItemStatus.ConfigItemsEntry
-	nil,                                  // 95: org.lfedge.eve.info.ZInfoConfigItemStatus.UnknownConfigItemsEntry
-	(evecommon.PhyIoType)(0),             // 96: org.lfedge.eve.common.PhyIoType
-	(evecommon.PhyIoMemberUsage)(0),      // 97: org.lfedge.eve.common.PhyIoMemberUsage
-	(*ErrorInfo)(nil),                    // 98: org.lfedge.eve.info.ErrorInfo
-	(evecommon.BearerType)(0),            // 99: org.lfedge.eve.common.BearerType
-	(evecommon.CellularIPType)(0),        // 100: org.lfedge.eve.common.CellularIPType
-	(*timestamppb.Timestamp)(nil),        // 101: google.protobuf.Timestamp
-	(*evecommon.DiskDescription)(nil),    // 102: org.lfedge.eve.common.DiskDescription
-	(*CertInfo)(nil),                     // 103: org.lfedge.eve.info.CertInfo
-	(*evecommon.PortConfigSource)(nil),   // 104: org.lfedge.eve.common.PortConfigSource
-	(*PNACStatus)(nil),                   // 105: org.lfedge.eve.info.PNACStatus
-	(*BondStatus)(nil),                   // 106: org.lfedge.eve.info.BondStatus
-	(evecommon.RadioAccessTechnology)(0), // 107: org.lfedge.eve.common.RadioAccessTechnology
-	(*ZInfoPatchEnvelope)(nil),           // 108: org.lfedge.eve.info.ZInfoPatchEnvelope
-	(*ZInfoNTPSources)(nil),              // 109: org.lfedge.eve.info.ZInfoNTPSources
-	(KubeComp)(0),                        // 110: org.lfedge.eve.info.KubeComp
-	(KubeCompUpdateStatus)(0),            // 111: org.lfedge.eve.info.KubeCompUpdateStatus
-	(*KubeNodeInfo)(nil),                 // 112: org.lfedge.eve.info.KubeNodeInfo
-	(*KubePodNameSpaceInfo)(nil),         // 113: org.lfedge.eve.info.KubePodNameSpaceInfo
-	(*KubeEVEAppPodInfo)(nil),            // 114: org.lfedge.eve.info.KubeEVEAppPodInfo
-	(*KubeStorageInfo)(nil),              // 115: org.lfedge.eve.info.KubeStorageInfo
-	(*KubeVMIInfo)(nil),                  // 116: org.lfedge.eve.info.KubeVMIInfo
-	(*KubeWitnessInfo)(nil),              // 117: org.lfedge.eve.info.KubeWitnessInfo
-	(*HardwareInventory)(nil),            // 118: org.lfedge.eve.info.HardwareInventory
+	(PendingChangeAction)(0),             // 26: org.lfedge.eve.info.PendingChangeAction
+	(ZInfoVpnState)(0),                   // 27: org.lfedge.eve.info.ZInfoVpnState
+	(ZNetworkInstanceState)(0),           // 28: org.lfedge.eve.info.ZNetworkInstanceState
+	(LocReliability)(0),                  // 29: org.lfedge.eve.info.LocReliability
+	(*SmartAttr)(nil),                    // 30: org.lfedge.eve.info.SmartAttr
+	(*StorageDiskInfo)(nil),              // 31: org.lfedge.eve.info.StorageDiskInfo
+	(*DeprecatedMetricItem)(nil),         // 32: org.lfedge.eve.info.deprecatedMetricItem
+	(*ZmetIPAssignmentEntry)(nil),        // 33: org.lfedge.eve.info.ZmetIPAssignmentEntry
+	(*ZmetVifInfo)(nil),                  // 34: org.lfedge.eve.info.ZmetVifInfo
+	(*ZioBundle)(nil),                    // 35: org.lfedge.eve.info.ZioBundle
+	(*IoAddresses)(nil),                  // 36: org.lfedge.eve.info.IoAddresses
+	(*VfPublishedInfo)(nil),              // 37: org.lfedge.eve.info.VfPublishedInfo
+	(*ZInfoManufacturer)(nil),            // 38: org.lfedge.eve.info.ZInfoManufacturer
+	(*ZInfoNetwork)(nil),                 // 39: org.lfedge.eve.info.ZInfoNetwork
+	(*GeoLoc)(nil),                       // 40: org.lfedge.eve.info.GeoLoc
+	(*ZInfoDNS)(nil),                     // 41: org.lfedge.eve.info.ZInfoDNS
+	(*ZInfoSW)(nil),                      // 42: org.lfedge.eve.info.ZInfoSW
+	(*VaultInfo)(nil),                    // 43: org.lfedge.eve.info.VaultInfo
+	(*DataSecAtRest)(nil),                // 44: org.lfedge.eve.info.DataSecAtRest
+	(*SecurityInfo)(nil),                 // 45: org.lfedge.eve.info.SecurityInfo
+	(*ZInfoConfigItem)(nil),              // 46: org.lfedge.eve.info.ZInfoConfigItem
+	(*ZInfoConfigItemStatus)(nil),        // 47: org.lfedge.eve.info.ZInfoConfigItemStatus
+	(*ZInfoAppInstance)(nil),             // 48: org.lfedge.eve.info.ZInfoAppInstance
+	(*ZInfoDeviceTasks)(nil),             // 49: org.lfedge.eve.info.ZInfoDeviceTasks
+	(*ZSimcardInfo)(nil),                 // 50: org.lfedge.eve.info.ZSimcardInfo
+	(*ZCellularModuleInfo)(nil),          // 51: org.lfedge.eve.info.ZCellularModuleInfo
+	(*ZCellularProvider)(nil),            // 52: org.lfedge.eve.info.ZCellularProvider
+	(*CellularBearer)(nil),               // 53: org.lfedge.eve.info.CellularBearer
+	(*CellularProfile)(nil),              // 54: org.lfedge.eve.info.CellularProfile
+	(*StorageDiskState)(nil),             // 55: org.lfedge.eve.info.StorageDiskState
+	(*StorageChildren)(nil),              // 56: org.lfedge.eve.info.StorageChildren
+	(*StorageInfo)(nil),                  // 57: org.lfedge.eve.info.StorageInfo
+	(*ZInfoDevice)(nil),                  // 58: org.lfedge.eve.info.ZInfoDevice
+	(*OptionalCapabilities)(nil),         // 59: org.lfedge.eve.info.OptionalCapabilities
+	(*AttestationInfo)(nil),              // 60: org.lfedge.eve.info.AttestationInfo
+	(*SystemAdapterInfo)(nil),            // 61: org.lfedge.eve.info.SystemAdapterInfo
+	(*DevicePortStatus)(nil),             // 62: org.lfedge.eve.info.DevicePortStatus
+	(*DevicePort)(nil),                   // 63: org.lfedge.eve.info.DevicePort
+	(*ProxyStatus)(nil),                  // 64: org.lfedge.eve.info.ProxyStatus
+	(*ProxyEntry)(nil),                   // 65: org.lfedge.eve.info.ProxyEntry
+	(*WirelessStatus)(nil),               // 66: org.lfedge.eve.info.WirelessStatus
+	(*ZCellularStatus)(nil),              // 67: org.lfedge.eve.info.ZCellularStatus
+	(*ZInfoDevSW)(nil),                   // 68: org.lfedge.eve.info.ZInfoDevSW
+	(*ZInfoStorage)(nil),                 // 69: org.lfedge.eve.info.ZInfoStorage
+	(*ZInfoSnapshot)(nil),                // 70: org.lfedge.eve.info.ZInfoSnapshot
+	(*ZInfoClusterNode)(nil),             // 71: org.lfedge.eve.info.ZInfoClusterNode
+	(*ZInfoAppPendingChange)(nil),        // 72: org.lfedge.eve.info.ZInfoAppPendingChange
+	(*ZInfoApp)(nil),                     // 73: org.lfedge.eve.info.ZInfoApp
+	(*ZInfoVpnLinkInfo)(nil),             // 74: org.lfedge.eve.info.ZInfoVpnLinkInfo
+	(*ZInfoVpnLink)(nil),                 // 75: org.lfedge.eve.info.ZInfoVpnLink
+	(*ZInfoVpnEndPoint)(nil),             // 76: org.lfedge.eve.info.ZInfoVpnEndPoint
+	(*ZInfoVpnConn)(nil),                 // 77: org.lfedge.eve.info.ZInfoVpnConn
+	(*ZInfoVpn)(nil),                     // 78: org.lfedge.eve.info.ZInfoVpn
+	(*ZInfoNetworkInstance)(nil),         // 79: org.lfedge.eve.info.ZInfoNetworkInstance
+	(*IPRoute)(nil),                      // 80: org.lfedge.eve.info.IPRoute
+	(*UsageInfo)(nil),                    // 81: org.lfedge.eve.info.UsageInfo
+	(*VolumeResources)(nil),              // 82: org.lfedge.eve.info.VolumeResources
+	(*ZInfoVolume)(nil),                  // 83: org.lfedge.eve.info.ZInfoVolume
+	(*ContentResources)(nil),             // 84: org.lfedge.eve.info.ContentResources
+	(*ZInfoContentTree)(nil),             // 85: org.lfedge.eve.info.ZInfoContentTree
+	(*ZInfoBlob)(nil),                    // 86: org.lfedge.eve.info.ZInfoBlob
+	(*ZInfoBlobList)(nil),                // 87: org.lfedge.eve.info.ZInfoBlobList
+	(*ZInfoMsg)(nil),                     // 88: org.lfedge.eve.info.ZInfoMsg
+	(*Capabilities)(nil),                 // 89: org.lfedge.eve.info.Capabilities
+	(*ZInfoAppInstMetaData)(nil),         // 90: org.lfedge.eve.info.ZInfoAppInstMetaData
+	(*ZInfoEdgeview)(nil),                // 91: org.lfedge.eve.info.ZInfoEdgeview
+	(*ZInfoLocation)(nil),                // 92: org.lfedge.eve.info.ZInfoLocation
+	(*ZInfoKubeClusterUpdateStatus)(nil), // 93: org.lfedge.eve.info.ZInfoKubeClusterUpdateStatus
+	(*ZInfoKubeCluster)(nil),             // 94: org.lfedge.eve.info.ZInfoKubeCluster
+	(*ZInfoHardware)(nil),                // 95: org.lfedge.eve.info.ZInfoHardware
+	nil,                                  // 96: org.lfedge.eve.info.ZInfoConfigItemStatus.ConfigItemsEntry
+	nil,                                  // 97: org.lfedge.eve.info.ZInfoConfigItemStatus.UnknownConfigItemsEntry
+	(evecommon.PhyIoType)(0),             // 98: org.lfedge.eve.common.PhyIoType
+	(evecommon.PhyIoMemberUsage)(0),      // 99: org.lfedge.eve.common.PhyIoMemberUsage
+	(*ErrorInfo)(nil),                    // 100: org.lfedge.eve.info.ErrorInfo
+	(evecommon.BearerType)(0),            // 101: org.lfedge.eve.common.BearerType
+	(evecommon.CellularIPType)(0),        // 102: org.lfedge.eve.common.CellularIPType
+	(*timestamppb.Timestamp)(nil),        // 103: google.protobuf.Timestamp
+	(*evecommon.DiskDescription)(nil),    // 104: org.lfedge.eve.common.DiskDescription
+	(*CertInfo)(nil),                     // 105: org.lfedge.eve.info.CertInfo
+	(*evecommon.PortConfigSource)(nil),   // 106: org.lfedge.eve.common.PortConfigSource
+	(*PNACStatus)(nil),                   // 107: org.lfedge.eve.info.PNACStatus
+	(*BondStatus)(nil),                   // 108: org.lfedge.eve.info.BondStatus
+	(evecommon.RadioAccessTechnology)(0), // 109: org.lfedge.eve.common.RadioAccessTechnology
+	(*ZInfoPatchEnvelope)(nil),           // 110: org.lfedge.eve.info.ZInfoPatchEnvelope
+	(*ZInfoNTPSources)(nil),              // 111: org.lfedge.eve.info.ZInfoNTPSources
+	(KubeComp)(0),                        // 112: org.lfedge.eve.info.KubeComp
+	(KubeCompUpdateStatus)(0),            // 113: org.lfedge.eve.info.KubeCompUpdateStatus
+	(*KubeNodeInfo)(nil),                 // 114: org.lfedge.eve.info.KubeNodeInfo
+	(*KubePodNameSpaceInfo)(nil),         // 115: org.lfedge.eve.info.KubePodNameSpaceInfo
+	(*KubeEVEAppPodInfo)(nil),            // 116: org.lfedge.eve.info.KubeEVEAppPodInfo
+	(*KubeStorageInfo)(nil),              // 117: org.lfedge.eve.info.KubeStorageInfo
+	(*KubeVMIInfo)(nil),                  // 118: org.lfedge.eve.info.KubeVMIInfo
+	(*KubeWitnessInfo)(nil),              // 119: org.lfedge.eve.info.KubeWitnessInfo
+	(*HardwareInventory)(nil),            // 120: org.lfedge.eve.info.HardwareInventory
 }
 var file_info_info_proto_depIdxs = []int32{
-	29,  // 0: org.lfedge.eve.info.StorageDiskInfo.smart_attr:type_name -> org.lfedge.eve.info.SmartAttr
+	30,  // 0: org.lfedge.eve.info.StorageDiskInfo.smart_attr:type_name -> org.lfedge.eve.info.SmartAttr
 	0,   // 1: org.lfedge.eve.info.deprecatedMetricItem.type:type_name -> org.lfedge.eve.info.DepMetricItemType
-	96,  // 2: org.lfedge.eve.info.ZioBundle.type:type_name -> org.lfedge.eve.common.PhyIoType
-	35,  // 3: org.lfedge.eve.info.ZioBundle.ioAddressList:type_name -> org.lfedge.eve.info.IoAddresses
-	97,  // 4: org.lfedge.eve.info.ZioBundle.usage:type_name -> org.lfedge.eve.common.PhyIoMemberUsage
-	98,  // 5: org.lfedge.eve.info.ZioBundle.err:type_name -> org.lfedge.eve.info.ErrorInfo
-	36,  // 6: org.lfedge.eve.info.IoAddresses.vf_info:type_name -> org.lfedge.eve.info.VfPublishedInfo
-	40,  // 7: org.lfedge.eve.info.ZInfoNetwork.dns:type_name -> org.lfedge.eve.info.ZInfoDNS
-	39,  // 8: org.lfedge.eve.info.ZInfoNetwork.location:type_name -> org.lfedge.eve.info.GeoLoc
-	98,  // 9: org.lfedge.eve.info.ZInfoNetwork.networkErr:type_name -> org.lfedge.eve.info.ErrorInfo
-	63,  // 10: org.lfedge.eve.info.ZInfoNetwork.proxy:type_name -> org.lfedge.eve.info.ProxyStatus
+	98,  // 2: org.lfedge.eve.info.ZioBundle.type:type_name -> org.lfedge.eve.common.PhyIoType
+	36,  // 3: org.lfedge.eve.info.ZioBundle.ioAddressList:type_name -> org.lfedge.eve.info.IoAddresses
+	99,  // 4: org.lfedge.eve.info.ZioBundle.usage:type_name -> org.lfedge.eve.common.PhyIoMemberUsage
+	100, // 5: org.lfedge.eve.info.ZioBundle.err:type_name -> org.lfedge.eve.info.ErrorInfo
+	37,  // 6: org.lfedge.eve.info.IoAddresses.vf_info:type_name -> org.lfedge.eve.info.VfPublishedInfo
+	41,  // 7: org.lfedge.eve.info.ZInfoNetwork.dns:type_name -> org.lfedge.eve.info.ZInfoDNS
+	40,  // 8: org.lfedge.eve.info.ZInfoNetwork.location:type_name -> org.lfedge.eve.info.GeoLoc
+	100, // 9: org.lfedge.eve.info.ZInfoNetwork.networkErr:type_name -> org.lfedge.eve.info.ErrorInfo
+	64,  // 10: org.lfedge.eve.info.ZInfoNetwork.proxy:type_name -> org.lfedge.eve.info.ProxyStatus
 	2,   // 11: org.lfedge.eve.info.ZInfoSW.state:type_name -> org.lfedge.eve.info.ZSwState
 	4,   // 12: org.lfedge.eve.info.VaultInfo.status:type_name -> org.lfedge.eve.info.DataSecAtRestStatus
-	98,  // 13: org.lfedge.eve.info.VaultInfo.vaultErr:type_name -> org.lfedge.eve.info.ErrorInfo
+	100, // 13: org.lfedge.eve.info.VaultInfo.vaultErr:type_name -> org.lfedge.eve.info.ErrorInfo
 	5,   // 14: org.lfedge.eve.info.VaultInfo.pcrStatus:type_name -> org.lfedge.eve.info.PCRStatus
 	6,   // 15: org.lfedge.eve.info.VaultInfo.unlock_method:type_name -> org.lfedge.eve.info.VaultUnlockMethod
 	7,   // 16: org.lfedge.eve.info.VaultInfo.key_derivation:type_name -> org.lfedge.eve.info.VaultKeyDerivation
 	4,   // 17: org.lfedge.eve.info.DataSecAtRest.status:type_name -> org.lfedge.eve.info.DataSecAtRestStatus
-	42,  // 18: org.lfedge.eve.info.DataSecAtRest.vaultList:type_name -> org.lfedge.eve.info.VaultInfo
-	94,  // 19: org.lfedge.eve.info.ZInfoConfigItemStatus.configItems:type_name -> org.lfedge.eve.info.ZInfoConfigItemStatus.ConfigItemsEntry
-	95,  // 20: org.lfedge.eve.info.ZInfoConfigItemStatus.unknownConfigItems:type_name -> org.lfedge.eve.info.ZInfoConfigItemStatus.UnknownConfigItemsEntry
+	43,  // 18: org.lfedge.eve.info.DataSecAtRest.vaultList:type_name -> org.lfedge.eve.info.VaultInfo
+	96,  // 19: org.lfedge.eve.info.ZInfoConfigItemStatus.configItems:type_name -> org.lfedge.eve.info.ZInfoConfigItemStatus.ConfigItemsEntry
+	97,  // 20: org.lfedge.eve.info.ZInfoConfigItemStatus.unknownConfigItems:type_name -> org.lfedge.eve.info.ZInfoConfigItemStatus.UnknownConfigItemsEntry
 	8,   // 21: org.lfedge.eve.info.ZSimcardInfo.type:type_name -> org.lfedge.eve.info.SimType
 	9,   // 22: org.lfedge.eve.info.ZCellularModuleInfo.operating_state:type_name -> org.lfedge.eve.info.ZCellularOperatingState
 	10,  // 23: org.lfedge.eve.info.ZCellularModuleInfo.control_protocol:type_name -> org.lfedge.eve.info.ZCellularControlProtocol
-	99,  // 24: org.lfedge.eve.info.CellularBearer.bearer_type:type_name -> org.lfedge.eve.common.BearerType
-	100, // 25: org.lfedge.eve.info.CellularBearer.ip_type:type_name -> org.lfedge.eve.common.CellularIPType
-	101, // 26: org.lfedge.eve.info.CellularBearer.connected_at:type_name -> google.protobuf.Timestamp
-	99,  // 27: org.lfedge.eve.info.CellularProfile.bearer_type:type_name -> org.lfedge.eve.common.BearerType
-	100, // 28: org.lfedge.eve.info.CellularProfile.ip_type:type_name -> org.lfedge.eve.common.CellularIPType
-	102, // 29: org.lfedge.eve.info.StorageDiskState.disk_name:type_name -> org.lfedge.eve.common.DiskDescription
+	101, // 24: org.lfedge.eve.info.CellularBearer.bearer_type:type_name -> org.lfedge.eve.common.BearerType
+	102, // 25: org.lfedge.eve.info.CellularBearer.ip_type:type_name -> org.lfedge.eve.common.CellularIPType
+	103, // 26: org.lfedge.eve.info.CellularBearer.connected_at:type_name -> google.protobuf.Timestamp
+	101, // 27: org.lfedge.eve.info.CellularProfile.bearer_type:type_name -> org.lfedge.eve.common.BearerType
+	102, // 28: org.lfedge.eve.info.CellularProfile.ip_type:type_name -> org.lfedge.eve.common.CellularIPType
+	104, // 29: org.lfedge.eve.info.StorageDiskState.disk_name:type_name -> org.lfedge.eve.common.DiskDescription
 	13,  // 30: org.lfedge.eve.info.StorageDiskState.status:type_name -> org.lfedge.eve.info.StorageStatus
 	14,  // 31: org.lfedge.eve.info.StorageChildren.current_raid:type_name -> org.lfedge.eve.info.StorageRaidType
-	54,  // 32: org.lfedge.eve.info.StorageChildren.disks:type_name -> org.lfedge.eve.info.StorageDiskState
-	55,  // 33: org.lfedge.eve.info.StorageChildren.children:type_name -> org.lfedge.eve.info.StorageChildren
+	55,  // 32: org.lfedge.eve.info.StorageChildren.disks:type_name -> org.lfedge.eve.info.StorageDiskState
+	56,  // 33: org.lfedge.eve.info.StorageChildren.children:type_name -> org.lfedge.eve.info.StorageChildren
 	15,  // 34: org.lfedge.eve.info.StorageInfo.storage_type:type_name -> org.lfedge.eve.info.StorageTypeInfo
 	14,  // 35: org.lfedge.eve.info.StorageInfo.current_raid:type_name -> org.lfedge.eve.info.StorageRaidType
 	13,  // 36: org.lfedge.eve.info.StorageInfo.storage_state:type_name -> org.lfedge.eve.info.StorageStatus
-	54,  // 37: org.lfedge.eve.info.StorageInfo.disks:type_name -> org.lfedge.eve.info.StorageDiskState
-	55,  // 38: org.lfedge.eve.info.StorageInfo.children:type_name -> org.lfedge.eve.info.StorageChildren
-	37,  // 39: org.lfedge.eve.info.ZInfoDevice.minfo:type_name -> org.lfedge.eve.info.ZInfoManufacturer
-	38,  // 40: org.lfedge.eve.info.ZInfoDevice.network:type_name -> org.lfedge.eve.info.ZInfoNetwork
-	34,  // 41: org.lfedge.eve.info.ZInfoDevice.assignableAdapters:type_name -> org.lfedge.eve.info.ZioBundle
-	40,  // 42: org.lfedge.eve.info.ZInfoDevice.dns:type_name -> org.lfedge.eve.info.ZInfoDNS
-	68,  // 43: org.lfedge.eve.info.ZInfoDevice.storageList:type_name -> org.lfedge.eve.info.ZInfoStorage
-	101, // 44: org.lfedge.eve.info.ZInfoDevice.bootTime:type_name -> google.protobuf.Timestamp
-	67,  // 45: org.lfedge.eve.info.ZInfoDevice.swList:type_name -> org.lfedge.eve.info.ZInfoDevSW
-	31,  // 46: org.lfedge.eve.info.ZInfoDevice.metricItems:type_name -> org.lfedge.eve.info.deprecatedMetricItem
-	101, // 47: org.lfedge.eve.info.ZInfoDevice.lastRebootTime:type_name -> google.protobuf.Timestamp
-	60,  // 48: org.lfedge.eve.info.ZInfoDevice.systemAdapter:type_name -> org.lfedge.eve.info.SystemAdapterInfo
+	55,  // 37: org.lfedge.eve.info.StorageInfo.disks:type_name -> org.lfedge.eve.info.StorageDiskState
+	56,  // 38: org.lfedge.eve.info.StorageInfo.children:type_name -> org.lfedge.eve.info.StorageChildren
+	38,  // 39: org.lfedge.eve.info.ZInfoDevice.minfo:type_name -> org.lfedge.eve.info.ZInfoManufacturer
+	39,  // 40: org.lfedge.eve.info.ZInfoDevice.network:type_name -> org.lfedge.eve.info.ZInfoNetwork
+	35,  // 41: org.lfedge.eve.info.ZInfoDevice.assignableAdapters:type_name -> org.lfedge.eve.info.ZioBundle
+	41,  // 42: org.lfedge.eve.info.ZInfoDevice.dns:type_name -> org.lfedge.eve.info.ZInfoDNS
+	69,  // 43: org.lfedge.eve.info.ZInfoDevice.storageList:type_name -> org.lfedge.eve.info.ZInfoStorage
+	103, // 44: org.lfedge.eve.info.ZInfoDevice.bootTime:type_name -> google.protobuf.Timestamp
+	68,  // 45: org.lfedge.eve.info.ZInfoDevice.swList:type_name -> org.lfedge.eve.info.ZInfoDevSW
+	32,  // 46: org.lfedge.eve.info.ZInfoDevice.metricItems:type_name -> org.lfedge.eve.info.deprecatedMetricItem
+	103, // 47: org.lfedge.eve.info.ZInfoDevice.lastRebootTime:type_name -> google.protobuf.Timestamp
+	61,  // 48: org.lfedge.eve.info.ZInfoDevice.systemAdapter:type_name -> org.lfedge.eve.info.SystemAdapterInfo
 	3,   // 49: org.lfedge.eve.info.ZInfoDevice.HSMStatus:type_name -> org.lfedge.eve.info.HwSecurityModuleStatus
-	43,  // 50: org.lfedge.eve.info.ZInfoDevice.dataSecAtRestInfo:type_name -> org.lfedge.eve.info.DataSecAtRest
-	44,  // 51: org.lfedge.eve.info.ZInfoDevice.sec_info:type_name -> org.lfedge.eve.info.SecurityInfo
-	46,  // 52: org.lfedge.eve.info.ZInfoDevice.configItemStatus:type_name -> org.lfedge.eve.info.ZInfoConfigItemStatus
-	47,  // 53: org.lfedge.eve.info.ZInfoDevice.appInstances:type_name -> org.lfedge.eve.info.ZInfoAppInstance
+	44,  // 50: org.lfedge.eve.info.ZInfoDevice.dataSecAtRestInfo:type_name -> org.lfedge.eve.info.DataSecAtRest
+	45,  // 51: org.lfedge.eve.info.ZInfoDevice.sec_info:type_name -> org.lfedge.eve.info.SecurityInfo
+	47,  // 52: org.lfedge.eve.info.ZInfoDevice.configItemStatus:type_name -> org.lfedge.eve.info.ZInfoConfigItemStatus
+	48,  // 53: org.lfedge.eve.info.ZInfoDevice.appInstances:type_name -> org.lfedge.eve.info.ZInfoAppInstance
 	17,  // 54: org.lfedge.eve.info.ZInfoDevice.last_boot_reason:type_name -> org.lfedge.eve.info.BootReason
-	50,  // 55: org.lfedge.eve.info.ZInfoDevice.cell_radios:type_name -> org.lfedge.eve.info.ZCellularModuleInfo
-	49,  // 56: org.lfedge.eve.info.ZInfoDevice.sims:type_name -> org.lfedge.eve.info.ZSimcardInfo
-	48,  // 57: org.lfedge.eve.info.ZInfoDevice.tasks:type_name -> org.lfedge.eve.info.ZInfoDeviceTasks
+	51,  // 55: org.lfedge.eve.info.ZInfoDevice.cell_radios:type_name -> org.lfedge.eve.info.ZCellularModuleInfo
+	50,  // 56: org.lfedge.eve.info.ZInfoDevice.sims:type_name -> org.lfedge.eve.info.ZSimcardInfo
+	49,  // 57: org.lfedge.eve.info.ZInfoDevice.tasks:type_name -> org.lfedge.eve.info.ZInfoDeviceTasks
 	18,  // 58: org.lfedge.eve.info.ZInfoDevice.maintenance_mode_reason:type_name -> org.lfedge.eve.info.MaintenanceModeReason
-	87,  // 59: org.lfedge.eve.info.ZInfoDevice.capabilities:type_name -> org.lfedge.eve.info.Capabilities
+	89,  // 59: org.lfedge.eve.info.ZInfoDevice.capabilities:type_name -> org.lfedge.eve.info.Capabilities
 	11,  // 60: org.lfedge.eve.info.ZInfoDevice.state:type_name -> org.lfedge.eve.info.ZDeviceState
 	12,  // 61: org.lfedge.eve.info.ZInfoDevice.sub_state:type_name -> org.lfedge.eve.info.ZDeviceSubState
 	18,  // 62: org.lfedge.eve.info.ZInfoDevice.maintenance_mode_reasons:type_name -> org.lfedge.eve.info.MaintenanceModeReason
-	56,  // 63: org.lfedge.eve.info.ZInfoDevice.storage_info:type_name -> org.lfedge.eve.info.StorageInfo
-	59,  // 64: org.lfedge.eve.info.ZInfoDevice.attestation_info:type_name -> org.lfedge.eve.info.AttestationInfo
+	57,  // 63: org.lfedge.eve.info.ZInfoDevice.storage_info:type_name -> org.lfedge.eve.info.StorageInfo
+	60,  // 64: org.lfedge.eve.info.ZInfoDevice.attestation_info:type_name -> org.lfedge.eve.info.AttestationInfo
 	16,  // 65: org.lfedge.eve.info.ZInfoDevice.api_capability:type_name -> org.lfedge.eve.info.APICapability
-	58,  // 66: org.lfedge.eve.info.ZInfoDevice.optional_capabilities:type_name -> org.lfedge.eve.info.OptionalCapabilities
-	103, // 67: org.lfedge.eve.info.ZInfoDevice.enrolled_certs:type_name -> org.lfedge.eve.info.CertInfo
+	59,  // 66: org.lfedge.eve.info.ZInfoDevice.optional_capabilities:type_name -> org.lfedge.eve.info.OptionalCapabilities
+	105, // 67: org.lfedge.eve.info.ZInfoDevice.enrolled_certs:type_name -> org.lfedge.eve.info.CertInfo
 	19,  // 68: org.lfedge.eve.info.AttestationInfo.state:type_name -> org.lfedge.eve.info.AttestationState
-	98,  // 69: org.lfedge.eve.info.AttestationInfo.error:type_name -> org.lfedge.eve.info.ErrorInfo
-	61,  // 70: org.lfedge.eve.info.SystemAdapterInfo.status:type_name -> org.lfedge.eve.info.DevicePortStatus
-	101, // 71: org.lfedge.eve.info.DevicePortStatus.timePriority:type_name -> google.protobuf.Timestamp
-	101, // 72: org.lfedge.eve.info.DevicePortStatus.lastFailed:type_name -> google.protobuf.Timestamp
-	101, // 73: org.lfedge.eve.info.DevicePortStatus.lastSucceeded:type_name -> google.protobuf.Timestamp
-	62,  // 74: org.lfedge.eve.info.DevicePortStatus.ports:type_name -> org.lfedge.eve.info.DevicePort
-	63,  // 75: org.lfedge.eve.info.DevicePort.proxy:type_name -> org.lfedge.eve.info.ProxyStatus
-	40,  // 76: org.lfedge.eve.info.DevicePort.dns:type_name -> org.lfedge.eve.info.ZInfoDNS
-	39,  // 77: org.lfedge.eve.info.DevicePort.location:type_name -> org.lfedge.eve.info.GeoLoc
-	98,  // 78: org.lfedge.eve.info.DevicePort.err:type_name -> org.lfedge.eve.info.ErrorInfo
-	97,  // 79: org.lfedge.eve.info.DevicePort.usage:type_name -> org.lfedge.eve.common.PhyIoMemberUsage
-	65,  // 80: org.lfedge.eve.info.DevicePort.wireless_status:type_name -> org.lfedge.eve.info.WirelessStatus
-	104, // 81: org.lfedge.eve.info.DevicePort.config_source:type_name -> org.lfedge.eve.common.PortConfigSource
-	105, // 82: org.lfedge.eve.info.DevicePort.pnac_status:type_name -> org.lfedge.eve.info.PNACStatus
-	106, // 83: org.lfedge.eve.info.DevicePort.bond_status:type_name -> org.lfedge.eve.info.BondStatus
-	64,  // 84: org.lfedge.eve.info.ProxyStatus.proxies:type_name -> org.lfedge.eve.info.ProxyEntry
+	100, // 69: org.lfedge.eve.info.AttestationInfo.error:type_name -> org.lfedge.eve.info.ErrorInfo
+	62,  // 70: org.lfedge.eve.info.SystemAdapterInfo.status:type_name -> org.lfedge.eve.info.DevicePortStatus
+	103, // 71: org.lfedge.eve.info.DevicePortStatus.timePriority:type_name -> google.protobuf.Timestamp
+	103, // 72: org.lfedge.eve.info.DevicePortStatus.lastFailed:type_name -> google.protobuf.Timestamp
+	103, // 73: org.lfedge.eve.info.DevicePortStatus.lastSucceeded:type_name -> google.protobuf.Timestamp
+	63,  // 74: org.lfedge.eve.info.DevicePortStatus.ports:type_name -> org.lfedge.eve.info.DevicePort
+	64,  // 75: org.lfedge.eve.info.DevicePort.proxy:type_name -> org.lfedge.eve.info.ProxyStatus
+	41,  // 76: org.lfedge.eve.info.DevicePort.dns:type_name -> org.lfedge.eve.info.ZInfoDNS
+	40,  // 77: org.lfedge.eve.info.DevicePort.location:type_name -> org.lfedge.eve.info.GeoLoc
+	100, // 78: org.lfedge.eve.info.DevicePort.err:type_name -> org.lfedge.eve.info.ErrorInfo
+	99,  // 79: org.lfedge.eve.info.DevicePort.usage:type_name -> org.lfedge.eve.common.PhyIoMemberUsage
+	66,  // 80: org.lfedge.eve.info.DevicePort.wireless_status:type_name -> org.lfedge.eve.info.WirelessStatus
+	106, // 81: org.lfedge.eve.info.DevicePort.config_source:type_name -> org.lfedge.eve.common.PortConfigSource
+	107, // 82: org.lfedge.eve.info.DevicePort.pnac_status:type_name -> org.lfedge.eve.info.PNACStatus
+	108, // 83: org.lfedge.eve.info.DevicePort.bond_status:type_name -> org.lfedge.eve.info.BondStatus
+	65,  // 84: org.lfedge.eve.info.ProxyStatus.proxies:type_name -> org.lfedge.eve.info.ProxyEntry
 	21,  // 85: org.lfedge.eve.info.WirelessStatus.type:type_name -> org.lfedge.eve.info.WirelessType
-	66,  // 86: org.lfedge.eve.info.WirelessStatus.cellular:type_name -> org.lfedge.eve.info.ZCellularStatus
-	51,  // 87: org.lfedge.eve.info.ZCellularStatus.providers:type_name -> org.lfedge.eve.info.ZCellularProvider
-	107, // 88: org.lfedge.eve.info.ZCellularStatus.current_rats:type_name -> org.lfedge.eve.common.RadioAccessTechnology
-	101, // 89: org.lfedge.eve.info.ZCellularStatus.connected_at:type_name -> google.protobuf.Timestamp
-	52,  // 90: org.lfedge.eve.info.ZCellularStatus.bearers:type_name -> org.lfedge.eve.info.CellularBearer
-	53,  // 91: org.lfedge.eve.info.ZCellularStatus.profiles:type_name -> org.lfedge.eve.info.CellularProfile
+	67,  // 86: org.lfedge.eve.info.WirelessStatus.cellular:type_name -> org.lfedge.eve.info.ZCellularStatus
+	52,  // 87: org.lfedge.eve.info.ZCellularStatus.providers:type_name -> org.lfedge.eve.info.ZCellularProvider
+	109, // 88: org.lfedge.eve.info.ZCellularStatus.current_rats:type_name -> org.lfedge.eve.common.RadioAccessTechnology
+	103, // 89: org.lfedge.eve.info.ZCellularStatus.connected_at:type_name -> google.protobuf.Timestamp
+	53,  // 90: org.lfedge.eve.info.ZCellularStatus.bearers:type_name -> org.lfedge.eve.info.CellularBearer
+	54,  // 91: org.lfedge.eve.info.ZCellularStatus.profiles:type_name -> org.lfedge.eve.info.CellularProfile
 	2,   // 92: org.lfedge.eve.info.ZInfoDevSW.status:type_name -> org.lfedge.eve.info.ZSwState
-	98,  // 93: org.lfedge.eve.info.ZInfoDevSW.swErr:type_name -> org.lfedge.eve.info.ErrorInfo
+	100, // 93: org.lfedge.eve.info.ZInfoDevSW.swErr:type_name -> org.lfedge.eve.info.ErrorInfo
 	22,  // 94: org.lfedge.eve.info.ZInfoDevSW.userStatus:type_name -> org.lfedge.eve.info.BaseOsStatus
 	23,  // 95: org.lfedge.eve.info.ZInfoDevSW.subStatus:type_name -> org.lfedge.eve.info.BaseOsSubStatus
-	101, // 96: org.lfedge.eve.info.ZInfoSnapshot.create_time:type_name -> google.protobuf.Timestamp
+	103, // 96: org.lfedge.eve.info.ZInfoSnapshot.create_time:type_name -> google.protobuf.Timestamp
 	24,  // 97: org.lfedge.eve.info.ZInfoSnapshot.type:type_name -> org.lfedge.eve.info.SnapshotType
-	98,  // 98: org.lfedge.eve.info.ZInfoSnapshot.snap_err:type_name -> org.lfedge.eve.info.ErrorInfo
+	100, // 98: org.lfedge.eve.info.ZInfoSnapshot.snap_err:type_name -> org.lfedge.eve.info.ErrorInfo
 	25,  // 99: org.lfedge.eve.info.ZInfoClusterNode.node_status:type_name -> org.lfedge.eve.info.ZInfoClusterNodeStatus
-	41,  // 100: org.lfedge.eve.info.ZInfoApp.softwareList:type_name -> org.lfedge.eve.info.ZInfoSW
-	101, // 101: org.lfedge.eve.info.ZInfoApp.bootTime:type_name -> google.protobuf.Timestamp
-	34,  // 102: org.lfedge.eve.info.ZInfoApp.assignedAdapters:type_name -> org.lfedge.eve.info.ZioBundle
-	98,  // 103: org.lfedge.eve.info.ZInfoApp.appErr:type_name -> org.lfedge.eve.info.ErrorInfo
-	2,   // 104: org.lfedge.eve.info.ZInfoApp.state:type_name -> org.lfedge.eve.info.ZSwState
-	38,  // 105: org.lfedge.eve.info.ZInfoApp.network:type_name -> org.lfedge.eve.info.ZInfoNetwork
-	69,  // 106: org.lfedge.eve.info.ZInfoApp.snapshots:type_name -> org.lfedge.eve.info.ZInfoSnapshot
-	26,  // 107: org.lfedge.eve.info.ZInfoVpnLink.state:type_name -> org.lfedge.eve.info.ZInfoVpnState
-	72,  // 108: org.lfedge.eve.info.ZInfoVpnLink.lInfo:type_name -> org.lfedge.eve.info.ZInfoVpnLinkInfo
-	72,  // 109: org.lfedge.eve.info.ZInfoVpnLink.rInfo:type_name -> org.lfedge.eve.info.ZInfoVpnLinkInfo
-	26,  // 110: org.lfedge.eve.info.ZInfoVpnConn.state:type_name -> org.lfedge.eve.info.ZInfoVpnState
-	74,  // 111: org.lfedge.eve.info.ZInfoVpnConn.lInfo:type_name -> org.lfedge.eve.info.ZInfoVpnEndPoint
-	74,  // 112: org.lfedge.eve.info.ZInfoVpnConn.rInfo:type_name -> org.lfedge.eve.info.ZInfoVpnEndPoint
-	73,  // 113: org.lfedge.eve.info.ZInfoVpnConn.links:type_name -> org.lfedge.eve.info.ZInfoVpnLink
-	75,  // 114: org.lfedge.eve.info.ZInfoVpn.conn:type_name -> org.lfedge.eve.info.ZInfoVpnConn
-	101, // 115: org.lfedge.eve.info.ZInfoNetworkInstance.upTimeStamp:type_name -> google.protobuf.Timestamp
-	41,  // 116: org.lfedge.eve.info.ZInfoNetworkInstance.softwareList:type_name -> org.lfedge.eve.info.ZInfoSW
-	32,  // 117: org.lfedge.eve.info.ZInfoNetworkInstance.ipAssignments:type_name -> org.lfedge.eve.info.ZmetIPAssignmentEntry
-	33,  // 118: org.lfedge.eve.info.ZInfoNetworkInstance.vifs:type_name -> org.lfedge.eve.info.ZmetVifInfo
-	34,  // 119: org.lfedge.eve.info.ZInfoNetworkInstance.assignedAdapters:type_name -> org.lfedge.eve.info.ZioBundle
-	76,  // 120: org.lfedge.eve.info.ZInfoNetworkInstance.vinfo:type_name -> org.lfedge.eve.info.ZInfoVpn
-	98,  // 121: org.lfedge.eve.info.ZInfoNetworkInstance.networkErr:type_name -> org.lfedge.eve.info.ErrorInfo
-	27,  // 122: org.lfedge.eve.info.ZInfoNetworkInstance.state:type_name -> org.lfedge.eve.info.ZNetworkInstanceState
-	78,  // 123: org.lfedge.eve.info.ZInfoNetworkInstance.ip_routes:type_name -> org.lfedge.eve.info.IPRoute
-	101, // 124: org.lfedge.eve.info.UsageInfo.createTime:type_name -> google.protobuf.Timestamp
-	101, // 125: org.lfedge.eve.info.UsageInfo.lastRefcountChangeTime:type_name -> google.protobuf.Timestamp
-	79,  // 126: org.lfedge.eve.info.ZInfoVolume.usage:type_name -> org.lfedge.eve.info.UsageInfo
-	80,  // 127: org.lfedge.eve.info.ZInfoVolume.resources:type_name -> org.lfedge.eve.info.VolumeResources
-	2,   // 128: org.lfedge.eve.info.ZInfoVolume.state:type_name -> org.lfedge.eve.info.ZSwState
-	98,  // 129: org.lfedge.eve.info.ZInfoVolume.volumeErr:type_name -> org.lfedge.eve.info.ErrorInfo
-	82,  // 130: org.lfedge.eve.info.ZInfoContentTree.resources:type_name -> org.lfedge.eve.info.ContentResources
-	79,  // 131: org.lfedge.eve.info.ZInfoContentTree.usage:type_name -> org.lfedge.eve.info.UsageInfo
-	2,   // 132: org.lfedge.eve.info.ZInfoContentTree.state:type_name -> org.lfedge.eve.info.ZSwState
-	98,  // 133: org.lfedge.eve.info.ZInfoContentTree.err:type_name -> org.lfedge.eve.info.ErrorInfo
-	82,  // 134: org.lfedge.eve.info.ZInfoBlob.resources:type_name -> org.lfedge.eve.info.ContentResources
-	79,  // 135: org.lfedge.eve.info.ZInfoBlob.usage:type_name -> org.lfedge.eve.info.UsageInfo
-	2,   // 136: org.lfedge.eve.info.ZInfoBlob.state:type_name -> org.lfedge.eve.info.ZSwState
-	98,  // 137: org.lfedge.eve.info.ZInfoBlob.err:type_name -> org.lfedge.eve.info.ErrorInfo
-	84,  // 138: org.lfedge.eve.info.ZInfoBlobList.blob:type_name -> org.lfedge.eve.info.ZInfoBlob
-	1,   // 139: org.lfedge.eve.info.ZInfoMsg.ztype:type_name -> org.lfedge.eve.info.ZInfoTypes
-	57,  // 140: org.lfedge.eve.info.ZInfoMsg.dinfo:type_name -> org.lfedge.eve.info.ZInfoDevice
-	71,  // 141: org.lfedge.eve.info.ZInfoMsg.ainfo:type_name -> org.lfedge.eve.info.ZInfoApp
-	77,  // 142: org.lfedge.eve.info.ZInfoMsg.niinfo:type_name -> org.lfedge.eve.info.ZInfoNetworkInstance
-	81,  // 143: org.lfedge.eve.info.ZInfoMsg.vinfo:type_name -> org.lfedge.eve.info.ZInfoVolume
-	83,  // 144: org.lfedge.eve.info.ZInfoMsg.cinfo:type_name -> org.lfedge.eve.info.ZInfoContentTree
-	85,  // 145: org.lfedge.eve.info.ZInfoMsg.binfo:type_name -> org.lfedge.eve.info.ZInfoBlobList
-	88,  // 146: org.lfedge.eve.info.ZInfoMsg.amdinfo:type_name -> org.lfedge.eve.info.ZInfoAppInstMetaData
-	89,  // 147: org.lfedge.eve.info.ZInfoMsg.evinfo:type_name -> org.lfedge.eve.info.ZInfoEdgeview
-	93,  // 148: org.lfedge.eve.info.ZInfoMsg.hwinfo:type_name -> org.lfedge.eve.info.ZInfoHardware
-	90,  // 149: org.lfedge.eve.info.ZInfoMsg.locinfo:type_name -> org.lfedge.eve.info.ZInfoLocation
-	108, // 150: org.lfedge.eve.info.ZInfoMsg.patchInfo:type_name -> org.lfedge.eve.info.ZInfoPatchEnvelope
-	70,  // 151: org.lfedge.eve.info.ZInfoMsg.cluster_node:type_name -> org.lfedge.eve.info.ZInfoClusterNode
-	109, // 152: org.lfedge.eve.info.ZInfoMsg.ntp_sources:type_name -> org.lfedge.eve.info.ZInfoNTPSources
-	92,  // 153: org.lfedge.eve.info.ZInfoMsg.cluster_info:type_name -> org.lfedge.eve.info.ZInfoKubeCluster
-	91,  // 154: org.lfedge.eve.info.ZInfoMsg.cluster_update_info:type_name -> org.lfedge.eve.info.ZInfoKubeClusterUpdateStatus
-	101, // 155: org.lfedge.eve.info.ZInfoMsg.atTimeStamp:type_name -> google.protobuf.Timestamp
-	20,  // 156: org.lfedge.eve.info.ZInfoAppInstMetaData.type:type_name -> org.lfedge.eve.info.AppInstMetaDataType
-	101, // 157: org.lfedge.eve.info.ZInfoEdgeview.expire_time:type_name -> google.protobuf.Timestamp
-	101, // 158: org.lfedge.eve.info.ZInfoEdgeview.started_time:type_name -> google.protobuf.Timestamp
-	101, // 159: org.lfedge.eve.info.ZInfoLocation.utc_timestamp:type_name -> google.protobuf.Timestamp
-	28,  // 160: org.lfedge.eve.info.ZInfoLocation.horizontal_reliability:type_name -> org.lfedge.eve.info.LocReliability
-	28,  // 161: org.lfedge.eve.info.ZInfoLocation.vertical_reliability:type_name -> org.lfedge.eve.info.LocReliability
-	110, // 162: org.lfedge.eve.info.ZInfoKubeClusterUpdateStatus.component:type_name -> org.lfedge.eve.info.KubeComp
-	111, // 163: org.lfedge.eve.info.ZInfoKubeClusterUpdateStatus.status:type_name -> org.lfedge.eve.info.KubeCompUpdateStatus
-	98,  // 164: org.lfedge.eve.info.ZInfoKubeClusterUpdateStatus.error:type_name -> org.lfedge.eve.info.ErrorInfo
-	112, // 165: org.lfedge.eve.info.ZInfoKubeCluster.nodes:type_name -> org.lfedge.eve.info.KubeNodeInfo
-	113, // 166: org.lfedge.eve.info.ZInfoKubeCluster.pod_name_spaces:type_name -> org.lfedge.eve.info.KubePodNameSpaceInfo
-	114, // 167: org.lfedge.eve.info.ZInfoKubeCluster.eve_apps:type_name -> org.lfedge.eve.info.KubeEVEAppPodInfo
-	115, // 168: org.lfedge.eve.info.ZInfoKubeCluster.storage:type_name -> org.lfedge.eve.info.KubeStorageInfo
-	116, // 169: org.lfedge.eve.info.ZInfoKubeCluster.eve_vm_apps:type_name -> org.lfedge.eve.info.KubeVMIInfo
-	117, // 170: org.lfedge.eve.info.ZInfoKubeCluster.witness:type_name -> org.lfedge.eve.info.KubeWitnessInfo
-	30,  // 171: org.lfedge.eve.info.ZInfoHardware.disks:type_name -> org.lfedge.eve.info.StorageDiskInfo
-	118, // 172: org.lfedge.eve.info.ZInfoHardware.inventory:type_name -> org.lfedge.eve.info.HardwareInventory
-	45,  // 173: org.lfedge.eve.info.ZInfoConfigItemStatus.ConfigItemsEntry.value:type_name -> org.lfedge.eve.info.ZInfoConfigItem
-	45,  // 174: org.lfedge.eve.info.ZInfoConfigItemStatus.UnknownConfigItemsEntry.value:type_name -> org.lfedge.eve.info.ZInfoConfigItem
-	175, // [175:175] is the sub-list for method output_type
-	175, // [175:175] is the sub-list for method input_type
-	175, // [175:175] is the sub-list for extension type_name
-	175, // [175:175] is the sub-list for extension extendee
-	0,   // [0:175] is the sub-list for field type_name
+	26,  // 100: org.lfedge.eve.info.ZInfoAppPendingChange.action_needed:type_name -> org.lfedge.eve.info.PendingChangeAction
+	42,  // 101: org.lfedge.eve.info.ZInfoApp.softwareList:type_name -> org.lfedge.eve.info.ZInfoSW
+	103, // 102: org.lfedge.eve.info.ZInfoApp.bootTime:type_name -> google.protobuf.Timestamp
+	35,  // 103: org.lfedge.eve.info.ZInfoApp.assignedAdapters:type_name -> org.lfedge.eve.info.ZioBundle
+	100, // 104: org.lfedge.eve.info.ZInfoApp.appErr:type_name -> org.lfedge.eve.info.ErrorInfo
+	2,   // 105: org.lfedge.eve.info.ZInfoApp.state:type_name -> org.lfedge.eve.info.ZSwState
+	39,  // 106: org.lfedge.eve.info.ZInfoApp.network:type_name -> org.lfedge.eve.info.ZInfoNetwork
+	70,  // 107: org.lfedge.eve.info.ZInfoApp.snapshots:type_name -> org.lfedge.eve.info.ZInfoSnapshot
+	72,  // 108: org.lfedge.eve.info.ZInfoApp.pending_changes:type_name -> org.lfedge.eve.info.ZInfoAppPendingChange
+	27,  // 109: org.lfedge.eve.info.ZInfoVpnLink.state:type_name -> org.lfedge.eve.info.ZInfoVpnState
+	74,  // 110: org.lfedge.eve.info.ZInfoVpnLink.lInfo:type_name -> org.lfedge.eve.info.ZInfoVpnLinkInfo
+	74,  // 111: org.lfedge.eve.info.ZInfoVpnLink.rInfo:type_name -> org.lfedge.eve.info.ZInfoVpnLinkInfo
+	27,  // 112: org.lfedge.eve.info.ZInfoVpnConn.state:type_name -> org.lfedge.eve.info.ZInfoVpnState
+	76,  // 113: org.lfedge.eve.info.ZInfoVpnConn.lInfo:type_name -> org.lfedge.eve.info.ZInfoVpnEndPoint
+	76,  // 114: org.lfedge.eve.info.ZInfoVpnConn.rInfo:type_name -> org.lfedge.eve.info.ZInfoVpnEndPoint
+	75,  // 115: org.lfedge.eve.info.ZInfoVpnConn.links:type_name -> org.lfedge.eve.info.ZInfoVpnLink
+	77,  // 116: org.lfedge.eve.info.ZInfoVpn.conn:type_name -> org.lfedge.eve.info.ZInfoVpnConn
+	103, // 117: org.lfedge.eve.info.ZInfoNetworkInstance.upTimeStamp:type_name -> google.protobuf.Timestamp
+	42,  // 118: org.lfedge.eve.info.ZInfoNetworkInstance.softwareList:type_name -> org.lfedge.eve.info.ZInfoSW
+	33,  // 119: org.lfedge.eve.info.ZInfoNetworkInstance.ipAssignments:type_name -> org.lfedge.eve.info.ZmetIPAssignmentEntry
+	34,  // 120: org.lfedge.eve.info.ZInfoNetworkInstance.vifs:type_name -> org.lfedge.eve.info.ZmetVifInfo
+	35,  // 121: org.lfedge.eve.info.ZInfoNetworkInstance.assignedAdapters:type_name -> org.lfedge.eve.info.ZioBundle
+	78,  // 122: org.lfedge.eve.info.ZInfoNetworkInstance.vinfo:type_name -> org.lfedge.eve.info.ZInfoVpn
+	100, // 123: org.lfedge.eve.info.ZInfoNetworkInstance.networkErr:type_name -> org.lfedge.eve.info.ErrorInfo
+	28,  // 124: org.lfedge.eve.info.ZInfoNetworkInstance.state:type_name -> org.lfedge.eve.info.ZNetworkInstanceState
+	80,  // 125: org.lfedge.eve.info.ZInfoNetworkInstance.ip_routes:type_name -> org.lfedge.eve.info.IPRoute
+	103, // 126: org.lfedge.eve.info.UsageInfo.createTime:type_name -> google.protobuf.Timestamp
+	103, // 127: org.lfedge.eve.info.UsageInfo.lastRefcountChangeTime:type_name -> google.protobuf.Timestamp
+	81,  // 128: org.lfedge.eve.info.ZInfoVolume.usage:type_name -> org.lfedge.eve.info.UsageInfo
+	82,  // 129: org.lfedge.eve.info.ZInfoVolume.resources:type_name -> org.lfedge.eve.info.VolumeResources
+	2,   // 130: org.lfedge.eve.info.ZInfoVolume.state:type_name -> org.lfedge.eve.info.ZSwState
+	100, // 131: org.lfedge.eve.info.ZInfoVolume.volumeErr:type_name -> org.lfedge.eve.info.ErrorInfo
+	84,  // 132: org.lfedge.eve.info.ZInfoContentTree.resources:type_name -> org.lfedge.eve.info.ContentResources
+	81,  // 133: org.lfedge.eve.info.ZInfoContentTree.usage:type_name -> org.lfedge.eve.info.UsageInfo
+	2,   // 134: org.lfedge.eve.info.ZInfoContentTree.state:type_name -> org.lfedge.eve.info.ZSwState
+	100, // 135: org.lfedge.eve.info.ZInfoContentTree.err:type_name -> org.lfedge.eve.info.ErrorInfo
+	84,  // 136: org.lfedge.eve.info.ZInfoBlob.resources:type_name -> org.lfedge.eve.info.ContentResources
+	81,  // 137: org.lfedge.eve.info.ZInfoBlob.usage:type_name -> org.lfedge.eve.info.UsageInfo
+	2,   // 138: org.lfedge.eve.info.ZInfoBlob.state:type_name -> org.lfedge.eve.info.ZSwState
+	100, // 139: org.lfedge.eve.info.ZInfoBlob.err:type_name -> org.lfedge.eve.info.ErrorInfo
+	86,  // 140: org.lfedge.eve.info.ZInfoBlobList.blob:type_name -> org.lfedge.eve.info.ZInfoBlob
+	1,   // 141: org.lfedge.eve.info.ZInfoMsg.ztype:type_name -> org.lfedge.eve.info.ZInfoTypes
+	58,  // 142: org.lfedge.eve.info.ZInfoMsg.dinfo:type_name -> org.lfedge.eve.info.ZInfoDevice
+	73,  // 143: org.lfedge.eve.info.ZInfoMsg.ainfo:type_name -> org.lfedge.eve.info.ZInfoApp
+	79,  // 144: org.lfedge.eve.info.ZInfoMsg.niinfo:type_name -> org.lfedge.eve.info.ZInfoNetworkInstance
+	83,  // 145: org.lfedge.eve.info.ZInfoMsg.vinfo:type_name -> org.lfedge.eve.info.ZInfoVolume
+	85,  // 146: org.lfedge.eve.info.ZInfoMsg.cinfo:type_name -> org.lfedge.eve.info.ZInfoContentTree
+	87,  // 147: org.lfedge.eve.info.ZInfoMsg.binfo:type_name -> org.lfedge.eve.info.ZInfoBlobList
+	90,  // 148: org.lfedge.eve.info.ZInfoMsg.amdinfo:type_name -> org.lfedge.eve.info.ZInfoAppInstMetaData
+	91,  // 149: org.lfedge.eve.info.ZInfoMsg.evinfo:type_name -> org.lfedge.eve.info.ZInfoEdgeview
+	95,  // 150: org.lfedge.eve.info.ZInfoMsg.hwinfo:type_name -> org.lfedge.eve.info.ZInfoHardware
+	92,  // 151: org.lfedge.eve.info.ZInfoMsg.locinfo:type_name -> org.lfedge.eve.info.ZInfoLocation
+	110, // 152: org.lfedge.eve.info.ZInfoMsg.patchInfo:type_name -> org.lfedge.eve.info.ZInfoPatchEnvelope
+	71,  // 153: org.lfedge.eve.info.ZInfoMsg.cluster_node:type_name -> org.lfedge.eve.info.ZInfoClusterNode
+	111, // 154: org.lfedge.eve.info.ZInfoMsg.ntp_sources:type_name -> org.lfedge.eve.info.ZInfoNTPSources
+	94,  // 155: org.lfedge.eve.info.ZInfoMsg.cluster_info:type_name -> org.lfedge.eve.info.ZInfoKubeCluster
+	93,  // 156: org.lfedge.eve.info.ZInfoMsg.cluster_update_info:type_name -> org.lfedge.eve.info.ZInfoKubeClusterUpdateStatus
+	103, // 157: org.lfedge.eve.info.ZInfoMsg.atTimeStamp:type_name -> google.protobuf.Timestamp
+	20,  // 158: org.lfedge.eve.info.ZInfoAppInstMetaData.type:type_name -> org.lfedge.eve.info.AppInstMetaDataType
+	103, // 159: org.lfedge.eve.info.ZInfoEdgeview.expire_time:type_name -> google.protobuf.Timestamp
+	103, // 160: org.lfedge.eve.info.ZInfoEdgeview.started_time:type_name -> google.protobuf.Timestamp
+	103, // 161: org.lfedge.eve.info.ZInfoLocation.utc_timestamp:type_name -> google.protobuf.Timestamp
+	29,  // 162: org.lfedge.eve.info.ZInfoLocation.horizontal_reliability:type_name -> org.lfedge.eve.info.LocReliability
+	29,  // 163: org.lfedge.eve.info.ZInfoLocation.vertical_reliability:type_name -> org.lfedge.eve.info.LocReliability
+	112, // 164: org.lfedge.eve.info.ZInfoKubeClusterUpdateStatus.component:type_name -> org.lfedge.eve.info.KubeComp
+	113, // 165: org.lfedge.eve.info.ZInfoKubeClusterUpdateStatus.status:type_name -> org.lfedge.eve.info.KubeCompUpdateStatus
+	100, // 166: org.lfedge.eve.info.ZInfoKubeClusterUpdateStatus.error:type_name -> org.lfedge.eve.info.ErrorInfo
+	114, // 167: org.lfedge.eve.info.ZInfoKubeCluster.nodes:type_name -> org.lfedge.eve.info.KubeNodeInfo
+	115, // 168: org.lfedge.eve.info.ZInfoKubeCluster.pod_name_spaces:type_name -> org.lfedge.eve.info.KubePodNameSpaceInfo
+	116, // 169: org.lfedge.eve.info.ZInfoKubeCluster.eve_apps:type_name -> org.lfedge.eve.info.KubeEVEAppPodInfo
+	117, // 170: org.lfedge.eve.info.ZInfoKubeCluster.storage:type_name -> org.lfedge.eve.info.KubeStorageInfo
+	118, // 171: org.lfedge.eve.info.ZInfoKubeCluster.eve_vm_apps:type_name -> org.lfedge.eve.info.KubeVMIInfo
+	119, // 172: org.lfedge.eve.info.ZInfoKubeCluster.witness:type_name -> org.lfedge.eve.info.KubeWitnessInfo
+	31,  // 173: org.lfedge.eve.info.ZInfoHardware.disks:type_name -> org.lfedge.eve.info.StorageDiskInfo
+	120, // 174: org.lfedge.eve.info.ZInfoHardware.inventory:type_name -> org.lfedge.eve.info.HardwareInventory
+	46,  // 175: org.lfedge.eve.info.ZInfoConfigItemStatus.ConfigItemsEntry.value:type_name -> org.lfedge.eve.info.ZInfoConfigItem
+	46,  // 176: org.lfedge.eve.info.ZInfoConfigItemStatus.UnknownConfigItemsEntry.value:type_name -> org.lfedge.eve.info.ZInfoConfigItem
+	177, // [177:177] is the sub-list for method output_type
+	177, // [177:177] is the sub-list for method input_type
+	177, // [177:177] is the sub-list for extension type_name
+	177, // [177:177] is the sub-list for extension extendee
+	0,   // [0:177] is the sub-list for field type_name
 }
 
 func init() { file_info_info_proto_init() }
@@ -11188,7 +11332,7 @@ func file_info_info_proto_init() {
 			}
 		}
 		file_info_info_proto_msgTypes[42].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ZInfoApp); i {
+			switch v := v.(*ZInfoAppPendingChange); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -11200,7 +11344,7 @@ func file_info_info_proto_init() {
 			}
 		}
 		file_info_info_proto_msgTypes[43].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ZInfoVpnLinkInfo); i {
+			switch v := v.(*ZInfoApp); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -11212,7 +11356,7 @@ func file_info_info_proto_init() {
 			}
 		}
 		file_info_info_proto_msgTypes[44].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ZInfoVpnLink); i {
+			switch v := v.(*ZInfoVpnLinkInfo); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -11224,7 +11368,7 @@ func file_info_info_proto_init() {
 			}
 		}
 		file_info_info_proto_msgTypes[45].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ZInfoVpnEndPoint); i {
+			switch v := v.(*ZInfoVpnLink); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -11236,7 +11380,7 @@ func file_info_info_proto_init() {
 			}
 		}
 		file_info_info_proto_msgTypes[46].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ZInfoVpnConn); i {
+			switch v := v.(*ZInfoVpnEndPoint); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -11248,7 +11392,7 @@ func file_info_info_proto_init() {
 			}
 		}
 		file_info_info_proto_msgTypes[47].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ZInfoVpn); i {
+			switch v := v.(*ZInfoVpnConn); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -11260,7 +11404,7 @@ func file_info_info_proto_init() {
 			}
 		}
 		file_info_info_proto_msgTypes[48].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ZInfoNetworkInstance); i {
+			switch v := v.(*ZInfoVpn); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -11272,7 +11416,7 @@ func file_info_info_proto_init() {
 			}
 		}
 		file_info_info_proto_msgTypes[49].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*IPRoute); i {
+			switch v := v.(*ZInfoNetworkInstance); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -11284,7 +11428,7 @@ func file_info_info_proto_init() {
 			}
 		}
 		file_info_info_proto_msgTypes[50].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UsageInfo); i {
+			switch v := v.(*IPRoute); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -11296,7 +11440,7 @@ func file_info_info_proto_init() {
 			}
 		}
 		file_info_info_proto_msgTypes[51].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*VolumeResources); i {
+			switch v := v.(*UsageInfo); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -11308,7 +11452,7 @@ func file_info_info_proto_init() {
 			}
 		}
 		file_info_info_proto_msgTypes[52].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ZInfoVolume); i {
+			switch v := v.(*VolumeResources); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -11320,7 +11464,7 @@ func file_info_info_proto_init() {
 			}
 		}
 		file_info_info_proto_msgTypes[53].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ContentResources); i {
+			switch v := v.(*ZInfoVolume); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -11332,7 +11476,7 @@ func file_info_info_proto_init() {
 			}
 		}
 		file_info_info_proto_msgTypes[54].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ZInfoContentTree); i {
+			switch v := v.(*ContentResources); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -11344,7 +11488,7 @@ func file_info_info_proto_init() {
 			}
 		}
 		file_info_info_proto_msgTypes[55].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ZInfoBlob); i {
+			switch v := v.(*ZInfoContentTree); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -11356,7 +11500,7 @@ func file_info_info_proto_init() {
 			}
 		}
 		file_info_info_proto_msgTypes[56].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ZInfoBlobList); i {
+			switch v := v.(*ZInfoBlob); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -11368,7 +11512,7 @@ func file_info_info_proto_init() {
 			}
 		}
 		file_info_info_proto_msgTypes[57].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ZInfoMsg); i {
+			switch v := v.(*ZInfoBlobList); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -11380,7 +11524,7 @@ func file_info_info_proto_init() {
 			}
 		}
 		file_info_info_proto_msgTypes[58].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Capabilities); i {
+			switch v := v.(*ZInfoMsg); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -11392,7 +11536,7 @@ func file_info_info_proto_init() {
 			}
 		}
 		file_info_info_proto_msgTypes[59].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ZInfoAppInstMetaData); i {
+			switch v := v.(*Capabilities); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -11404,7 +11548,7 @@ func file_info_info_proto_init() {
 			}
 		}
 		file_info_info_proto_msgTypes[60].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ZInfoEdgeview); i {
+			switch v := v.(*ZInfoAppInstMetaData); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -11416,7 +11560,7 @@ func file_info_info_proto_init() {
 			}
 		}
 		file_info_info_proto_msgTypes[61].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ZInfoLocation); i {
+			switch v := v.(*ZInfoEdgeview); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -11428,7 +11572,7 @@ func file_info_info_proto_init() {
 			}
 		}
 		file_info_info_proto_msgTypes[62].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ZInfoKubeClusterUpdateStatus); i {
+			switch v := v.(*ZInfoLocation); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -11440,7 +11584,7 @@ func file_info_info_proto_init() {
 			}
 		}
 		file_info_info_proto_msgTypes[63].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ZInfoKubeCluster); i {
+			switch v := v.(*ZInfoKubeClusterUpdateStatus); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -11452,6 +11596,18 @@ func file_info_info_proto_init() {
 			}
 		}
 		file_info_info_proto_msgTypes[64].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ZInfoKubeCluster); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_info_info_proto_msgTypes[65].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ZInfoHardware); i {
 			case 0:
 				return &v.state
@@ -11471,10 +11627,10 @@ func file_info_info_proto_init() {
 		(*DeprecatedMetricItem_FloatValue)(nil),
 		(*DeprecatedMetricItem_StringValue)(nil),
 	}
-	file_info_info_proto_msgTypes[48].OneofWrappers = []interface{}{
+	file_info_info_proto_msgTypes[49].OneofWrappers = []interface{}{
 		(*ZInfoNetworkInstance_Vinfo)(nil),
 	}
-	file_info_info_proto_msgTypes[57].OneofWrappers = []interface{}{
+	file_info_info_proto_msgTypes[58].OneofWrappers = []interface{}{
 		(*ZInfoMsg_Dinfo)(nil),
 		(*ZInfoMsg_Ainfo)(nil),
 		(*ZInfoMsg_Niinfo)(nil),
@@ -11496,8 +11652,8 @@ func file_info_info_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_info_info_proto_rawDesc,
-			NumEnums:      29,
-			NumMessages:   67,
+			NumEnums:      30,
+			NumMessages:   68,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
