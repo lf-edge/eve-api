@@ -65,6 +65,14 @@ message PCIDevice {
         uint64 subclass_id = 9;
         // IOMMU group names apparently are strings: https://elixir.bootlin.com/linux/v6.16.9/source/drivers/iommu/iommu.c#L1101
         string iommu_group = 10;
+        // Logical CPU ids local to this device, from sysfs local_cpulist:
+        // the CPUs of the NUMA node its DMA and interrupts are local to.
+        // Cross-references CPU.id in CPUInfo, so the device's NUMA node is
+        // the numa_node of these CPUs, enabling NUMA-local placement of a
+        // workload relative to its passthrough device. A list spanning every
+        // NUMA node means the platform gives the device no affinity. Empty
+        // when EVE did not report it.
+        repeated uint32 local_cpu_ids = 11;
 }
 
 message SerialPort {
@@ -108,15 +116,89 @@ message BIOS {
         map<string,string> attributes = 1000;
 }
 
+// CoreClass distinguishes core types on heterogeneous (hybrid) CPUs, e.g.
+// Intel P/E cores. Reported for information: CPU placement does not take it
+// into account.
+enum CoreClass {
+        // EVE could not determine the class.
+        CORE_CLASS_UNSPECIFIED = 0;
+        CORE_CLASS_PERFORMANCE = 1; // e.g. Intel P-core, ARM "big"
+        // e.g. Intel E-core (low-power E-cores included), ARM "LITTLE"
+        CORE_CLASS_EFFICIENCY = 2;
+        // A homogeneous part: every core is of the same class.
+        CORE_CLASS_UNIFORM = 3;
+}
+
+// CacheLevel identifies a CPU cache level for CacheDomain.
+enum CacheLevel {
+        CACHE_LEVEL_UNSPECIFIED = 0;
+        CACHE_LEVEL_L1D = 1; // level-1 data cache
+        CACHE_LEVEL_L1I = 2; // level-1 instruction cache
+        CACHE_LEVEL_L2 = 3;
+        CACHE_LEVEL_L3 = 4;
+}
+
+// One entry per online logical CPU (SMT thread), the unit CPU affinities
+// are expressed in. The topology fields are opaque grouping keys: equal
+// values mean "same domain", and the values are not guaranteed contiguous or
+// zero-based. Logical CPUs sharing (socket_id, core_id) are SMT siblings of
+// one physical core. When EVE cannot read the CPU topology it leaves
+// socket_id, core_id, numa_node, l2_id and l3_id unset and reports no
+// caches: the topology is known only when every CPU carries socket_id and
+// core_id.
 message CPU {
         string model = 1;
-        string vendor = 2;          // e.g. "GenuineIntel"
-        uint32 id = 3;              // logical CPU id
-        uint64 freq = 4;            // nominal frequency
+        string vendor = 2;              // e.g. "GenuineIntel"
+        uint32 id = 3;                  // logical CPU id
+        uint64 freq = 4;                // not set; see base_freq_khz / max_freq_khz
+        optional uint32 socket_id = 5;  // physical package (socket)
+        optional uint32 core_id = 6;    // physical core within the socket
+        // NUMA node the CPU belongs to; 0 for every CPU on a kernel without
+        // NUMA information.
+        optional uint32 numa_node = 7;
+        optional uint32 l2_id = 8;      // CacheDomain.id of its L2; unset if it has none
+        optional uint32 l3_id = 9;      // CacheDomain.id of its L3; unset if it has none
+        CoreClass core_class = 10;
+        // Base and maximum (turbo) frequency in kHz; unset when the kernel
+        // does not expose them.
+        optional uint64 base_freq_khz = 11;
+        optional uint64 max_freq_khz = 12;
+}
+
+// CacheDomain describes one cache instance and the logical CPUs sharing
+// it — the cache→cores linkage (values of CPU.id). Note that on some
+// parts a cache domain spans multiple physical cores that are NOT SMT
+// siblings (e.g. an Intel E-core module shares one L2 across four
+// distinct cores); sibling grouping must use (socket_id, core_id), never
+// a cache id.
+message CacheDomain {
+        CacheLevel level = 1;
+        optional uint64 size_bytes = 2;  // unset when unknown
+        // Logical CPU ids (CPU.id) sharing this cache instance.
+        repeated uint32 cpu_ids = 3;
+        // Domain id as reported by the platform; opaque grouping key,
+        // matching CPU.l2_id / CPU.l3_id for the respective level.
+        uint32 id = 4;
 }
 
 message CPUInfo {
         repeated CPU cpus = 1;
+        // Cache domains with their cache→cores linkage.
+        repeated CacheDomain caches = 2;
+}
+
+// NodeCapabilities reports kernel facts relevant to CPU isolation: what the
+// running kernel does, not what EVE can do about it (EVE's abilities are in
+// ZInfoDevice.api_capability). Each list is the set EVE itself reads and
+// acts on; an empty list means none.
+message NodeCapabilities {
+        // Logical CPUs the running kernel isolates from the scheduler
+        // (isolcpus), from /sys/devices/system/cpu/isolated: the
+        // CPU_POLICY_ISOLATED pool.
+        repeated uint32 isolated_cpu_ids = 1;
+        // Logical CPUs with the scheduler tick shed (nohz_full), from
+        // /sys/devices/system/cpu/nohz_full. Reported; EVE does not require it.
+        repeated uint32 nohz_full_cpu_ids = 2;
 }
 
 message TPM {
@@ -153,6 +235,8 @@ message HardwareInventory {
   bool watchdog_present      = 13;
   TPM tpm                    = 14;
   bool status_led_present    = 15;
+  // Granular kernel/boot-level isolation facts (node, not CPU, properties).
+  NodeCapabilities node_capabilities = 16;
   // Free-form extension for things not modeled yet.
   // New keys must be promoted to typed fields in a follow-up.
   map<string,string> misc = 1000;

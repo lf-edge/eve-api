@@ -23,6 +23,60 @@ enum VmMode {
   LEGACY = 5; // HVM, but with fully emulated legacy I/O (IDE disks and e1000 net)
 }
 
+// CpuPolicy selects the pool a workload's CPUs come from. Whether EVE pins
+// each vCPU to one of those CPUs is a separate choice, VmConfig.pin_cpu; each
+// field means the same whatever the other says.
+enum CpuPolicy {
+  // Not set: a controller that predates cpu_policy sends only pin_cpu, and
+  // then pin_cpu=true means CPU_POLICY_DEDICATED and pin_cpu=false means
+  // CPU_POLICY_HOUSEKEEPING. This is the only place a field's meaning depends on
+  // another, and it exists only for such controllers.
+  CPU_POLICY_UNSPECIFIED = 0;
+  // The housekeeping pool, as the kernel calls the CPUs it keeps for the
+  // system: CPUs shared with EVE and with every other workload in this pool
+  // (info CPU_POOL_KIND_HOUSEKEEPING).
+  CPU_POLICY_HOUSEKEEPING = 1;
+  // CPUs of the workload's own: no other workload runs on them
+  // (info CPU_POOL_KIND_DEDICATED).
+  CPU_POLICY_DEDICATED = 2;
+  // CPUs of the workload's own that the running kernel isolates (isolcpus),
+  // listed in info NodeCapabilities.isolated_cpu_ids (info
+  // CPU_POOL_KIND_ISOLATED). EVE does not change the kernel command line: on
+  // a node that isolates no CPU the request is refused with
+  // "cpu.isolation.unavailable", and with "cpu.placement.insufficient" when
+  // the isolated CPUs are taken.
+  CPU_POLICY_ISOLATED = 3;
+}
+
+// NumaPolicy expresses how strictly a workload's CPUs must stay within one
+// NUMA node, as the running kernel reports NUMA; a kernel without NUMA
+// information is one node, where every policy holds.
+enum NumaPolicy {
+  // Defaults to NUMA_POLICY_BEST_EFFORT.
+  NUMA_POLICY_UNSPECIFIED = 0;
+  // No NUMA consideration: CPUs may come from several nodes even when one
+  // node could hold them.
+  NUMA_POLICY_NONE = 1;
+  // One NUMA node if any has room; otherwise CPUs from several nodes.
+  NUMA_POLICY_BEST_EFFORT = 2;
+  // One NUMA node, or the request is refused.
+  NUMA_POLICY_SINGLE_NUMA_NODE = 3;
+}
+
+// IoPlacement selects where a VM's non-vCPU QEMU threads (emulator, main
+// loop, iothreads) run. A container has no such threads.
+enum IoPlacement {
+  // Defaults to IO_PLACEMENT_DEDICATED.
+  IO_PLACEMENT_UNSPECIFIED = 0;
+  // The threads stay on the workload's own CPUs.
+  IO_PLACEMENT_DEDICATED = 1;
+  // The threads run on the CPUs reserved for EVE, off the workload's own
+  // CPUs, so device emulation does not take cycles from busy vCPUs. When no
+  // such CPU is available they stay on the workload's CPUs and the workload
+  // reports "cpu.placement.repack_advised".
+  IO_PLACEMENT_HOUSEKEEPING = 2;
+}
+
 // Boot mechanisms supported by the BIOS of the Virtual Machine
 enum VmBootMode {
   VM_BOOT_MODE_UNSPECIFIED = 0; // Boot mode not specified, use default
@@ -47,12 +101,18 @@ message VmConfig {
   string rootdev = 7;
   string extraargs = 8;
   string bootloader = 9;
-  // Currently is not handled by EVE.
+  // Currently is not handled by EVE, and superseded — do not build on it.
   // CPU mask of the CPUs assigned to the VM. Represented in the form
   // "d[[,-]d]*". E.g. "0-2" or "0-2,5,6". CPUs start with 0. For example, the
   // mask "0,3" would mean that only physical CPUs 0 and 3 are available for
   // the VM.
-  string cpus = 10;
+  //
+  // EVE has never parsed this field, and it is not planned to: naming concrete
+  // host CPUs is the device's responsibility, not the controller's. A workload
+  // expresses *what it needs* through the CPU placement policy below
+  // (cpu_policy and friends) and the device selects cores that satisfy it,
+  // topology-aware. Use cpu_policy instead.
+  string cpus = 10 [deprecated = true];
   string devicetree = 11;
   repeated string dtdev = 12;
   repeated uint32 irqs = 13;
@@ -64,14 +124,14 @@ message VmConfig {
   string vncPasswd = 18;
   // Change of the 'disable logs' field can be handled without VM reboot
   bool disableLogs = 19;
-  // Set if the VM should run in a mode with pinned CPUs.
-  // In this case any VCPU thread created by QEMU runs on a dedicated physical
-  // CPU. All the other QEMU threads will be limited to run on the physical
-  // CPUs defined by CPU mask. The CPU mask is provided with the 'cpus' field,
-  // defined above. If the CPU mask is not set, the physical CPUs to be used
-  // for running QEMU threads are picked automatically by Pillar: it just takes
-  // that amount of available physical CPUs that is defined with the 'vcpus'
-  // parameter defined above.
+  // Whether EVE pins each vCPU of the VM to its own CPU of the pool chosen by
+  // cpu_policy: one vCPU, one host CPU. false: EVE pins nothing, and the
+  // workload's threads run on the pool's CPUs as the kernel or the workload
+  // itself places them. A container has no vCPUs: pin_cpu=true on a container
+  // is refused with "cpu.policy.invalid".
+  //
+  // With cpu_policy unset (a controller that predates it), pin_cpu=true means
+  // CPU_POLICY_DEDICATED; see CpuPolicy.
   bool pin_cpu = 20;
   // Maximum amount of memory in kbytes allowed for VM monitor to occupy,
   // aka "overhead". E.g. for the qemu-kvm hypervisor the memory limit
@@ -115,4 +175,54 @@ message VmConfig {
   // The setting is passed to OVMF via fw_cfg "opt/eve.bootorder" when the VM starts.
   // Changes take effect on the next VM restart.
   org.lfedge.eve.common.BootOrder boot_order = 27;
+
+  // ------------------------------------------------------------------
+  // CPU placement.
+  //
+  // The controller states what a workload needs; the device picks the
+  // concrete host CPUs. Two independent choices: cpu_policy picks the pool,
+  // pin_cpu (field 20) whether EVE pins each vCPU. The fields below refine a
+  // CPU_POLICY_DEDICATED or CPU_POLICY_ISOLATED request. Each field means the
+  // same whatever the others say. A request the device cannot serve as sent,
+  // including a combination this EVE does not implement, is refused with a
+  // structured error_code (info ErrorInfo.error_code); nothing is
+  // reinterpreted or silently dropped.
+  //
+  // A workload with cpu_policy unset and pin_cpu false runs in the
+  // housekeeping pool, as before these fields existed.
+  //
+  // The controller MUST NOT send these fields unless
+  //  1. "ZInfoDevice.api_capability" >= "API_CAPABILITY_CPU_PLACEMENT_POLICY";
+  //     an older EVE ignores them;
+  //  2. for CPU_POLICY_DEDICATED, CPU_POLICY_ISOLATED or pin_cpu=true, the
+  //     node's CPU topology is known: every HardwareInventory.cpu_info.cpus
+  //     entry carries socket_id and core_id. The device refuses such a
+  //     request on a node whose topology is not known with
+  //     "cpu.topology.unsupported";
+  //  3. for CPU_POLICY_ISOLATED, HardwareInventory.node_capabilities
+  //     .isolated_cpu_ids is not empty.
+  // ------------------------------------------------------------------
+
+  // The pool the workload's CPUs come from; see CpuPolicy.
+  CpuPolicy cpu_policy = 28;
+  // Whole physical cores: no other workload runs on any SMT sibling of the
+  // workload's cores. Requires CPU_POLICY_DEDICATED or CPU_POLICY_ISOLATED.
+  // Without it, CPUs are taken one logical CPU at a time and a physical core
+  // may be shared with another workload. Mirrors the Kubernetes CPU Manager
+  // "full-pcpus-only" option.
+  bool full_pcpus_only = 29;
+  // How many SMT siblings of each core the workload uses; requires
+  // full_pcpus_only. 2, also when unset: both siblings (a VM sees threads=2,
+  // and vcpus must be even). 1: one thread per core, the sibling held idle
+  // for the workload (a VM sees threads=1). Any other value is refused with
+  // "cpu.policy.invalid". On a node with no two-thread core a 2 is refused
+  // with "cpu.topology.unsupported"; the controller sees that in the
+  // inventory and sends 1. A VM is shown a sockets/cores/threads topology
+  // that matches its host CPUs.
+  uint32 threads_per_core = 30;
+  // NUMA confinement; see NumaPolicy. Requires full_pcpus_only.
+  NumaPolicy numa_policy = 31;
+  // Where a VM's non-vCPU QEMU threads run; see IoPlacement. Requires
+  // full_pcpus_only; refused on a container.
+  IoPlacement io_placement = 32;
 }

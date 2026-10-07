@@ -573,6 +573,59 @@ message StorageInfo {
   string pool_status_msg = 12;  // pool status msg
 }
 
+// CPUPoolKind identifies one partition of the node's online logical CPUs.
+// The pools are disjoint and together cover the online CPUs.
+enum CPUPoolKind {
+  CPU_POOL_KIND_UNSPECIFIED = 0;
+  // The CPUs reserved for EVE plus every CPU outside the isolated set that
+  // no workload holds: where CPU_POLICY_HOUSEKEEPING workloads run.
+  CPU_POOL_KIND_HOUSEKEEPING = 1;
+  // CPUs outside the isolated set held by CPU_POLICY_DEDICATED workloads,
+  // including SMT siblings held idle by a one-thread-per-core request.
+  CPU_POOL_KIND_DEDICATED = 2;
+  // The CPUs the running kernel isolates (isolcpus), free or held by
+  // CPU_POLICY_ISOLATED workloads.
+  CPU_POOL_KIND_ISOLATED = 3;
+}
+
+// CPUPoolUtilization reports one CPU pool's extent and how much of it is
+// still available.
+//
+// Both the CPU *sets* and the summary counts are reported: the counts
+// answer "how much is left" directly, while the sets let a consumer
+// compute availability per request shape by grouping them into physical
+// cores via the (socket_id, core_id) coordinates in
+// HardwareInventory.CPUInfo. That distinction matters — free threads
+// sitting on partially-allocated cores cannot satisfy a request for whole
+// physical cores, so a single "free" number would answer the question
+// wrongly for one of the two request shapes.
+message CPUPoolUtilization {
+  CPUPoolKind kind = 1;
+  // Every logical CPU in this pool.
+  repeated uint32 cpu_ids = 2;
+  // The CPUs of this pool a CPU_POLICY_DEDICATED or CPU_POLICY_ISOLATED
+  // request could get now: held by no workload and not reserved for EVE.
+  repeated uint32 free_cpu_ids = 3;
+  // Summary counts, derived from the sets above.
+  uint32 total_threads = 4;
+  uint32 allocated_threads = 5;
+  uint32 free_threads = 6;
+  // Physical cores all of whose logical CPUs lie in this pool, single-thread
+  // cores included.
+  uint32 total_cores = 7;
+  // Physical cores all of whose logical CPUs are free, single-thread cores
+  // included. A threads_per_core=2 request can use only cores with two; a
+  // consumer finds those from the sets and the CPU topology.
+  uint32 free_whole_cores = 8;
+  // What is wrong with how the node defines this pool, at SEVERITY_WARNING,
+  // one entry per mistake. Only the ISOLATED pool carries any: the operator
+  // defines it with isolcpus, and the device runs with what it is given,
+  // keeping every workload off the CPUs a mistake makes unusable. error_code
+  // is cpu.isolation.reserved_cpus or cpu.isolation.partial_core;
+  // retry_condition says what to change.
+  repeated ErrorInfo errors = 9;
+}
+
 // Base device info, as discovered by Xen (or OS on bare metal)
 message ZInfoDevice {
   string machineArch = 4;
@@ -697,8 +750,15 @@ message ZInfoDevice {
   // on the device, typically via network enrollment protocols such as SCEP.
   repeated CertInfo enrolled_certs = 60;
 
+  // Current CPU partitioning and utilization, one entry per pool. Dynamic
+  // state, deliberately reported here (change-driven and periodic) rather
+  // than on the cached hardware inventory. Lets a controller answer
+  // "will this workload fit?" before a deploy and explain an
+  // "cpu.placement.insufficient" failure after one.
+  repeated CPUPoolUtilization cpu_pools = 62;
+
   // NOTE: tag 61 is used by sub_state (ZDeviceSubState), declared above next to
-  // state for readability. Next free tag: 62.
+  // state for readability. Next free tag: 63.
 }
 
 // OptionalCapabilities indicates any additional capabilities device wants
@@ -749,6 +809,7 @@ enum APICapability {
   API_CAPABILITY_REPORT_TPM_EVENTLOG = 21; // Support for reporting TPM Event Log "as is" without parsing and selectively reporting events
   API_CAPABILITY_APP_INSTANCE_NET_INTERFACE_CHANGE = 22; // Support for adding and removing network interfaces without purge, but restart or the edge app
   API_CAPABILITY_DEFERRED_QUEUE_METRICS = 23; // Reports deviceMetric.deferred_queue and the per-URL retriable, rejected and delivered counts
+  API_CAPABILITY_CPU_PLACEMENT_POLICY = 24; // VmConfig CPU placement (cpu_policy incl. CPU_POLICY_ISOLATED, pin_cpu as the pinning choice, full_pcpus_only, threads_per_core, numa_policy, io_placement): each field is applied, or the workload is refused with a structured error_code. Advertised only where EVE implements CPU placement
   // Append new values as new API features are implemented; never insert or
   // renumber, since a value asserts that all lower values are also supported.
 }
@@ -1057,6 +1118,28 @@ message ZInfoClusterNode {
   ZInfoClusterNodeStatus node_status = 1;
 }
 
+// AppCPUAssignment is the host CPUs a workload of the CPU_POLICY_DEDICATED or
+// CPU_POLICY_ISOLATED pool holds, as the device placed it. Like
+// ZInfoApp.assignedAdapters it reports an assigned resource: present while the
+// workload holds the CPUs, absent for a CPU_POLICY_HOUSEKEEPING workload and
+// for one that holds none (not started, refused, stopped). The ids are CPU.id
+// in HardwareInventory.CPUInfo, where a consumer finds each one's core and
+// NUMA node.
+message AppCPUAssignment {
+  // The CPUs the workload runs on. For a pinned workload (pin_cpu) in vCPU
+  // order: vCPU i runs only on cpu_ids[i]. Otherwise ascending, and its threads
+  // may run on any of them.
+  repeated uint32 cpu_ids = 1;
+  // The other threads of the cores a threads_per_core=1 workload runs on. They
+  // are held for it, so that nothing shares its cores, and stay idle: none of
+  // its own threads runs there either. In the pool of cpu_ids, never free.
+  repeated uint32 parked_cpu_ids = 2;
+  // Where a VM's non-vCPU QEMU threads run under IO_PLACEMENT_HOUSEKEEPING:
+  // CPUs of the HOUSEKEEPING pool, shared with EVE and not held. Empty
+  // otherwise, when those threads share cpu_ids.
+  repeated uint32 io_cpu_ids = 3;
+}
+
 message ZInfoApp {
   reserved 9 to 11, 19; // deprecated
 
@@ -1080,6 +1163,9 @@ message ZInfoApp {
   // Deployed app is scheduled, or rescheduled and launched on this node,
   // it has the Pod Spec-name of this node, the app can be in any operating state.
   bool cluster_app_running = 20;
+
+  // The host CPUs the workload holds; see AppCPUAssignment.
+  AppCPUAssignment assigned_cpus = 21;
 }
 
 // ipSec state information

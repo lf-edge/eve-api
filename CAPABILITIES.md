@@ -67,6 +67,7 @@ introduced the value, not stated anywhere authoritative — corrections welcome.
 | `REPORT_TPM_EVENTLOG` = 21 | rpt | `ZAttestQuote.tpm_binary_event_log`, superseding the deprecated `ZAttestQuote.event_log` |
 | `APP_INSTANCE_NET_INTERFACE_CHANGE` = 22 | cfg | adding or removing an `AppInstanceConfig.interfaces` entry needs only `restart`, not `purge`, so the app keeps its volumes; the `AppInstanceConfig` comment still describes the older purge requirement **(?)** |
 | `DEFERRED_QUEUE_METRICS` = 23 | rpt | `deviceMetric.deferred_queue`, and `urlcloudMetric.retriableErrCount`, `.rejectedErrCount`, `.deliveredMsgCount` |
+| `CPU_PLACEMENT_POLICY` = 24 | cfg | `VmConfig.cpu_policy`, `.pin_cpu` as the pinning choice, `.full_pcpus_only`, `.threads_per_core`, `.numa_policy`, `.io_placement`: each is applied, or the workload is refused with an `ErrorInfo.error_code` (`cpu.*`). Advertised only where EVE implements CPU placement |
 
 ### Adding a value
 
