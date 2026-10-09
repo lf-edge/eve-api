@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x11info/common.proto\x12\x13org.lfedge.eve.info\x1a\x1fgoogle/protobuf/timestamp.proto\"\xce\x01\n\tErrorInfo\x12\x13\n\x0b\x64\x65scription\x18\x01 \x01(\t\x12-\n\ttimestamp\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12/\n\x08severity\x18\x03 \x01(\x0e\x32\x1d.org.lfedge.eve.info.Severity\x12\x33\n\x08\x65ntities\x18\x04 \x03(\x0b\x32!.org.lfedge.eve.info.DeviceEntity\x12\x17\n\x0fretry_condition\x18\x05 \x01(\t\"c\n\x0c\x44\x65viceEntity\x12+\n\x06\x65ntity\x18\x01 \x01(\x0e\x32\x1b.org.lfedge.eve.info.Entity\x12\x11\n\tentity_id\x18\x02 \x01(\t\x12\x13\n\x0b\x65ntity_name\x18\x03 \x01(\t*c\n\x08Severity\x12\x18\n\x14SEVERITY_UNSPECIFIED\x10\x00\x12\x13\n\x0fSEVERITY_NOTICE\x10\x01\x12\x14\n\x10SEVERITY_WARNING\x10\x02\x12\x12\n\x0eSEVERITY_ERROR\x10\x03*\x99\x02\n\x06\x45ntity\x12\x16\n\x12\x45NTITY_UNSPECIFIED\x10\x00\x12\x12\n\x0e\x45NTITY_BASE_OS\x10\x01\x12\x19\n\x15\x45NTITY_SYSTEM_ADAPTER\x10\x02\x12\x10\n\x0c\x45NTITY_VAULT\x10\x03\x12\x16\n\x12\x45NTITY_ATTESTATION\x10\x04\x12\x17\n\x13\x45NTITY_APP_INSTANCE\x10\x05\x12\x0f\n\x0b\x45NTITY_PORT\x10\x06\x12\x12\n\x0e\x45NTITY_NETWORK\x10\x07\x12\x1b\n\x17\x45NTITY_NETWORK_INSTANCE\x10\x08\x12\x17\n\x13\x45NTITY_CONTENT_TREE\x10\t\x12\x17\n\x13\x45NTITY_CONTENT_BLOB\x10\n\x12\x11\n\rENTITY_VOLUME\x10\x0b\x42\x39\n\x13org.lfedge.eve.infoZ\"github.com/lf-edge/eve-api/go/infob\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x11info/common.proto\x12\x13org.lfedge.eve.info\x1a\x1fgoogle/protobuf/timestamp.proto\"\xe2\x01\n\tErrorInfo\x12\x13\n\x0b\x64\x65scription\x18\x01 \x01(\t\x12-\n\ttimestamp\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12/\n\x08severity\x18\x03 \x01(\x0e\x32\x1d.org.lfedge.eve.info.Severity\x12\x33\n\x08\x65ntities\x18\x04 \x03(\x0b\x32!.org.lfedge.eve.info.DeviceEntity\x12\x17\n\x0fretry_condition\x18\x05 \x01(\t\x12\x12\n\nerror_code\x18\x06 \x01(\t\"c\n\x0c\x44\x65viceEntity\x12+\n\x06\x65ntity\x18\x01 \x01(\x0e\x32\x1b.org.lfedge.eve.info.Entity\x12\x11\n\tentity_id\x18\x02 \x01(\t\x12\x13\n\x0b\x65ntity_name\x18\x03 \x01(\t*c\n\x08Severity\x12\x18\n\x14SEVERITY_UNSPECIFIED\x10\x00\x12\x13\n\x0fSEVERITY_NOTICE\x10\x01\x12\x14\n\x10SEVERITY_WARNING\x10\x02\x12\x12\n\x0eSEVERITY_ERROR\x10\x03*\x99\x02\n\x06\x45ntity\x12\x16\n\x12\x45NTITY_UNSPECIFIED\x10\x00\x12\x12\n\x0e\x45NTITY_BASE_OS\x10\x01\x12\x19\n\x15\x45NTITY_SYSTEM_ADAPTER\x10\x02\x12\x10\n\x0c\x45NTITY_VAULT\x10\x03\x12\x16\n\x12\x45NTITY_ATTESTATION\x10\x04\x12\x17\n\x13\x45NTITY_APP_INSTANCE\x10\x05\x12\x0f\n\x0b\x45NTITY_PORT\x10\x06\x12\x12\n\x0e\x45NTITY_NETWORK\x10\x07\x12\x1b\n\x17\x45NTITY_NETWORK_INSTANCE\x10\x08\x12\x17\n\x13\x45NTITY_CONTENT_TREE\x10\t\x12\x17\n\x13\x45NTITY_CONTENT_BLOB\x10\n\x12\x11\n\rENTITY_VOLUME\x10\x0b\x42\x39\n\x13org.lfedge.eve.infoZ\"github.com/lf-edge/eve-api/go/infob\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -23,12 +23,12 @@ if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
   DESCRIPTOR._serialized_options = b'\n\023org.lfedge.eve.infoZ\"github.com/lf-edge/eve-api/go/info'
-  _globals['_SEVERITY']._serialized_start=385
-  _globals['_SEVERITY']._serialized_end=484
-  _globals['_ENTITY']._serialized_start=487
-  _globals['_ENTITY']._serialized_end=768
+  _globals['_SEVERITY']._serialized_start=405
+  _globals['_SEVERITY']._serialized_end=504
+  _globals['_ENTITY']._serialized_start=507
+  _globals['_ENTITY']._serialized_end=788
   _globals['_ERRORINFO']._serialized_start=76
-  _globals['_ERRORINFO']._serialized_end=282
-  _globals['_DEVICEENTITY']._serialized_start=284
-  _globals['_DEVICEENTITY']._serialized_end=383
+  _globals['_ERRORINFO']._serialized_end=302
+  _globals['_DEVICEENTITY']._serialized_start=304
+  _globals['_DEVICEENTITY']._serialized_end=403
 # @@protoc_insertion_point(module_scope)

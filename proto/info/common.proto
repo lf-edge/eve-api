@@ -16,6 +16,37 @@ message ErrorInfo {
   Severity severity = 3;               // Severity level of the error.
   repeated DeviceEntity entities = 4;  // Device entities referenced in the description or retry condition.
   string retry_condition = 5;          // Condition under which the operation may be retried.
+  // Machine-parseable, namespaced error token, stable across EVE releases,
+  // so the controller can react without parsing the description. Each code
+  // has exactly one meaning; namespaces are extended additively. Empty when
+  // the error has no structured code. Registered codes:
+  //   cpu.policy.invalid            a CPU placement field the request cannot
+  //                                 carry, a value out of range, or a
+  //                                 combination this EVE does not implement
+  //   cpu.policy.odd_vcpu           threads_per_core=2 with an odd vcpus
+  //   cpu.topology.unsupported      the node cannot present the request:
+  //                                 unknown topology, no two-thread core, or
+  //                                 a hypervisor without per-vCPU placement
+  //   cpu.isolation.unavailable     CPU_POLICY_ISOLATED on a node that
+  //                                 isolates no CPU
+  //   cpu.isolation.reserved_cpus   WARNING, on the ISOLATED pool: isolcpus
+  //                                 covers CPUs reserved for EVE's services
+  //   cpu.isolation.partial_core    WARNING, on the ISOLATED pool: isolcpus
+  //                                 isolates some but not all threads of a
+  //                                 core, which then serves no workload
+  //   cpu.placement.insufficient    the workload does not fit, or fits only
+  //                                 by leaving out a running workload
+  //   cpu.placement.needs_repack    not started; fits once every workload
+  //                                 carrying a repack code restarts at once
+  //   cpu.placement.repack_advised  WARNING, running: part of a repack, as it
+  //                                 runs on a worse placement than planned,
+  //                                 holds CPUs the plan gives to another
+  //                                 workload, or has an
+  //                                 IO_PLACEMENT_HOUSEKEEPING that could not
+  //                                 be served
+  // EVE does not retry a refused workload; retry_condition says what has to
+  // change.
+  string error_code = 6;
 }
 
 // Severity tells the severity type
