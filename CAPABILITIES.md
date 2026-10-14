@@ -89,6 +89,7 @@ EVE-OS build flavor rather than by version.
 | `hv_type_kubevirt` | Device runs the Kubevirt hypervisor | required before sending `EdgeNodeCluster`; the KVM flavor cannot join a cluster |
 | `hw_inventory_support` | Device can produce `HardwareInventory` | distinguishes "found no hardware" from "cannot report" when `ZInfoHardware.inventory` is empty |
 | `etcd_snapshot` | Device supports etcd snapshots | EVE-k cluster operations |
+| `cpu_placement` | Device applies `VmConfig.cpu_policy`, `.pin_cpu` as the pinning choice, `.full_pcpus_only`, `.threads_per_core`, `.numa_policy`, `.io_placement`, each served or the workload refused, and reports `ZInfoApp.cpu_placement_status`, `.cpu_placement_error`, `.assigned_cpus` and `ZInfoDevice.cpu_pools`. Set only on KVM, on any architecture, with a readable CPU topology | required before sending any of those fields but `pin_cpu`: EVE-k, a node whose topology EVE cannot read and an EVE predating the fields do not place CPUs |
 
 An absent boolean means "not supported or not reported". Do not infer support
 from a Device predating the field.
