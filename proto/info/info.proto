@@ -99,6 +99,7 @@ enum ZInfoTypes {
   ZiNTPSources = 16;
   ZiKubeCluster = 17;
   ZiKubeClusterUpdateStatus = 18;
+  ZiClusterNode = 19;
 }
 
 // Information about assignable I/O adapter bundles
@@ -1140,8 +1141,54 @@ enum ZInfoClusterNodeStatus {
   Z_INFO_CLUSTER_NODE_STATUS_DOWN        = 3; // cluster API server can not be reached
 }
 
+// ZInfoClusterNodeQuorum is a node's own view of whether the cluster's
+// datastore has quorum: whether the node can reach a majority of the
+// datastore's voters. In EVE-k the datastore is the embedded etcd of k3s.
+enum ZInfoClusterNodeQuorum {
+  Z_INFO_CLUSTER_NODE_QUORUM_UNSPECIFIED = 0;
+  // The node can reach enough datastore members to form a majority.
+  Z_INFO_CLUSTER_NODE_QUORUM_ESTABLISHED = 1;
+  // The node cannot reach a majority of the datastore members. The cluster
+  // control plane is unavailable from this node, though workloads already
+  // running on it are not affected.
+  Z_INFO_CLUSTER_NODE_QUORUM_LOST = 2;
+}
+
+// ZInfoClusterNode is one cluster member's view of its own connection to the
+// cluster. Unlike ZInfoKubeCluster, which only the elected cluster-info
+// reporter can produce and which needs a working cluster control plane to
+// produce, this message is sent by every member and does not depend on the
+// control plane or on the election. It is how the controller learns that a
+// member has lost the cluster when no report from the cluster itself can
+// arrive, because too few members are alive and in reach of each other to keep
+// a majority of the datastore voters. In a 2-node HA cluster that is the death
+// of the node hosting the witness, or the two nodes losing sight of each other.
+//
+// Sent whenever node_status or quorum changes, and once after the device
+// starts.
 message ZInfoClusterNode {
   ZInfoClusterNodeStatus node_status = 1;
+
+  // Cluster UUID which will match config.EdgeNodeCluster.cluster_id passed
+  // in to the node by the controller.
+  string cluster_id = 2;
+
+  ZInfoClusterNodeQuorum quorum = 3;
+
+  // Why the node considers the cluster unreachable, when it does, such as
+  // the failure of the probe that found quorum lost. error.timestamp is the
+  // time that failure was first seen, so for LOST it is when quorum was lost.
+  ErrorInfo error = 4;
+
+  // When quorum last changed to its current value, as observed by the node:
+  // for LOST when it was lost, for ESTABLISHED when it was regained. It is
+  // not kept across a restart of the device, after which it is the time the
+  // node first determined the value, so it may then be later than the actual
+  // change. Unset while quorum is UNSPECIFIED. The message is sent when the
+  // value changes, so the time the controller received it is normally close
+  // to this one; this time stays correct when delivery was delayed, for
+  // instance by a loss of connectivity to the controller.
+  google.protobuf.Timestamp quorum_change_time = 5;
 }
 
 // AppCPUAssignment is the host CPUs a workload of the CPU_POLICY_DEDICATED or
@@ -1522,6 +1569,8 @@ message ZInfoMsg {
     ZInfoLocation locinfo = 19;
     ZInfoPatchEnvelope patchInfo = 20;
     // 21 reserved
+    // Sent by every member of an edge node cluster, not only by the elected
+    // cluster-info reporter. See ZInfoClusterNode.
     ZInfoClusterNode cluster_node = 22;
     ZInfoNTPSources ntp_sources = 23;
     ZInfoKubeCluster cluster_info = 24;
