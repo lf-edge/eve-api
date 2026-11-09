@@ -1065,7 +1065,11 @@ type CPUPoolKind int32
 const (
 	CPUPoolKind_CPU_POOL_KIND_UNSPECIFIED CPUPoolKind = 0
 	// The CPUs reserved for EVE plus every CPU outside the isolated set that
-	// no workload holds: where CPU_POLICY_HOUSEKEEPING workloads run.
+	// no workload holds: where CPU_POLICY_HOUSEKEEPING workloads and the
+	// non-vCPU threads of IO_PLACEMENT_HOUSEKEEPING ones run. EVE never gives
+	// the CPUs reserved for it (the lowest eve_max_vcpus) to a workload of its
+	// own; housekeeping workloads share them with EVE. So the pool always holds
+	// them, and the DEDICATED pool can grow to every CPU but those.
 	CPUPoolKind_CPU_POOL_KIND_HOUSEKEEPING CPUPoolKind = 1
 	// CPUs outside the isolated set held by CPU_POLICY_DEDICATED workloads,
 	// including SMT siblings held idle by a one-thread-per-core request.
@@ -1994,8 +1998,7 @@ const (
 	// restarts at once.
 	CPUPlacementError_CPU_PLACEMENT_ERROR_NEEDS_REPACK CPUPlacementError = 1
 	// The plan cannot place it, or only by leaving out a running workload, so
-	// no repack makes room for it. Includes a full isolated pool, and an
-	// IO_PLACEMENT_HOUSEKEEPING on a node with no CPU to serve it.
+	// no repack makes room for it. Includes a full isolated pool.
 	CPUPlacementError_CPU_PLACEMENT_ERROR_INSUFFICIENT CPUPlacementError = 2
 	// A field the request cannot carry, a value out of range, or a combination
 	// this EVE does not implement.
@@ -6768,8 +6771,9 @@ type AppCPUAssignment struct {
 	// its own threads runs there either. In the pool of cpu_ids, never free.
 	ParkedCpuIds []uint32 `protobuf:"varint,2,rep,packed,name=parked_cpu_ids,json=parkedCpuIds,proto3" json:"parked_cpu_ids,omitempty"`
 	// Where a VM's non-vCPU QEMU threads run under IO_PLACEMENT_HOUSEKEEPING:
-	// CPUs of the HOUSEKEEPING pool, shared with EVE and not held. Empty
-	// otherwise, when those threads share cpu_ids.
+	// the CPUs of the HOUSEKEEPING pool, shared and not held, which change as
+	// other workloads take and release CPUs. Empty otherwise, when those threads
+	// share cpu_ids.
 	IoCpuIds []uint32 `protobuf:"varint,3,rep,packed,name=io_cpu_ids,json=ioCpuIds,proto3" json:"io_cpu_ids,omitempty"`
 }
 
