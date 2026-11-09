@@ -75,11 +75,13 @@ enum IoPlacement {
   IO_PLACEMENT_UNSPECIFIED = 0;
   // The threads stay on the workload's own CPUs.
   IO_PLACEMENT_DEDICATED = 1;
-  // The threads run on the CPUs reserved for EVE, off the workload's own
-  // CPUs, so device emulation does not take cycles from busy vCPUs; on a node
-  // that reserves none, on HOUSEKEEPING CPUs no workload is planned onto. A
-  // node with no such CPU refuses the workload (info
-  // CPU_PLACEMENT_ERROR_INSUFFICIENT).
+  // The threads run on the CPUs of the HOUSEKEEPING pool (info
+  // CPU_POOL_KIND_HOUSEKEEPING), off the workload's own CPUs, so device
+  // emulation does not take cycles from busy vCPUs: the CPUs reserved for EVE
+  // and every other CPU no workload holds, never a kernel-isolated one. They
+  // follow the pool as other workloads take and release CPUs. The pool always
+  // holds the CPUs reserved for EVE, so the threads always have somewhere to
+  // run.
   IO_PLACEMENT_HOUSEKEEPING = 2;
 }
 
