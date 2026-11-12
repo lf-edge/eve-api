@@ -15,7 +15,7 @@ message ZAttestReq {
   ZAttestReqType reqType = 1;  //type of the request
   ZAttestQuote quote = 2;      //attestation quote msg
   repeated org.lfedge.eve.certs.ZCert certs = 3;    //X509 certs in .PEM format, signed by device certificate
-  AttestStorageKeys storage_keys = 4;    //encrypted secrets to be saved by the Controller, like encrypted keys for the volume storage vaults
+  AttestKeys storage_keys = 4;    //encrypted secrets to be saved by the Controller, like encrypted keys for the volume storage vaults
 }
 
 // This is the response payload for POST /api/v2/edgeDevice/id/<uuid>/attest
@@ -24,7 +24,7 @@ message ZAttestResponse {
   ZAttestRespType respType = 1;    //type of the response
   ZAttestNonceResp nonce = 2;      //nonce from Controller
   ZAttestQuoteResp quoteResp = 3;  //attest quote response from Controller
-  AttestStorageKeysResp  storage_keys_resp = 4;   //attest storage_keys response from Controller
+  AttestKeysResp  storage_keys_resp = 4;   //attest storage_keys response from Controller
 }
 
 enum ZAttestReqType {
@@ -128,21 +128,21 @@ enum ZAttestResponseCode {
   Z_ATTEST_RESPONSE_CODE_QUOTE_FAILED = 4;    //Attestation failed due to quote mismatch
 }
 
-enum AttestVolumeKeyType {
-  ATTEST_VOLUME_KEY_TYPE_INVALID = 0;
-  ATTEST_VOLUME_KEY_TYPE_VSK = 1;     //Volume storage key, for /persist/vault
+enum AttestKeyType {
+  ATTEST_KEY_TYPE_INVALID = 0;
+  ATTEST_KEY_TYPE_VSK = 1;     //Volume storage key, for /persist/vault
 }
 
-enum AttestVolumeKeyVersion {
-  ATTEST_VOLUME_KEY_VERSION_LEGACY = 0; // Zero or absent version indicates legacy volume storage key
-  ATTEST_VOLUME_KEY_VERSION_V1 = 1; // Version 1 uses AES-GCM encryption with TPM-bound key
+enum AttestKeyVersion {
+  ATTEST_KEY_VERSION_LEGACY = 0; // Zero or absent version indicates legacy volume storage key
+  ATTEST_KEY_VERSION_V1 = 1; // Version 1 uses AES-GCM encryption with TPM-bound key
 }
 
-message AttestVolumeKey {
+message AttestKey {
   reserved 3; //reserved for backward compatibility
   reserved "version"; //reserved for backward compatibility
 
-  AttestVolumeKeyType key_type = 1;
+  AttestKeyType key_type = 1;
   bytes key = 2;
   // Controller can choose to send a list of PCR indices that must be used
   // to bind this key in TPM, this allows for more granular control over
@@ -157,24 +157,24 @@ message ZAttestQuoteResp {
   ZAttestResponseCode response = 1;  // Result of quote validation
   bytes integrity_token = 2;         // Valid if response is ATTEST_RESPONSE_SUCCESS, contains integrity token for device to
                                      // Cache and present in the next config request
-  repeated AttestVolumeKey keys = 3; // Valid if response is ATTEST_RESPONSE_SUCCESS, contains keys of type KeyType to unlock
+  repeated AttestKey storage_keys = 3; // Valid if response is ATTEST_RESPONSE_SUCCESS, contains keys of type KeyType to unlock
                                      // volume vault(s)
 }
 
 //Encrypted data to save and retrievable post successful attestation
-message AttestStorageKeys {
+message AttestKeys {
   bytes integrity_token = 1;         // integrity_token provided by controller in the last attestation cycle
-  repeated AttestVolumeKey keys = 2; // Encrypted keys for volume vault(s)
+  repeated AttestKey keys = 2; // Encrypted keys for volume vault(s)
 }
 
-enum AttestStorageKeysResponseCode {
-  ATTEST_STORAGE_KEYS_RESPONSE_CODE_INVALID = 0;
-  ATTEST_STORAGE_KEYS_RESPONSE_CODE_SUCCESS = 1;         // key(s) successfully stored
-  ATTEST_STORAGE_KEYS_RESPONSE_CODE_ITOKEN_MISMATCH = 2; // integrity_token was not valid, try after successful attestation
+enum AttestKeysResponseCode {
+  ATTEST_KEYS_RESPONSE_CODE_INVALID = 0;
+  ATTEST_KEYS_RESPONSE_CODE_SUCCESS = 1;         // key(s) successfully stored
+  ATTEST_KEYS_RESPONSE_CODE_ITOKEN_MISMATCH = 2; // integrity_token was not valid, try after successful attestation
 }
 
-message AttestStorageKeysResp {
-  AttestStorageKeysResponseCode response = 1;    //Result of processing Z_ATTEST_REQ_TYPE_STORE_KEYS in Controller
+message AttestKeysResp {
+  AttestKeysResponseCode response = 1;    //Result of processing Z_ATTEST_REQ_TYPE_STORE_KEYS in Controller
 }
 
 message AttestPolicyPcrList {
@@ -182,12 +182,12 @@ message AttestPolicyPcrList {
   uint32 policy_id = 2;            // policy ID, or version for audit purposes
 }
 
-message AttestVolumeKeyData {
+message AttestKeyData {
   reserved 3, 4; //reserved for backward compatibility
   reserved "has_policy_pcr_list", "policy_pcr_list"; //reserved for backward compatibility
 
   bytes encrypted_key = 1; //key in encrypted format
   bytes digest_sha256 = 2; //SHA 256 digest of the key
-  AttestVolumeKeyVersion version = 5; // Version gives clue about the key format, particularly the encryption scheme used
+  AttestKeyVersion version = 5; // Version gives clue about the key format, particularly the encryption scheme used
 }
 
